@@ -1,14 +1,15 @@
-﻿@using OSL.BLL.Models
-@model OSL.BLL.Models.LoginVM
+﻿@using OSL.BLL.Enums
+@using OSL.BLL.Models
+@model OSL.BLL.Models.RegisterVM
 
 <div class="container mt-5">
     <div class="container-div" style="max-width: 430px;">
-        <h2 class="mb-4 text-center">Login</h2>
+        <h2 class="mb-4 text-center">Registration</h2>
 
-        <form id="login" asp-controller="Account" asp-action="Login" method="post">
+        <form id="registration" asp-action="register" method="post">
             <div class="form-group mb-3">
                 <label asp-for="Email">Email Address</label>
-                <input id="emailInput" asp-for="Email" class="form-control" placeholder="Enter your email" />
+                <input asp-for="Email" class="form-control" placeholder="Enter your email" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
@@ -19,10 +20,16 @@
             </div>
 
             <div class="form-group mb-3">
+                <label asp-for="ConfirmPassword">Confirm Password</label>
+                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm your password" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
                 <label asp-for="Role">Role</label>
                 <select asp-for="Role" class="form-control">
                     <option value="" selected disabled>Select a role...</option>
-                    @foreach (var role in Enum.GetValues(typeof(UserRole)))
+                    @foreach (var role in Enum.GetValues(typeof(RoleType)))
                     {
                         <option value="@role">@role</option>
                     }
@@ -30,8 +37,9 @@
             </div>
 
             <div class="text-center pt-2">
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-primary">Register</button>
             </div>
         </form>
     </div>
 </div>
+
