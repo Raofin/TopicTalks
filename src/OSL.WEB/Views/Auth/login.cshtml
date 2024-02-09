@@ -1,4 +1,5 @@
-﻿@model OSL.BLL.Models.LoginVM
+﻿@using OSL.BLL.Models
+@model OSL.BLL.Models.LoginVM
 
 <div class="container mt-5">
     <div class="container-div" style="max-width: 430px;">
@@ -15,6 +16,17 @@
                 <label asp-for="Password">Password</label>
                 <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Role">Role</label>
+                <select asp-for="Role" class="form-control">
+                    <option value="" selected disabled>Select a role...</option>
+                    @foreach (var role in Enum.GetValues(typeof(UserRole)))
+                    {
+                        <option value="@role">@role</option>
+                    }
+                </select>
             </div>
 
             <div class="text-center pt-2">
