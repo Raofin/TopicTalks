@@ -5,19 +5,21 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7E877D11-C43F-4105-84D9-71232AF1CA96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSL.BLL", "src\OSL.BLL\OSL.BLL.csproj", "{690A35B1-53B7-46AE-A34D-12563F70A998}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OSL.BLL", "src\OSL.BLL\OSL.BLL.csproj", "{690A35B1-53B7-46AE-A34D-12563F70A998}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSL.DAL", "src\OSL.DAL\OSL.DAL.csproj", "{97C2E5C3-C73F-49F5-9150-8BA3B0E9FE0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OSL.DAL", "src\OSL.DAL\OSL.DAL.csproj", "{97C2E5C3-C73F-49F5-9150-8BA3B0E9FE0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSL.WEB", "src\OSL.WEB\OSL.WEB.csproj", "{8ADE7AD6-AEF7-4A98-B771-6C4CCB1E1AB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OSL.WEB", "src\OSL.WEB\OSL.WEB.csproj", "{8ADE7AD6-AEF7-4A98-B771-6C4CCB1E1AB2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7D8527FC-6564-4455-9BDD-B97F825FD63E}"
+	ProjectSection(SolutionItems) = preProject
+		Commands.txt = Commands.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{690A35B1-53B7-46AE-A34D-12563F70A998}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -32,6 +34,9 @@ Global
 		{8ADE7AD6-AEF7-4A98-B771-6C4CCB1E1AB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8ADE7AD6-AEF7-4A98-B771-6C4CCB1E1AB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8ADE7AD6-AEF7-4A98-B771-6C4CCB1E1AB2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{690A35B1-53B7-46AE-A34D-12563F70A998} = {7E877D11-C43F-4105-84D9-71232AF1CA96}

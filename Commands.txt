@@ -1,0 +1,3 @@
+
+# Database Scaffold Command:
+Scaffold-DbContext 'Name=ConnectionStrings:DefaultConnection' Microsoft.EntityFrameworkCore.SqlServer -Project OSL.DAL -Context "OSLContext" -OutputDir "Entities" -ContextDir "./" -Force
