@@ -1,0 +1,32 @@
+﻿@model OSL.BLL.Models.RegisterVM
+
+<div class="container mt-5">
+    <div class="container-div" style="max-width: 430px;">
+        <h2 class="mb-4 text-center">Registration</h2>
+
+        <form id="registration" asp-controller="Account" asp-action="Register" method="post">
+            <div class="form-group mb-3">
+                <label asp-for="Email">Email Address</label>
+                <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Password">Password</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="ConfirmPassword">Confirm Password</label>
+                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm your password" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="text-center pt-2">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+        </form>
+    </div>
+</div>
+
