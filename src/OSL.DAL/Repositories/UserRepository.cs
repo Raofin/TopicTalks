@@ -8,9 +8,9 @@ namespace OSL.DAL.Repositories;
 
 internal class UserRepository(OSLContext _dbContext) : IUserRepository
 {
-    public async Task<bool> IsEmailUnique(string email)
+    public async Task<bool> IsEmailExists(string email)
     {
-        return !await _dbContext.Users.AnyAsync(u => u.Email == email);
+        return await _dbContext.Users.AnyAsync(u => u.Email == email);
     }
 
     public async Task<ErrorOr<User>> Register(User user, UserRole userRole)
@@ -39,6 +39,26 @@ internal class UserRepository(OSLContext _dbContext) : IUserRepository
                 transaction.Rollback();
                 return Error.Failure($"Error: {ex.Message}");
             }
+        }
+    }
+
+    public async Task<ErrorOr<User>> Login(string email, long roleId)
+    {
+        try
+        {
+            var user = await _dbContext.Users
+                        .Include(u => u.UserRoles)
+                        .ThenInclude(ur => ur.Role)
+                        .Where(u => u.Email == email && u.UserRoles.Any(ur => ur.RoleId == roleId))
+                        .FirstOrDefaultAsync();
+
+            return user is null 
+                ? Error.NotFound() 
+                : user;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure($"Error: {ex.Message}");
         }
     }
 }

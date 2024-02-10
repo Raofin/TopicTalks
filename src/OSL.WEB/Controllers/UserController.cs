@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ErrorOr;
+using Microsoft.AspNetCore.Mvc;
 using OSL.BLL.Interfaces;
 using OSL.BLL.Models;
 
@@ -36,5 +37,32 @@ public class UserController(IUserService _userService) : Controller
     public IActionResult Login()
     {
         return View();
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginVM model)
+    {
+        if (!ModelState.IsValid)
+        {
+            ViewData["Error"] = "Please fill out all the fields properly.";
+            return View(model);
+        }
+
+        var login = await _userService.Login(model);
+
+        if (!login.IsError)
+        {
+            return RedirectToAction("index", "home");
+        }
+        else if (login.Errors.Any(e => e.Type is ErrorType.Unauthorized))
+        {
+            ViewData["Error"] = "Invalid credentials";
+        }
+        else
+        {
+            ViewData["Error"] = login.FirstError.Description ?? "An error occurred";
+        }
+
+        return View(model);
     }
 }

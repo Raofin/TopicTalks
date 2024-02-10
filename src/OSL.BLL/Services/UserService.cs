@@ -8,11 +8,16 @@ namespace OSL.BLL.Services;
 
 internal class UserService(IPasswordHashService _passwordHashService, IUserRepository _userRepository) : IUserService
 {
+    public async Task<bool> IsEmailExists(string email)
+    {
+        return await _userRepository.IsEmailExists(email);
+    }
+
     public async Task<ErrorOr<User>> RegisterUser(RegisterVM model)
     {
         try
         {
-            if (!await IsEmailUnique(model.Email))
+            if (await IsEmailExists(model.Email))
             {
                 return Error.Conflict("User with the provided email already exists.");
             }
@@ -37,8 +42,26 @@ internal class UserService(IPasswordHashService _passwordHashService, IUserRepos
         }
     }
 
-    public async Task<bool> IsEmailUnique(string email)
+    public async Task<ErrorOr<User>> Login(LoginVM model)
     {
-        return await _userRepository.IsEmailUnique(email);
+        try
+        {
+            var user = await _userRepository.Login(model.Email, (long)model.Role);
+
+            if (user.IsError)
+            {
+                return user;
+            }
+            else if (user.Value is null || !_passwordHashService.VerifyPassword(user.Value.PasswordHash, user.Value.Salt, model.Password))
+            {
+                return Error.Unauthorized();
+            }
+
+            return user;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure($"Error: {ex.Message}");
+        }
     }
 }
