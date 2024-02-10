@@ -13,6 +13,12 @@ internal class UserRepository(OslDbContext _dbContext) : IUserRepository
         return await _dbContext.Users.AnyAsync(u => u.Email == email);
     }
 
+    public async Task<bool> IsUserExists(long? userId)
+    {
+        return await _dbContext.Users.AnyAsync(u => u.UserId == userId);
+    }
+
+
     public async Task<ErrorOr<User>> Register(User user, UserRole userRole)
     {
         using (IDbContextTransaction transaction = _dbContext.Database.BeginTransaction())
