@@ -16,6 +16,8 @@ public partial class OSLContext : DbContext
     {
     }
 
+    public virtual DbSet<Question> Questions { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -29,6 +31,17 @@ public partial class OSLContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Question>(entity =>
+        {
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.Topic).HasMaxLength(50);
+
+            entity.HasOne(d => d.User).WithMany(p => p.Questions)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Questions_Users");
+        });
+
         modelBuilder.Entity<Role>(entity =>
         {
             entity.ToTable("Roles", "enum");

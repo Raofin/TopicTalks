@@ -15,6 +15,8 @@ public partial class User
 
     public DateTime CreatedAt { get; set; }
 
+    public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
+
     public virtual ICollection<UserDetail> UserDetails { get; set; } = new List<UserDetail>();
 
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();

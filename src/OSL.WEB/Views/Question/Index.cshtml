@@ -1,0 +1,37 @@
+﻿@model OSL.BLL.Models.QuestionVM
+
+<div class="container mt-5">
+    <div class="container-div" style="max-width: 600px;">
+        <h2 class="mb-4 text-center">Post a Question</h2>
+
+        <form asp-action="Add" asp-controller="Question" method="post">
+            <div class="form-group row">
+                <label class="col-form-label">Topic</label>
+                <div class="col-sm-9 w-100">
+                    <input asp-for="Topic" class="form-control mb-2" placeholder="Enter the topic of your question" />
+                    <span asp-validation-for="Topic" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-form-label">Description</label>
+                <div class="col-sm-9 w-100">
+                    <textarea asp-for="Description" class="form-control mb-2" placeholder="Provide a brief description"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-form-label">Explanation</label>
+                <div class="col-sm-9 w-100">
+                    <textarea asp-for="Explanation" class="form-control mb-2" style="min-height: 10rem;" placeholder="Write detailed explanation of the question"></textarea>
+                    <span asp-validation-for="Explanation" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-primary">Post Question</button>
+            </div>
+        </form>
+    </div>
+</div>
