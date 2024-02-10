@@ -33,12 +33,15 @@ public partial class OslDbContext : DbContext
     {
         modelBuilder.Entity<Question>(entity =>
         {
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.Topic).HasMaxLength(50);
+            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.User).WithMany(p => p.Questions)
                 .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Questions_Users");
         });
 

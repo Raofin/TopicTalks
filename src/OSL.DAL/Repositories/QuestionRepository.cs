@@ -27,11 +27,15 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
         try
         {
             var questions = await _dbContext.Questions
+                .Include(q => q.User)
                 .Select(q => new Question {
                     QuestionId = q.QuestionId,
                     Topic = q.Topic,
                     Description = q.Description,
                     UserId = q.UserId,
+                    CreatedAt = q.CreatedAt,
+                    UpdatedAt = q.UpdatedAt,
+                    User = q.User
                 })
                 .ToListAsync();
 
@@ -47,7 +51,9 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
     {
         try
         {
-            var question = await _dbContext.Questions.FindAsync(questionId);
+            var question = await _dbContext.Questions
+                            .Include(q => q.User)
+                            .FirstOrDefaultAsync(q => q.QuestionId == questionId);
 
             if (question == null)
             {
@@ -76,8 +82,8 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
             existingQuestion.Topic = updatedQuestion.Topic;
             existingQuestion.Description = updatedQuestion.Description;
             existingQuestion.Explanation = updatedQuestion.Explanation;
+            existingQuestion.UpdatedAt = DateTime.Now;
 
-            _dbContext.Questions.Update(existingQuestion);
             await _dbContext.SaveChangesAsync();
 
             return existingQuestion;

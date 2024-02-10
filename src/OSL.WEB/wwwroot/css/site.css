@@ -97,3 +97,28 @@ body {
 a {
   text-decoration: none;
 }
+
+.topic > p {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  background: #ddd;
+  padding: 2px 9px;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+
+.q-list-container {
+  backdrop-filter: blur(8px);
+  margin: 0 auto 30px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 30px 0px;
+  border-radius: 8px !important;
+  background-color: rgba(255, 255, 255, 50%) !important;
+  padding: 25px;
+  max-width: 800px;
+}
+
+.q-list-container p {
+  margin-bottom: 5px;
+}
