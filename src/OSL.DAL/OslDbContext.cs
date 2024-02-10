@@ -5,13 +5,13 @@ using OSL.DAL.Entities;
 
 namespace OSL.DAL;
 
-public partial class OSLContext : DbContext
+public partial class OslDbContext : DbContext
 {
-    public OSLContext()
+    public OslDbContext()
     {
     }
 
-    public OSLContext(DbContextOptions<OSLContext> options)
+    public OslDbContext(DbContextOptions<OslDbContext> options)
         : base(options)
     {
     }

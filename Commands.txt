@@ -1,3 +1,8 @@
 
-# Database Scaffold Command:
-Scaffold-DbContext 'Name=ConnectionStrings:DefaultConnection' Microsoft.EntityFrameworkCore.SqlServer -Project OSL.DAL -Context "OSLContext" -OutputDir "Entities" -ContextDir "./" -Force
+# Migration Command:
+Add-Migration init -Context OslDbContext -Project OSL.DAL
+Update-Database -Context OslDbContext -Project OSL.DAL
+
+
+# Scaffold Command:
+Scaffold-DbContext 'Name=ConnectionStrings:DefaultConnection' Microsoft.EntityFrameworkCore.SqlServer -Project OSL.DAL -Context "OslDbContext" -OutputDir "Entities" -ContextDir "./" -Force

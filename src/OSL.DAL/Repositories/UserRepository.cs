@@ -6,7 +6,7 @@ using OSL.DAL.Interfaces;
 
 namespace OSL.DAL.Repositories;
 
-internal class UserRepository(OSLContext _dbContext) : IUserRepository
+internal class UserRepository(OslDbContext _dbContext) : IUserRepository
 {
     public async Task<bool> IsEmailExists(string email)
     {

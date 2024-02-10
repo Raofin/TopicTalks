@@ -4,7 +4,7 @@ using OSL.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<OSLContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<OslDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 
