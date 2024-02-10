@@ -21,6 +21,10 @@ body {
     content: '';
   }
 
+  label {
+    margin-left: 4px;
+  }
+
 .footer {
   position: absolute;
   bottom: 0;

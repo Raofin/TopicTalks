@@ -1,4 +1,5 @@
-﻿@model List<OSL.DAL.Entities.Question>
+﻿@using OSL.WEB.Extensions
+@model List<OSL.DAL.Entities.Question>
 
 <div class="container mt-5">
     @foreach (var question in Model)
@@ -7,7 +8,7 @@
             <form asp-action="index" asp-controller="Question" method="post">
                 <div class="d-flex justify-content-between">
                     <p><strong>@(question.User != null ? question.User.Email : "Delete User")</strong></p>
-                    <p>@question.CreatedAt.ToString("MMM dd, yyyy | hh:mm tt")</p>
+                    <p>@($"{question.CreatedAt.ToString("MMM dd, yyyy | hh:mm tt")} ({question.CreatedAt.TimeAgo()})")</p>
                 </div>
 
                 <div class="form-group row">
@@ -18,7 +19,11 @@
                     <div class="d-flex gap-2 topic">
                         @foreach (var topic in question.Topic.Split(','))
                         {
-                            <p>@topic.Trim()</p>
+                            var trimmedTopic = topic.Trim();
+                            if (!string.IsNullOrWhiteSpace(trimmedTopic))
+                            {
+                                <p>@trimmedTopic</p>
+                            }
                         }
                     </div>
                     <div>

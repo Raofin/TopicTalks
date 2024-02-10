@@ -21,7 +21,7 @@ namespace OSL.WEB.Controllers
 
             if (question.IsError)
             {
-                ViewData["Error"] = question.FirstError.Description ?? "An error occurred";
+                ViewData["Error"] = question.FirstError.Code ?? "An error occurred";
                 return RedirectToAction("index", "home");
             }
 
@@ -44,11 +44,11 @@ namespace OSL.WEB.Controllers
 
             if (question.IsError)
             {
-                ViewData["Error"] = question.FirstError.Description ?? "An error occurred";
+                ViewData["Error"] = question.FirstError.Code ?? "An error occurred";
                 return View(model);
             }
 
-            return RedirectToAction("index", "home");
+            return RedirectToAction("dashboard", "questions");
         }
 
         [HttpGet("QuestionDetails")]
@@ -58,7 +58,7 @@ namespace OSL.WEB.Controllers
 
             if (question.IsError)
             {
-                ViewData["Error"] = question.FirstError.Description ?? "An error occurred";
+                ViewData["Error"] = question.FirstError.Code ?? "An error occurred";
                 return RedirectToAction("index", "home");
             }
 
