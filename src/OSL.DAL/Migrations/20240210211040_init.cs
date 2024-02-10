@@ -14,6 +14,9 @@ namespace OSL.DAL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
+                name: "post");
+
+            migrationBuilder.EnsureSchema(
                 name: "enum");
 
             migrationBuilder.EnsureSchema(
@@ -52,14 +55,16 @@ namespace OSL.DAL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Questions",
+                schema: "post",
                 columns: table => new
                 {
                     QuestionId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Topic = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Explanation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: true)
+                    UserId = table.Column<long>(type: "bigint", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -126,6 +131,43 @@ namespace OSL.DAL.Migrations
                         onDelete: ReferentialAction.SetNull);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Answers",
+                schema: "post",
+                columns: table => new
+                {
+                    AnswerId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ParentAnswerId = table.Column<long>(type: "bigint", nullable: true),
+                    QuestionId = table.Column<long>(type: "bigint", nullable: true),
+                    Explanation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Answers", x => x.AnswerId);
+                    table.ForeignKey(
+                        name: "FK_Answers_Answers1",
+                        column: x => x.ParentAnswerId,
+                        principalSchema: "post",
+                        principalTable: "Answers",
+                        principalColumn: "AnswerId");
+                    table.ForeignKey(
+                        name: "FK_Answers_Questions",
+                        column: x => x.QuestionId,
+                        principalSchema: "post",
+                        principalTable: "Questions",
+                        principalColumn: "QuestionId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Answers_Users",
+                        column: x => x.UserId,
+                        principalSchema: "auth",
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
             migrationBuilder.InsertData(
                 schema: "enum",
                 table: "Roles",
@@ -137,8 +179,59 @@ namespace OSL.DAL.Migrations
                     { 3L, "Moderator" }
                 });
 
+            migrationBuilder.InsertData(
+                schema: "auth",
+                table: "Users",
+                columns: new[] { "UserId", "CreatedAt", "Email", "PasswordHash", "Salt" },
+                values: new object[] { 1L, new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7182), "hello@rawfin.net", "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=" });
+
+            migrationBuilder.InsertData(
+                schema: "post",
+                table: "Questions",
+                columns: new[] { "QuestionId", "CreatedAt", "Explanation", "Topic", "UpdatedAt", "UserId" },
+                values: new object[,]
+                {
+                    { 1L, new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7274), "In C# 12, what are the advantages and trade-offs of using record types with pattern matching and deconstruction in ASP.NET 8 code, considering maintainability, readability, and potential performance implications? ", "C# 12, Code Syntax, Maintainability", null, 1L },
+                    { 2L, new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7277), "With ASP.NET 8's improved request caching and HTTP caching strategies, in what scenarios could you effectively combine them to achieve optimal performance gains across different data access patterns (in-memory, database, external APIs)?", "ASP.NET 8, HTTP Caching, Request Caching", null, 1L },
+                    { 3L, new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7279), "What are the use cases for ASP.NET 8's hot reload capability, and how can it improve development workflow and reduce downtime in production environments? ", "ASP.NET 8, Development Workflow, Live Updates", null, 1L },
+                    { 4L, new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7280), "As a C# developer comfortable with Microsoft ecosystem, is Spring Boot worth exploring even though it uses Java? When might switching make sense, if ever?", "C#, Java, Developer Experience", null, 1L },
+                    { 5L, new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7282), "When working with diverse data sources and integration needs, how do ASP.NET Core's Entity Framework Core and Spring Boot's Spring Data JPA compare in terms of ease of use, performance, and integration capabilities? ", "ASP.NET, Spring Boot, Data Persistence", null, 1L },
+                    { 6L, new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7284), "How can you adapt React development for building mobile apps with React Native, desktop applications with Electron, or server-side rendering with Next.js?", "React Ecosystem, Mobile Apps, Desktop Apps", null, 1L }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "auth",
+                table: "UserDetails",
+                columns: new[] { "UserDetailsId", "IdCardNumber", "InstituteName", "Name", "UserId" },
+                values: new object[] { 1L, "20-42459-1", "AIUB", "Rawfin", 1L });
+
+            migrationBuilder.InsertData(
+                schema: "auth",
+                table: "UserRoles",
+                columns: new[] { "UserRoleId", "RoleId", "UserId" },
+                values: new object[] { 1L, 1L, 1L });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Answers_ParentAnswerId",
+                schema: "post",
+                table: "Answers",
+                column: "ParentAnswerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Answers_QuestionId",
+                schema: "post",
+                table: "Answers",
+                column: "QuestionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Answers_UserId",
+                schema: "post",
+                table: "Answers",
+                column: "UserId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_UserId",
+                schema: "post",
                 table: "Questions",
                 column: "UserId");
 
@@ -165,7 +258,8 @@ namespace OSL.DAL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Questions");
+                name: "Answers",
+                schema: "post");
 
             migrationBuilder.DropTable(
                 name: "UserDetails",
@@ -174,6 +268,10 @@ namespace OSL.DAL.Migrations
             migrationBuilder.DropTable(
                 name: "UserRoles",
                 schema: "auth");
+
+            migrationBuilder.DropTable(
+                name: "Questions",
+                schema: "post");
 
             migrationBuilder.DropTable(
                 name: "Roles",

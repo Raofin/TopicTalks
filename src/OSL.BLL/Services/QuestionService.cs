@@ -14,7 +14,6 @@ internal class QuestionService(IQuestionRepository _questionRepository) : IQuest
         {
             var question = new Question {
                 Topic = model.Topic,
-                Description = model.Description,
                 Explanation = model.Explanation,
                 UserId = model.UserId
             };
@@ -58,7 +57,6 @@ internal class QuestionService(IQuestionRepository _questionRepository) : IQuest
             var question = new Question {
                 QuestionId = model.QuestionId,
                 Topic = model.Topic,
-                Description = model.Description,
                 Explanation = model.Explanation,
                 UserId = model.UserId
             };

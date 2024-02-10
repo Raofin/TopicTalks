@@ -2,7 +2,7 @@
 
 namespace OSL.WEB.Controllers;
 
-public class HomeController : Controller
+public class HomeController() : Controller
 {
     [Route("/")]
     public IActionResult Index()

@@ -1,0 +1,25 @@
+﻿@model OSL.DAL.Entities.Question
+
+<div class="container mt-5">
+    <div class="q-list-container">
+        <form asp-action="index" asp-controller="Question" method="post">
+            <div class="d-flex justify-content-between">
+                <p><strong>@(Model.User?.Email ?? "Delete User")</strong></p>
+                <p>@(Model.CreatedAt.ToString("MMM dd, yyyy | hh:mm tt") ?? "Date Not Available")</p>
+            </div>
+
+            <div class="form-group row">
+                <p>@Model.Explanation</p>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <div class="d-flex gap-2 topic">
+                    <p>@Model.Topic</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary">Post Answer</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

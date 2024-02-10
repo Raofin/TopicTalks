@@ -12,12 +12,7 @@ public class QuestionVM
     public required string Topic { get; set; }
 
     [Required]
-    [MaxLength(500)]
-    [MinLength(50)]
-    public required string Description { get; set; }
-
-    [Required]
-    [MinLength(100)]
+    [MinLength(30)]
     [MaxLength(int.MaxValue)]
     public required string Explanation { get; set; }
 

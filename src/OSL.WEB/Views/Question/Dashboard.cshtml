@@ -11,12 +11,15 @@
                 </div>
 
                 <div class="form-group row">
-                    <p>@question.Description</p>
+                    <p>@question.Explanation</p>
                 </div>
 
                 <div class="d-flex justify-content-between">
                     <div class="d-flex gap-2 topic">
-                        <p>@question.Topic</p>
+                        @foreach (var topic in question.Topic.Split(','))
+                        {
+                            <p>@topic.Trim()</p>
+                        }
                     </div>
                     <div>
                         <button class="btn btn-primary">Post Answer</button>

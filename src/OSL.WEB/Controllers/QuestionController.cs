@@ -14,10 +14,17 @@ namespace OSL.WEB.Controllers
             return View();
         }
 
-        [HttpGet("QuestionsList")]
-        public async Task<IActionResult> QuestionsList()
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> Dashboard()
         {
             var question = await _questionService.Get();
+
+            if (question.IsError)
+            {
+                ViewData["Error"] = question.FirstError.Description ?? "An error occurred";
+                return RedirectToAction("index", "home");
+            }
+
             return View(question.Value);
         }
 
@@ -42,6 +49,20 @@ namespace OSL.WEB.Controllers
             }
 
             return RedirectToAction("index", "home");
+        }
+
+        [HttpGet("QuestionDetails")]
+        public async Task<IActionResult> QuestionDetails(int questionId)
+        {
+            var question = await _questionService.Get(questionId);
+
+            if (question.IsError)
+            {
+                ViewData["Error"] = question.FirstError.Description ?? "An error occurred";
+                return RedirectToAction("index", "home");
+            }
+
+            return View(question.Value);
         }
     }
 }

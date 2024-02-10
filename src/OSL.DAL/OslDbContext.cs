@@ -16,6 +16,8 @@ public partial class OslDbContext : DbContext
     {
     }
 
+    public virtual DbSet<Answer> Answers { get; set; }
+
     public virtual DbSet<Question> Questions { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
@@ -31,17 +33,38 @@ public partial class OslDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Answer>(entity =>
+        {
+            entity.ToTable("Answers", "post");
+
+            entity.HasOne(d => d.ParentAnswer).WithMany(p => p.InverseParentAnswer)
+                .HasForeignKey(d => d.ParentAnswerId)
+                .HasConstraintName("FK_Answers_Answers1");
+
+            entity.HasOne(d => d.Question).WithMany(p => p.Answers)
+                .HasForeignKey(d => d.QuestionId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Answers_Questions");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Answers)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Answers_Users");
+        });
+
         modelBuilder.Entity<Question>(entity =>
         {
+            entity.ToTable("Questions", "post");
+
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.Topic).HasMaxLength(50);
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.User).WithMany(p => p.Questions)
                 .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Questions_Users");
         });
 

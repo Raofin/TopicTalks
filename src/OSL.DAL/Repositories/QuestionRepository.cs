@@ -28,10 +28,11 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
         {
             var questions = await _dbContext.Questions
                 .Include(q => q.User)
+                .OrderByDescending(q => q.CreatedAt)
                 .Select(q => new Question {
                     QuestionId = q.QuestionId,
                     Topic = q.Topic,
-                    Description = q.Description,
+                    Explanation = q.Explanation,
                     UserId = q.UserId,
                     CreatedAt = q.CreatedAt,
                     UpdatedAt = q.UpdatedAt,
@@ -80,7 +81,6 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
             }
 
             existingQuestion.Topic = updatedQuestion.Topic;
-            existingQuestion.Description = updatedQuestion.Description;
             existingQuestion.Explanation = updatedQuestion.Explanation;
             existingQuestion.UpdatedAt = DateTime.Now;
 

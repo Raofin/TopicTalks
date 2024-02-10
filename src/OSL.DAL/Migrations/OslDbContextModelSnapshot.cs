@@ -22,6 +22,38 @@ namespace OSL.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("OSL.DAL.Entities.Answer", b =>
+                {
+                    b.Property<long>("AnswerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AnswerId"));
+
+                    b.Property<string>("Explanation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("ParentAnswerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("QuestionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AnswerId");
+
+                    b.HasIndex("ParentAnswerId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Answers", "post");
+                });
+
             modelBuilder.Entity("OSL.DAL.Entities.Question", b =>
                 {
                     b.Property<long>("QuestionId")
@@ -30,10 +62,10 @@ namespace OSL.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("QuestionId"));
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("Explanation")
                         .IsRequired()
@@ -44,6 +76,9 @@ namespace OSL.DAL.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime");
+
                     b.Property<long?>("UserId")
                         .HasColumnType("bigint");
 
@@ -51,7 +86,57 @@ namespace OSL.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", "post");
+
+                    b.HasData(
+                        new
+                        {
+                            QuestionId = 1L,
+                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7274),
+                            Explanation = "In C# 12, what are the advantages and trade-offs of using record types with pattern matching and deconstruction in ASP.NET 8 code, considering maintainability, readability, and potential performance implications? ",
+                            Topic = "C# 12, Code Syntax, Maintainability",
+                            UserId = 1L
+                        },
+                        new
+                        {
+                            QuestionId = 2L,
+                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7277),
+                            Explanation = "With ASP.NET 8's improved request caching and HTTP caching strategies, in what scenarios could you effectively combine them to achieve optimal performance gains across different data access patterns (in-memory, database, external APIs)?",
+                            Topic = "ASP.NET 8, HTTP Caching, Request Caching",
+                            UserId = 1L
+                        },
+                        new
+                        {
+                            QuestionId = 3L,
+                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7279),
+                            Explanation = "What are the use cases for ASP.NET 8's hot reload capability, and how can it improve development workflow and reduce downtime in production environments? ",
+                            Topic = "ASP.NET 8, Development Workflow, Live Updates",
+                            UserId = 1L
+                        },
+                        new
+                        {
+                            QuestionId = 4L,
+                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7280),
+                            Explanation = "As a C# developer comfortable with Microsoft ecosystem, is Spring Boot worth exploring even though it uses Java? When might switching make sense, if ever?",
+                            Topic = "C#, Java, Developer Experience",
+                            UserId = 1L
+                        },
+                        new
+                        {
+                            QuestionId = 5L,
+                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7282),
+                            Explanation = "When working with diverse data sources and integration needs, how do ASP.NET Core's Entity Framework Core and Spring Boot's Spring Data JPA compare in terms of ease of use, performance, and integration capabilities? ",
+                            Topic = "ASP.NET, Spring Boot, Data Persistence",
+                            UserId = 1L
+                        },
+                        new
+                        {
+                            QuestionId = 6L,
+                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7284),
+                            Explanation = "How can you adapt React development for building mobile apps with React Native, desktop applications with Electron, or server-side rendering with Next.js?",
+                            Topic = "React Ecosystem, Mobile Apps, Desktop Apps",
+                            UserId = 1L
+                        });
                 });
 
             modelBuilder.Entity("OSL.DAL.Entities.Role", b =>
@@ -118,6 +203,16 @@ namespace OSL.DAL.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users", "auth");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1L,
+                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7182),
+                            Email = "hello@rawfin.net",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
+                            Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM="
+                        });
                 });
 
             modelBuilder.Entity("OSL.DAL.Entities.UserDetail", b =>
@@ -151,6 +246,16 @@ namespace OSL.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserDetails", "auth");
+
+                    b.HasData(
+                        new
+                        {
+                            UserDetailsId = 1L,
+                            IdCardNumber = "20-42459-1",
+                            InstituteName = "AIUB",
+                            Name = "Rawfin",
+                            UserId = 1L
+                        });
                 });
 
             modelBuilder.Entity("OSL.DAL.Entities.UserRole", b =>
@@ -174,6 +279,40 @@ namespace OSL.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles", "auth");
+
+                    b.HasData(
+                        new
+                        {
+                            UserRoleId = 1L,
+                            RoleId = 1L,
+                            UserId = 1L
+                        });
+                });
+
+            modelBuilder.Entity("OSL.DAL.Entities.Answer", b =>
+                {
+                    b.HasOne("OSL.DAL.Entities.Answer", "ParentAnswer")
+                        .WithMany("InverseParentAnswer")
+                        .HasForeignKey("ParentAnswerId")
+                        .HasConstraintName("FK_Answers_Answers1");
+
+                    b.HasOne("OSL.DAL.Entities.Question", "Question")
+                        .WithMany("Answers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Answers_Questions");
+
+                    b.HasOne("OSL.DAL.Entities.User", "User")
+                        .WithMany("Answers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Answers_Users");
+
+                    b.Navigation("ParentAnswer");
+
+                    b.Navigation("Question");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OSL.DAL.Entities.Question", b =>
@@ -217,6 +356,16 @@ namespace OSL.DAL.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("OSL.DAL.Entities.Answer", b =>
+                {
+                    b.Navigation("InverseParentAnswer");
+                });
+
+            modelBuilder.Entity("OSL.DAL.Entities.Question", b =>
+                {
+                    b.Navigation("Answers");
+                });
+
             modelBuilder.Entity("OSL.DAL.Entities.Role", b =>
                 {
                     b.Navigation("UserRoles");
@@ -224,6 +373,8 @@ namespace OSL.DAL.Migrations
 
             modelBuilder.Entity("OSL.DAL.Entities.User", b =>
                 {
+                    b.Navigation("Answers");
+
                     b.Navigation("Questions");
 
                     b.Navigation("UserDetails");
