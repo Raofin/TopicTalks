@@ -15,9 +15,7 @@ public partial class Answer
 
     public long? UserId { get; set; }
 
-    public virtual ICollection<Answer> InverseParentAnswer { get; set; } = new List<Answer>();
-
-    public virtual Answer? ParentAnswer { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public virtual Question? Question { get; set; }
 

@@ -12,7 +12,7 @@ using OSL.DAL;
 namespace OSL.DAL.Migrations
 {
     [DbContext(typeof(OslDbContext))]
-    [Migration("20240210211040_init")]
+    [Migration("20240210225553_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -33,12 +33,19 @@ namespace OSL.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AnswerId"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
                     b.Property<string>("Explanation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("ParentAnswerId")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L);
 
                     b.Property<long?>("QuestionId")
                         .HasColumnType("bigint");
@@ -48,13 +55,60 @@ namespace OSL.DAL.Migrations
 
                     b.HasKey("AnswerId");
 
-                    b.HasIndex("ParentAnswerId");
+                    b.HasIndex(new[] { "ParentAnswerId" }, "IX_Answers_ParentAnswerId");
 
-                    b.HasIndex("QuestionId");
+                    b.HasIndex(new[] { "QuestionId" }, "IX_Answers_QuestionId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_Answers_UserId");
 
                     b.ToTable("Answers", "post");
+
+                    b.HasData(
+                        new
+                        {
+                            AnswerId = 1L,
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(1202),
+                            Explanation = "ASP.NET 8, with the introduction of C# 12's record types, pattern matching, and deconstruction, presents a nuanced landscape for developers. The advantages are evident, as records facilitate encapsulated immutability, promoting cleaner code and reducing potential errors. Deconstructing records enhances readability, while pattern matching introduces expressive conditionals. Performance gains are plausible, with optimized equality checks and accelerated property access. However, the learning curve associated with these features and the potential inflexibility for complex data modifications pose challenges. Moreover, records lack direct inheritance support, requiring adjustments to established design patterns. In conclusion, while records and pattern matching offer significant advantages in terms of immutability and readability, a thoughtful evaluation of trade-offs is imperative. The decision to adopt these features should align with the project's goals, team's expertise, and the potential learning curve, ensuring a judicious integration without compromising project success.",
+                            ParentAnswerId = 0L,
+                            QuestionId = 1L,
+                            UserId = 2L
+                        },
+                        new
+                        {
+                            AnswerId = 2L,
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(1204),
+                            Explanation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit?",
+                            ParentAnswerId = 1L,
+                            QuestionId = 1L,
+                            UserId = 1L
+                        },
+                        new
+                        {
+                            AnswerId = 3L,
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(1308),
+                            Explanation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et.",
+                            ParentAnswerId = 2L,
+                            QuestionId = 1L,
+                            UserId = 1L
+                        },
+                        new
+                        {
+                            AnswerId = 4L,
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(1311),
+                            Explanation = "Lorem ipsum dolor sit amet, consectetur adipiscing .",
+                            ParentAnswerId = 0L,
+                            QuestionId = 1L,
+                            UserId = 2L
+                        },
+                        new
+                        {
+                            AnswerId = 5L,
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(1312),
+                            Explanation = "Lorem ipsum dolor sit amet.",
+                            ParentAnswerId = 4L,
+                            QuestionId = 1L,
+                            UserId = 2L
+                        });
                 });
 
             modelBuilder.Entity("OSL.DAL.Entities.Question", b =>
@@ -87,7 +141,7 @@ namespace OSL.DAL.Migrations
 
                     b.HasKey("QuestionId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_Questions_UserId");
 
                     b.ToTable("Questions", "post");
 
@@ -95,15 +149,15 @@ namespace OSL.DAL.Migrations
                         new
                         {
                             QuestionId = 1L,
-                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7274),
-                            Explanation = "In C# 12, what are the advantages and trade-offs of using record types with pattern matching and deconstruction in ASP.NET 8 code, considering maintainability, readability, and potential performance implications? ",
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(1146),
+                            Explanation = "In C# 12, what are the advantages and trade-offs of using record types with pattern matching and deconstruction in ASP.NET 8 code, considering maintainability, readability, and potential performance implications?",
                             Topic = "C# 12, Code Syntax, Maintainability",
                             UserId = 1L
                         },
                         new
                         {
                             QuestionId = 2L,
-                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7277),
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(1154),
                             Explanation = "With ASP.NET 8's improved request caching and HTTP caching strategies, in what scenarios could you effectively combine them to achieve optimal performance gains across different data access patterns (in-memory, database, external APIs)?",
                             Topic = "ASP.NET 8, HTTP Caching, Request Caching",
                             UserId = 1L
@@ -111,15 +165,15 @@ namespace OSL.DAL.Migrations
                         new
                         {
                             QuestionId = 3L,
-                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7279),
-                            Explanation = "What are the use cases for ASP.NET 8's hot reload capability, and how can it improve development workflow and reduce downtime in production environments? ",
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(1156),
+                            Explanation = "What are the use cases for ASP.NET 8's hot reload capability, and how can it improve development workflow and reduce downtime in production environments?",
                             Topic = "ASP.NET 8, Development Workflow, Live Updates",
                             UserId = 1L
                         },
                         new
                         {
                             QuestionId = 4L,
-                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7280),
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(1158),
                             Explanation = "As a C# developer comfortable with Microsoft ecosystem, is Spring Boot worth exploring even though it uses Java? When might switching make sense, if ever?",
                             Topic = "C#, Java, Developer Experience",
                             UserId = 1L
@@ -127,15 +181,15 @@ namespace OSL.DAL.Migrations
                         new
                         {
                             QuestionId = 5L,
-                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7282),
-                            Explanation = "When working with diverse data sources and integration needs, how do ASP.NET Core's Entity Framework Core and Spring Boot's Spring Data JPA compare in terms of ease of use, performance, and integration capabilities? ",
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(1159),
+                            Explanation = "When working with diverse data sources and integration needs, how do ASP.NET Core's Entity Framework Core and Spring Boot's Spring Data JPA compare in terms of ease of use, performance, and integration capabilities?",
                             Topic = "ASP.NET, Spring Boot, Data Persistence",
                             UserId = 1L
                         },
                         new
                         {
                             QuestionId = 6L,
-                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7284),
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(1161),
                             Explanation = "How can you adapt React development for building mobile apps with React Native, desktop applications with Electron, or server-side rendering with Next.js?",
                             Topic = "React Ecosystem, Mobile Apps, Desktop Apps",
                             UserId = 1L
@@ -211,8 +265,24 @@ namespace OSL.DAL.Migrations
                         new
                         {
                             UserId = 1L,
-                            CreatedAt = new DateTime(2024, 2, 11, 3, 10, 38, 884, DateTimeKind.Local).AddTicks(7182),
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(838),
                             Email = "hello@rawfin.net",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
+                            Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM="
+                        },
+                        new
+                        {
+                            UserId = 2L,
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(853),
+                            Email = "doe@email.net",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
+                            Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM="
+                        },
+                        new
+                        {
+                            UserId = 3L,
+                            CreatedAt = new DateTime(2024, 2, 11, 4, 55, 52, 977, DateTimeKind.Local).AddTicks(856),
+                            Email = "bob@email.net",
                             PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
                             Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM="
                         });
@@ -246,7 +316,7 @@ namespace OSL.DAL.Migrations
 
                     b.HasKey("UserDetailsId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_UserDetails_UserId");
 
                     b.ToTable("UserDetails", "auth");
 
@@ -277,9 +347,9 @@ namespace OSL.DAL.Migrations
 
                     b.HasKey("UserRoleId");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex(new[] { "RoleId" }, "IX_UserRoles_RoleId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_UserRoles_UserId");
 
                     b.ToTable("UserRoles", "auth");
 
@@ -289,16 +359,23 @@ namespace OSL.DAL.Migrations
                             UserRoleId = 1L,
                             RoleId = 1L,
                             UserId = 1L
+                        },
+                        new
+                        {
+                            UserRoleId = 2L,
+                            RoleId = 2L,
+                            UserId = 2L
+                        },
+                        new
+                        {
+                            UserRoleId = 3L,
+                            RoleId = 3L,
+                            UserId = 3L
                         });
                 });
 
             modelBuilder.Entity("OSL.DAL.Entities.Answer", b =>
                 {
-                    b.HasOne("OSL.DAL.Entities.Answer", "ParentAnswer")
-                        .WithMany("InverseParentAnswer")
-                        .HasForeignKey("ParentAnswerId")
-                        .HasConstraintName("FK_Answers_Answers1");
-
                     b.HasOne("OSL.DAL.Entities.Question", "Question")
                         .WithMany("Answers")
                         .HasForeignKey("QuestionId")
@@ -310,8 +387,6 @@ namespace OSL.DAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_Answers_Users");
-
-                    b.Navigation("ParentAnswer");
 
                     b.Navigation("Question");
 
@@ -357,11 +432,6 @@ namespace OSL.DAL.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("OSL.DAL.Entities.Answer", b =>
-                {
-                    b.Navigation("InverseParentAnswer");
                 });
 
             modelBuilder.Entity("OSL.DAL.Entities.Question", b =>

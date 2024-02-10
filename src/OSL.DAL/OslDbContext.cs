@@ -37,9 +37,16 @@ public partial class OslDbContext : DbContext
         {
             entity.ToTable("Answers", "post");
 
-            entity.HasOne(d => d.ParentAnswer).WithMany(p => p.InverseParentAnswer)
-                .HasForeignKey(d => d.ParentAnswerId)
-                .HasConstraintName("FK_Answers_Answers1");
+            entity.HasIndex(e => e.ParentAnswerId, "IX_Answers_ParentAnswerId");
+
+            entity.HasIndex(e => e.QuestionId, "IX_Answers_QuestionId");
+
+            entity.HasIndex(e => e.UserId, "IX_Answers_UserId");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ParentAnswerId).HasDefaultValue(0L);
 
             entity.HasOne(d => d.Question).WithMany(p => p.Answers)
                 .HasForeignKey(d => d.QuestionId)
@@ -55,6 +62,8 @@ public partial class OslDbContext : DbContext
         modelBuilder.Entity<Question>(entity =>
         {
             entity.ToTable("Questions", "post");
+
+            entity.HasIndex(e => e.UserId, "IX_Questions_UserId");
 
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -91,6 +100,8 @@ public partial class OslDbContext : DbContext
 
             entity.ToTable("UserDetails", "auth");
 
+            entity.HasIndex(e => e.UserId, "IX_UserDetails_UserId");
+
             entity.Property(e => e.IdCardNumber).HasMaxLength(50);
             entity.Property(e => e.InstituteName).HasMaxLength(255);
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -104,6 +115,10 @@ public partial class OslDbContext : DbContext
         modelBuilder.Entity<UserRole>(entity =>
         {
             entity.ToTable("UserRoles", "auth");
+
+            entity.HasIndex(e => e.RoleId, "IX_UserRoles_RoleId");
+
+            entity.HasIndex(e => e.UserId, "IX_UserRoles_UserId");
 
             entity.HasOne(d => d.Role).WithMany(p => p.UserRoles)
                 .HasForeignKey(d => d.RoleId)
