@@ -13,6 +13,11 @@ internal class UserService(IPasswordHashService _passwordHashService, IUserRepos
         return await _userRepository.IsEmailExists(email);
     }
 
+    public async Task<bool> IsUserExists(long userId)
+    {
+        return await _userRepository.IsUserExists(userId);
+    }
+
     public async Task<ErrorOr<User>> RegisterUser(RegisterVM model)
     {
         try
