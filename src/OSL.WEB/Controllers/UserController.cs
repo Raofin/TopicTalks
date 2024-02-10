@@ -52,6 +52,10 @@ public class UserController(IUserService _userService) : Controller
 
         if (!login.IsError)
         {
+            HttpContext.Session.SetString("UserId", login.Value.UserId.ToString());
+            HttpContext.Session.SetString("Email", login.Value.Email);
+            HttpContext.Session.SetString("Role", model.Role.ToString());
+
             return RedirectToAction("index", "home");
         }
         else if (login.Errors.Any(e => e.Type is ErrorType.Unauthorized))
