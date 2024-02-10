@@ -9,4 +9,10 @@ public class HomeController : Controller
     {
         return View();
     }
+
+    [Route("401")]
+    public IActionResult Unauthorized401()
+    {
+        return View();
+    }
 }
