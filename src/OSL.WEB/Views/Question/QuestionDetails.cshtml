@@ -1,4 +1,5 @@
-﻿@model OSL.DAL.Entities.Question
+﻿@using OSL.WEB.Extensions
+@model OSL.DAL.Entities.Question
 
 <div class="container mt-5">
     <div class="q-list-container">
@@ -14,7 +15,10 @@
 
             <div class="d-flex justify-content-between">
                 <div class="d-flex gap-2 topic">
-                    <p>@Model.Topic</p>
+                    @foreach (var topic in Model.Topic.SplitAndTrim())
+                    {
+                        <p>@topic</p>
+                    }
                 </div>
                 <div>
                     <button class="btn btn-primary">Post Answer</button>

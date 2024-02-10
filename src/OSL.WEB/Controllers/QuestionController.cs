@@ -7,9 +7,9 @@ namespace OSL.WEB.Controllers
 {
     public class QuestionController(IQuestionService _questionService) : Controller
     {
-        [HttpGet]
         [Authorize]
-        public IActionResult Index()
+        [HttpGet("post-question")]
+        public IActionResult PostQuestion()
         {
             return View();
         }
@@ -28,9 +28,9 @@ namespace OSL.WEB.Controllers
             return View(question.Value);
         }
 
-        [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Index(QuestionVM model)
+        [HttpPost("post-question")]
+        public async Task<IActionResult> PostQuestion(QuestionVM model)
         {
             if (!ModelState.IsValid)
             {
@@ -51,7 +51,7 @@ namespace OSL.WEB.Controllers
             return RedirectToAction("dashboard", "questions");
         }
 
-        [HttpGet("QuestionDetails")]
+        [HttpGet("question/{questionId}")]
         public async Task<IActionResult> QuestionDetails(int questionId)
         {
             var question = await _questionService.Get(questionId);

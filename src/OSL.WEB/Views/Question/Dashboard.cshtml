@@ -17,17 +17,13 @@
 
                 <div class="d-flex justify-content-between">
                     <div class="d-flex gap-2 topic">
-                        @foreach (var topic in question.Topic.Split(','))
+                        @foreach (var topic in question.Topic.SplitAndTrim())
                         {
-                            var trimmedTopic = topic.Trim();
-                            if (!string.IsNullOrWhiteSpace(trimmedTopic))
-                            {
-                                <p>@trimmedTopic</p>
-                            }
+                            <p>@topic</p>
                         }
                     </div>
                     <div>
-                        <button class="btn btn-primary">Post Answer</button>
+                        <a href="/question/@question.QuestionId" class="btn btn-primary">Answers</a>
                     </div>
                 </div>
             </form>
