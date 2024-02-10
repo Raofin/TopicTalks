@@ -71,6 +71,7 @@
     <div class="container">
         <main role="main">
             @RenderBody()
+            @await Html.PartialAsync("_ToastMessage")
         </main>
     </div>
 

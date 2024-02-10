@@ -6,7 +6,7 @@ namespace OSL.BLL.Models;
 public class RegisterVM
 {
     [Required]
-    [EmailAddress]
+    [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]
     public required string Email { get; set; }
 
     [Required]
