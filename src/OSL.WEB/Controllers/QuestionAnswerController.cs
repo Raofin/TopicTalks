@@ -9,9 +9,16 @@ namespace OSL.WEB.Controllers;
 public class QuestionAnswerController(IQuestionService _questionService, IAnswerService _answerService) : Controller
 {
     [HttpGet("")]
-    public IActionResult Dashboard()
+    public async Task<IActionResult> DashboardAsync()
     {
-        return View();
+        var question = await _questionService.Get("");
+
+        if (question.IsError)
+        {
+            return BadRequest(new { error = question.FirstError.Code ?? "An error occurred" });
+        }
+
+        return View(question.Value);
     }
 
     [Authorize]

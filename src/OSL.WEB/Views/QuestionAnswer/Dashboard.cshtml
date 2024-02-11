@@ -1,8 +1,39 @@
-﻿<div class="container mt-5">
+﻿﻿@using OSL.WEB.Extensions
+@model List<OSL.DAL.Entities.Question>
+
+<div class="container mt-5">
     <div class="text-center mb-3 w-50 m-auto">
         <input class="form-control text-center" style="height: 50px; font-size: 20px" type="text" id="searchInput" placeholder="Type anything to search">
     </div>
-    <div id="questionContainer"></div>
+    <div id="questionContainer">
+        @foreach (var question in Model)
+        {
+            <div class="q-list-container">
+                <form asp-action="index" asp-controller="Question" method="post">
+                    <div class="d-flex justify-content-between">
+                        <p><strong>@(question.User != null ? question.User.Email : "Delete User")</strong></p>
+                        <p>@($"{question.CreatedAt.ToString("MMM dd, yyyy | hh:mm tt")} ({question.CreatedAt.TimeAgo()})")</p>
+                    </div>
+
+                    <div class="form-group row">
+                        <p>@question.Explanation</p>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex gap-2 topic">
+                            @foreach (var topic in question.Topic.SplitAndTrim())
+                            {
+                                <p>@topic</p>
+                            }
+                        </div>
+                        <div>
+                            <a href="/question/@question.QuestionId" class="btn btn-primary">Answers</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        }
+    </div>
 </div>
 
 <script>
@@ -49,8 +80,6 @@
     }
 
     $(document).ready(function () {
-        fetchQuestions('');
-
         $('#searchInput').on('input', function () {
             var searchText = $(this).val();
             fetchQuestions(searchText);
