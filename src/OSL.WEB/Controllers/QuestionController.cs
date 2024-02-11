@@ -35,7 +35,7 @@ namespace OSL.WEB.Controllers
         }
 
         [Authorize]
-        [HttpPost("post-question")]
+        [HttpPost("question/post-question")]
         public async Task<IActionResult> PostQuestion(QuestionVM model)
         {
             if (!ModelState.IsValid)
@@ -54,7 +54,7 @@ namespace OSL.WEB.Controllers
                 return View(model);
             }
 
-            return RedirectToAction("dashboard", "questions");
+            return RedirectToAction("index", "home");
         }
 
         [HttpGet("question/{questionId}")]
@@ -116,8 +116,8 @@ namespace OSL.WEB.Controllers
         }
 
         [Authorize]
-        [HttpGet("my-answers")]
-        public async Task<IActionResult> MyAnswers()
+        [HttpGet("my-responses")]
+        public async Task<IActionResult> MyResponses()
         {
             var userId = Convert.ToInt64(HttpContext.Session.GetString("UserId"));
 

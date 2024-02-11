@@ -8,6 +8,10 @@ body {
   font-family: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
+main {
+  margin-bottom: 85px;
+}
+
   body::before {
     position: fixed;
     top: 0;
@@ -145,6 +149,6 @@ a {
     box-shadow: 0 0 0 0.25rem rgba(255, 76, 50, 0.30);
   }
 
-#questionContainer, .q-list-container {
+/*#questionContainer, #question-details {
   margin-bottom: 85px;
-}
+}*/

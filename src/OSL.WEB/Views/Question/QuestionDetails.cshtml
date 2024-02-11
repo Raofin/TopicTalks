@@ -3,7 +3,7 @@
 @model QuestionAnswerVM
 
 <div class="container mt-5">
-    <div class="q-list-container">
+    <div id="question-details" class="q-list-container">
         <div class="d-flex justify-content-between">
             <p><strong>@(Model.Question.User?.Email ?? "Delete User")</strong></p>
             <p>@($"{Model.Question.CreatedAt.ToString("MMM dd, yyyy | hh:mm tt")} ({Model.Question.CreatedAt.TimeAgo()})")</p>

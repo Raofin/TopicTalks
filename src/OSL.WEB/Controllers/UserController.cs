@@ -69,4 +69,11 @@ public class UserController(IUserService _userService) : Controller
 
         return View(model);
     }
+
+    [HttpGet("logout")]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+        return RedirectToAction("index", "home");
+    }
 }

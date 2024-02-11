@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] - My ASP.NET Core MVC Application</title>
+    <title>OSL Project</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
@@ -23,7 +23,6 @@
                     <span class="logo-text">OSL</span>
                 </a>
 
-
                 <ul class="navbar-nav">
                     @if (Context.Session.GetString("Role") != null)
                     {
@@ -34,15 +33,27 @@
                 </ul>
 
                 <ul class="navbar-nav mx-auto d-flex">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark nav-text" href="/dashboard">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark nav-text" href="/post-question">Post Questions</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark nav-text" href="/my-questions">My Questions</a>
-                    </li>
+                    @if (Context.Session.GetString("UserId") != null)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark nav-text" href="/">Dashboard</a>
+                        </li>
+                    }
+                    @if (Context.Session.GetString("Role") == RoleType.Student.ToString())
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark nav-text" href="/post-question">Post Questions</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark nav-text" href="/my-questions">My Questions</a>
+                        </li>
+                    }
+                    @if (Context.Session.GetString("Role") == RoleType.Teacher.ToString())
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark nav-text" href="/my-responses">My Responses</a>
+                        </li>
+                    }
                 </ul>
 
                 <ul class="navbar-nav">
@@ -59,10 +70,10 @@
                     {
                         var email = Context.Session.GetString("Email");
                         <li class="nav-item">
-                            <a class="nav-link text-dark nav-text" href="#"><strong>@email</strong></a>
+                            <p class="nav-link text-dark nav-text"><strong>@email</strong></p>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-danger fw-bold nav-text" href="#">Logout</a>
+                            <a class="nav-link text-danger fw-bold nav-text" href="/logout">Logout</a>
                         </li>
                     }
                 </ul>
