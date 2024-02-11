@@ -9,11 +9,11 @@ public partial class UserDetail
 
     public long? UserId { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string? Name { get; set; }
 
-    public string InstituteName { get; set; } = null!;
+    public string? InstituteName { get; set; }
 
-    public string IdCardNumber { get; set; } = null!;
+    public string? IdCardNumber { get; set; }
 
     public virtual User? User { get; set; }
 }

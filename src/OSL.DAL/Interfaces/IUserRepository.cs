@@ -8,5 +8,5 @@ public interface IUserRepository
     Task<bool> IsEmailExists(string email);
     Task<bool> IsUserExists(long? userId);
     Task<ErrorOr<User>> Login(string email, long roleId);
-    Task<ErrorOr<User>> Register(User user, UserRole userRole);
+    Task<ErrorOr<User>> Register(User user, UserRole userRole, UserDetail? userDetail);
 }

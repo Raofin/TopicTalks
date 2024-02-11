@@ -1,4 +1,5 @@
 ﻿using OSL.BLL.Enums;
+using OSL.DAL.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace OSL.BLL.Models;
@@ -19,4 +20,6 @@ public class RegisterVM
 
     [Required(ErrorMessage = "Role is required.")]
     public RoleType Role { get; set; }
+
+    public UserDetail? UserDetail { get; set; }
 }

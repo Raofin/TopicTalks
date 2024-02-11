@@ -25,6 +25,30 @@
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
 
+            <!-- Additional input fields for Student role -->
+            <div class="card rounded-border mb-3 student-details" id="additionalFields" style="display: none;">
+                <div class="card-body">
+                    <h5 class="text-center">Student Deatils</h5>
+                    <div class="form-group">
+                        <label asp-for="UserDetail.Name">Name</label>
+                        <input asp-for="UserDetail.Name" class="form-control" placeholder="Enter your name" />
+                        <span asp-validation-for="UserDetail.Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="UserDetail.InstituteName">Institute Name</label>
+                        <input asp-for="UserDetail.InstituteName" class="form-control" placeholder="Enter your institute name" />
+                        <span asp-validation-for="UserDetail.InstituteName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="UserDetail.IdCardNumber">ID Card Number</label>
+                        <input asp-for="UserDetail.IdCardNumber" class="form-control" placeholder="Enter your ID card number" />
+                        <span asp-validation-for="UserDetail.IdCardNumber" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group mb-3">
                 <label asp-for="Role">Role</label>
                 <select asp-for="Role" class="form-control">
@@ -43,3 +67,85 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function () {
+        $("#additionalFields").hide();
+
+        $("#Role").change(function () {
+            var selectedRole = $(this).val();
+
+            if (selectedRole === "Student") {
+                $("#additionalFields").show();
+            } else {
+                $("#additionalFields").hide();
+            }
+        });
+
+        $("#registration").validate({
+            rules: {
+                Email: {
+                    required: true,
+                    email: true
+                },
+                Password: {
+                    required: true,
+                    minlength: 6
+                },
+                ConfirmPassword: {
+                    required: true,
+                    equalTo: "#Password"
+                },
+                Role: {
+                    required: true
+                },
+                "UserDetail.Name": {
+                    required: {
+                        depends: function (element) {
+                            return $("#Role").val() === "Student";
+                        }
+                    }
+                },
+                "UserDetail.InstituteName": {
+                    required: {
+                        depends: function (element) {
+                            return $("#Role").val() === "Student";
+                        }
+                    }
+                },
+                "UserDetail.IdCardNumber": {
+                    required: {
+                        depends: function (element) {
+                            return $("#Role").val() === "Student";
+                        }
+                    }
+                }
+            },
+            messages: {
+                Email: {
+                    required: "Please enter your email address",
+                    email: "Please enter a valid email address"
+                },
+                Password: {
+                    required: "Please enter a password",
+                    minlength: "Your password must be at least 6 characters long"
+                },
+                ConfirmPassword: {
+                    required: "Please confirm your password",
+                    equalTo: "Passwords do not match"
+                },
+                "UserDetail.Name": {
+                    required: "Please enter your name"
+                },
+                "UserDetail.InstituteName": {
+                    required: "Please enter your institute name"
+                },
+                "UserDetail.IdCardNumber": {
+                    required: "Please enter your ID card number"
+                }
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
+    });
+</script>

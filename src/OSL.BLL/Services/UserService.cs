@@ -39,7 +39,7 @@ internal class UserService(IPasswordHashService _passwordHashService, IUserRepos
                 RoleId = (long)model.Role,
             };
 
-            return await _userRepository.Register(user, userRole);
+            return await _userRepository.Register(user, userRole, model.UserDetail);
         }
         catch (Exception ex)
         {

@@ -19,7 +19,7 @@ internal class UserRepository(OslDbContext _dbContext) : IUserRepository
     }
 
 
-    public async Task<ErrorOr<User>> Register(User user, UserRole userRole)
+    public async Task<ErrorOr<User>> Register(User user, UserRole userRole, UserDetail? userDetail)
     {
         using (IDbContextTransaction transaction = _dbContext.Database.BeginTransaction())
         {
@@ -35,6 +35,13 @@ internal class UserRepository(OslDbContext _dbContext) : IUserRepository
 
                 _dbContext.UserRoles.Add(userRoleEntity);
                 await _dbContext.SaveChangesAsync();
+
+                if (userDetail?.Name is not null)
+                {
+                    userDetail.UserId = user.UserId;
+                    _dbContext.UserDetails.Add(userDetail);
+                    await _dbContext.SaveChangesAsync();
+                }
 
                 transaction.Commit();
 
@@ -58,8 +65,8 @@ internal class UserRepository(OslDbContext _dbContext) : IUserRepository
                         .Where(u => u.Email == email && u.UserRoles.Any(ur => ur.RoleId == roleId))
                         .FirstOrDefaultAsync();
 
-            return user is null 
-                ? Error.NotFound() 
+            return user is null
+                ? Error.NotFound()
                 : user;
         }
         catch (Exception ex)
