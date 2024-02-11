@@ -10,6 +10,5 @@ public interface IAnswerService
     Task<ErrorOr<Answer>> Create(AnswerVM model);
     Task<ErrorOr<long>> Delete(long answerId);
     Task<ErrorOr<IEnumerable<Answer>>> Get(long questionId);
-    //Task<ErrorOr<Answer>> Get(long questionId, long answerId);
     Task<ErrorOr<Answer>> Update(AnswerVM model);
 }

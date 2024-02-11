@@ -10,5 +10,7 @@ public interface IQuestionService
     Task<ErrorOr<long>> DeleteQuestion(long questionId);
     Task<ErrorOr<List<Question>>> Get(string? searchText);
     Task<ErrorOr<Question>> Get(long questionId);
+    Task<ErrorOr<List<Question>>> GetMyQuestions(long userId);
+    Task<ErrorOr<List<Question>>> GetMyRespondedQuestions(long userId);
     Task<ErrorOr<Question>> UpdateQuestion(QuestionVM model);
 }

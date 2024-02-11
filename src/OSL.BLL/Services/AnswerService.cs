@@ -39,18 +39,6 @@ internal class AnswerService(IAnswerRepository _answerRepository) : IAnswerServi
         }
     }
 
-    /*public async Task<ErrorOr<Answer>> Get(long questionId, long answerId)
-    {
-        try
-        {
-            return await _answerRepository.Get(questionId, answerId);
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure($"Error: {ex.Message}");
-        }
-    }*/
-
     public async Task<ErrorOr<Answer>> Update(AnswerVM model)
     {
         try

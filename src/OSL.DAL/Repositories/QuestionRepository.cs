@@ -53,8 +53,6 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
         }
     }
 
-
-
     public async Task<ErrorOr<Question>> Get(long questionId)
     {
         try
@@ -69,6 +67,40 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
             }
 
             return question;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure($"Error: {ex.Message}");
+        }
+    }
+
+    public async Task<ErrorOr<List<Question>>> GetMyQuestions(long userId)
+    {
+        try
+        {
+            var questions = await _dbContext.Questions
+                            .Include(q => q.User)
+                            .Where(q => q.User != null && q.User.UserId == userId)
+                            .ToListAsync();
+
+            return questions;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure($"Error: {ex.Message}");
+        }
+    }
+
+    public async Task<ErrorOr<List<Question>>> GetMyRespondedQuestions(long userId)
+    {
+        try
+        {
+            var questions = await _dbContext.Questions
+                                 .Include(a => a.User)
+                                 .Where(a => a.User != null && a.User.UserId == userId)
+                                 .ToListAsync();
+
+            return questions;
         }
         catch (Exception ex)
         {

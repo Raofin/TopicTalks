@@ -15,22 +15,7 @@ namespace OSL.WEB.Controllers
             return View();
         }
 
-        /*[HttpGet("dashboard")]
-        public async Task<IActionResult> Dashboard()
-        {
-            var question = await _questionService.Get();
-
-            if (question.IsError)
-            {
-                ViewData["Error"] = question.FirstError.Code ?? "An error occurred";
-                return RedirectToAction("index", "home");
-            }
-
-            return View(question.Value);
-        }*/
-
-
-        [HttpGet("dashboard")]
+        [HttpGet("")]
         public IActionResult Dashboard()
         {
             return View();
@@ -111,6 +96,40 @@ namespace OSL.WEB.Controllers
             }
 
             return RedirectToAction(model.QuestionId.ToString(), "question");
+        }
+
+        [Authorize]
+        [HttpGet("my-questions")]
+        public async Task<IActionResult> MyQuestions()
+        {
+            var userId = Convert.ToInt64(HttpContext.Session.GetString("UserId"));
+
+            var questions = await _questionService.GetMyQuestions(userId);
+
+            if (questions.IsError)
+            {
+                ViewData["Error"] = questions.FirstError.Code ?? "An error occurred";
+                return RedirectToAction("index", "home");
+            }
+
+            return View(questions.Value);
+        }
+
+        [Authorize]
+        [HttpGet("my-answers")]
+        public async Task<IActionResult> MyAnswers()
+        {
+            var userId = Convert.ToInt64(HttpContext.Session.GetString("UserId"));
+
+            var answers = await _questionService.GetMyRespondedQuestions(userId);
+
+            if (answers.IsError)
+            {
+                ViewData["Error"] = answers.FirstError.Code ?? "An error occurred";
+                return RedirectToAction("index", "home");
+            }
+
+            return View(answers.Value);
         }
     }
 }

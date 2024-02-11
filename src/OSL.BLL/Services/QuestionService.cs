@@ -50,6 +50,30 @@ internal class QuestionService(IQuestionRepository _questionRepository) : IQuest
         }
     }
 
+    public async Task<ErrorOr<List<Question>>> GetMyQuestions(long userId)
+    {
+        try
+        {
+            return await _questionRepository.GetMyQuestions(userId);
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure($"Error: {ex.Message}");
+        }
+    }
+
+    public async Task<ErrorOr<List<Question>>> GetMyRespondedQuestions(long userId)
+    {
+        try
+        {
+            return await _questionRepository.GetMyRespondedQuestions(userId);
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure($"Error: {ex.Message}");
+        }
+    }
+
     public async Task<ErrorOr<Question>> UpdateQuestion(QuestionVM model)
     {
         try
