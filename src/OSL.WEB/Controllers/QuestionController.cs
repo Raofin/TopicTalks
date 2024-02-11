@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OSL.BLL.Interfaces;
 using OSL.BLL.Models;
+using OSL.DAL.Entities;
 using OSL.WEB.Attributes;
 
 namespace OSL.WEB.Controllers
@@ -14,7 +15,7 @@ namespace OSL.WEB.Controllers
             return View();
         }
 
-        [HttpGet("dashboard")]
+        /*[HttpGet("dashboard")]
         public async Task<IActionResult> Dashboard()
         {
             var question = await _questionService.Get();
@@ -26,6 +27,26 @@ namespace OSL.WEB.Controllers
             }
 
             return View(question.Value);
+        }*/
+
+
+        [HttpGet("dashboard")]
+        public IActionResult Dashboard()
+        {
+            return View();
+        }
+
+        [HttpGet("questions")]
+        public async Task<ActionResult<IEnumerable<Question>>> QuestionsList(string searchText = "")
+        {
+            var question = await _questionService.Get(searchText);
+
+            if (question.IsError)
+            {
+                return BadRequest(new { error = question.FirstError.Code ?? "An error occurred" });
+            }
+
+            return Ok(question.Value);
         }
 
         [Authorize]

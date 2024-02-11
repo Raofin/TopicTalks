@@ -8,7 +8,7 @@ public interface IQuestionService
 {
     Task<ErrorOr<Question>> CreateQuestion(QuestionVM model);
     Task<ErrorOr<long>> DeleteQuestion(long questionId);
-    Task<ErrorOr<IEnumerable<Question>>> Get();
+    Task<ErrorOr<List<Question>>> Get(string? searchText);
     Task<ErrorOr<Question>> Get(long questionId);
     Task<ErrorOr<Question>> UpdateQuestion(QuestionVM model);
 }

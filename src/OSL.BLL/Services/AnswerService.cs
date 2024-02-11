@@ -97,7 +97,8 @@ internal class AnswerService(IAnswerRepository _answerRepository) : IAnswerServi
                 QuestionId = ans.QuestionId,
                 Explanation = ans.Explanation,
                 UserId = ans.UserId,
-                CreatedAt = ans.CreatedAt
+                CreatedAt = ans.CreatedAt,
+                User = ans.User,
             }).ToList();
 
             foreach (var item in answerModel)

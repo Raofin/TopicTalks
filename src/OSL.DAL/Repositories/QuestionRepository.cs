@@ -22,13 +22,16 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
         }
     }
 
-    public async Task<ErrorOr<IEnumerable<Question>>> Get()
+    public async Task<ErrorOr<List<Question>>> Get(string? searchText)
     {
         try
         {
             var questions = await _dbContext.Questions
                 .Include(q => q.User)
                 .OrderByDescending(q => q.CreatedAt)
+                .Where(q => string.IsNullOrEmpty(searchText)
+                         || q.Topic.ToLower().Contains(searchText.ToLower())
+                         || q.Explanation.ToLower().Contains(searchText.ToLower()))
                 .Select(q => new Question {
                     QuestionId = q.QuestionId,
                     Topic = q.Topic,
@@ -38,6 +41,8 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
                     UpdatedAt = q.UpdatedAt,
                     User = q.User
                 })
+                .AsQueryable()
+                .AsNoTracking()
                 .ToListAsync();
 
             return questions;
@@ -47,6 +52,8 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
             return Error.Failure($"Error: {ex.Message}");
         }
     }
+
+
 
     public async Task<ErrorOr<Question>> Get(long questionId)
     {

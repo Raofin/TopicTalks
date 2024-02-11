@@ -38,11 +38,11 @@ internal class QuestionService(IQuestionRepository _questionRepository) : IQuest
         }
     }
 
-    public async Task<ErrorOr<IEnumerable<Question>>> Get()
+    public async Task<ErrorOr<List<Question>>> Get(string? searchText)
     {
         try
         {
-            return await _questionRepository.Get();
+            return await _questionRepository.Get(searchText);
         }
         catch (Exception ex)
         {
