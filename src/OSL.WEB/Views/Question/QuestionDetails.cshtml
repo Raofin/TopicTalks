@@ -24,32 +24,33 @@
         <hr />
 
         @{
-            void RenderAnswers(List<AnswerVM> answers)
+            void RenderAnswers(List<AnswerVM> answers, int marginLeft = 0)
             {
                 foreach (var answer in answers)
                 {
-                    <div id="question" class="rounded border p-3 mb-3">
-                        <div>
-                            <div class="d-flex justify-content-between">
-                                <p><strong>@(answer.User?.Email ?? "Delete User")</strong> on @($"{answer.CreatedAt.ToString("MMM dd, yyyy")} ({answer.CreatedAt.TimeAgo()})")</p>
-                                <p><span id="replyButton" class="reply-button link-text" onclick="appendInput()">Reply</span></p>
-                            </div>
-                            <div class="form-group row mb-2">
-                                <p>@answer.Explanation</p>
-                            </div>
+                    <div id="answer-@(answer.AnswerId)" class="rounded border p-3 mb-3" style="margin-left: @( marginLeft )px">
+                        <div class="d-flex justify-content-between">
+                            <p><strong>@(answer.User?.Email ?? "Delete User")</strong> on @($"{answer.CreatedAt.ToString("MMM dd, yyyy")} ({answer.CreatedAt.TimeAgo()})")</p>
+                            <p><span id="replyButton" class="reply-button link-text" onclick="appendInput(@(answer.AnswerId))">Reply</span></p>
                         </div>
-
-                        @if (answer.Answers != null)
-                        {
-                            RenderAnswers(answer.Answers);
-                        }
+                        <div class="form-group row">
+                            <p>@answer.Explanation</p>
+                        </div>
                     </div>
+
+
+                    @if (answer.Answers != null)
+                    {
+                        RenderAnswers(answer.Answers, marginLeft + 50);
+                    }
+                    else
+                    {
+                        marginLeft = 0;
+                    }
                 }
             }
-
             RenderAnswers(Model.AnswerVMs);
         }
-
 
         <div id="answer-input" class="col-sm-9 w-100">
             <form id="answer-form">
@@ -63,10 +64,16 @@
 </div>
 
 <script>
+    let selectedId = null;
 
-    function appendInput() {
+    function appendInput(id) {
+        if (selectedId != id) {
+            selectedId = id;
+            closeReplyInput();
+
+        }
         if (!$("#reply-input").length) {
-            $("#question").append(`
+            $("#answer-" + id).append(`
                 <div id="reply-input">
                         <form id="reply-form" class="col-sm-9 w-100 d-flex">
                         <textarea id="reply-text" class="form-control mb-2" style="height: 90px" placeholder="Write your reply here" name="replyText"></textarea>
@@ -83,31 +90,32 @@
     }
 
     function closeReplyInput() {
+        selectedId = null;
         $("#reply-input").remove();
     }
 
-    $(document).ready(function () {
-        $("#replyButton").click(function () {
+    // $(document).ready(function () {
+    //     $("#replyButton").click(function () {
 
-            $("#reply-form").validate({
-                rules: {
-                    replyText: {
-                        required: true,
-                        minlength: 10
-                    }
-                },
-                messages: {
-                    replyText: {
-                        required: "Please enter your reply",
-                        minlength: "Your reply must be at least 10 characters long"
-                    }
-                },
-                submitHandler: function (form) {
-                    postReply();
-                }
-            });
-        });
-    });
+    //         $("#reply-form").validate({
+    //             rules: {
+    //                 replyText: {
+    //                     required: true,
+    //                     minlength: 10
+    //                 }
+    //             },
+    //             messages: {
+    //                 replyText: {
+    //                     required: "Please enter your reply",
+    //                     minlength: "Your reply must be at least 10 characters long"
+    //                 }
+    //             },
+    //             submitHandler: function (form) {
+    //                 postReply();
+    //             }
+    //         });
+    //     });
+    // });
 
     function postReply() {
         var replyText = $("#reply-text").val();
