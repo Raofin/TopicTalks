@@ -10,16 +10,13 @@ public class AnswerVM
     public long? ParentAnswerId { get; set; }
 
     [Required]
-    [MaxLength(50)]
-    [MinLength(4)]
     public long QuestionId { get; set; }
 
     [Required]
-    [MinLength(30)]
+    [MinLength(5)]
     [MaxLength(int.MaxValue)]
     public string Explanation { get; set; } = null!;
 
-    [Required]
     public long? UserId { get; set; }
 
     public DateTime CreatedAt { get; set; }

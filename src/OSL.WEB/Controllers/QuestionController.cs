@@ -71,18 +71,25 @@ namespace OSL.WEB.Controllers
             return View(model);
         }
 
-        /*[HttpGet("answer/{questionId}")]
-        public async Task<IActionResult> QuestionDetails(long questionId)
+        [Authorize]
+        [HttpPost("answer")]
+        public async Task<IActionResult> PostAnswer(AnswerVM model)
         {
-            var answer = await _answerService.AnswersWithReplies(questionId);
-
-            if (answer.IsError)
+            if (!ModelState.IsValid)
             {
-                ViewData["Error"] = answer.FirstError.Code ?? "An error occurred";
-                return RedirectToAction("index", "home");
+                return BadRequest("Please fill out all the fields properly.");
             }
 
-            return View(answer.Value);
-        }*/
+            model.UserId = Convert.ToInt64(HttpContext.Session.GetString("UserId"));
+
+            var question = await _answerService.Create(model);
+
+            if (question.IsError)
+            {
+                return BadRequest(question.FirstError.Description ?? "An error occurred while posting the answer.");
+            }
+
+            return RedirectToAction(model.QuestionId.ToString(), "question");
+        }
     }
 }

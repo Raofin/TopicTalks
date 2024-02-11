@@ -28,16 +28,15 @@
             {
                 foreach (var answer in answers)
                 {
-                    <div id="answer-@(answer.AnswerId)" class="rounded border p-3 mb-3" style="margin-left: @( marginLeft )px">
+                    <div id="answer-@(answer.AnswerId)" class="rounded border p-3 mb-3" style="margin-left: @(marginLeft)px;">
                         <div class="d-flex justify-content-between">
                             <p><strong>@(answer.User?.Email ?? "Delete User")</strong> on @($"{answer.CreatedAt.ToString("MMM dd, yyyy")} ({answer.CreatedAt.TimeAgo()})")</p>
-                            <p><span id="replyButton" class="reply-button link-text" onclick="appendInput(@(answer.AnswerId))">Reply</span></p>
+                            <p><span class="link-text" onclick="appendInput(@(answer.QuestionId), @(answer.AnswerId))">Reply</span></p>
                         </div>
                         <div class="form-group row">
                             <p>@answer.Explanation</p>
                         </div>
                     </div>
-
 
                     @if (answer.Answers != null)
                     {
@@ -53,8 +52,11 @@
         }
 
         <div id="answer-input" class="col-sm-9 w-100">
-            <form id="answer-form">
-                <textarea id="reply-text" class="form-control mb-2" style="height: 90px" placeholder="Write your answer here" name="replyText"></textarea>
+            <form action="/answer" method="post" id="answer-form">
+                <input type="hidden" name="questionId" value="@(Model.Question.QuestionId)" />
+                <div class="text-center w-100">
+                    <textarea id="reply-text" class="form-control mb-2" rows="3" placeholder="Write your answer here" name="explanation"></textarea>
+                </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">Post Answer</button>
                 </div>
@@ -66,73 +68,47 @@
 <script>
     let selectedId = null;
 
-    function appendInput(id) {
-        if (selectedId != id) {
-            selectedId = id;
+    function appendInput(questionId, answerId) {
+        if (selectedId != answerId) {
+            selectedId = answerId;
             closeReplyInput();
-
         }
+
         if (!$("#reply-input").length) {
-            $("#answer-" + id).append(`
+            $("#answer-" + answerId).append(`
                 <div id="reply-input">
-                        <form id="reply-form" class="col-sm-9 w-100 d-flex">
-                        <textarea id="reply-text" class="form-control mb-2" style="height: 90px" placeholder="Write your reply here" name="replyText"></textarea>
+                    <form action="/answer" method="post" id="reply-form" class="col-sm-9 w-100 d-flex">
+                        <input type="hidden" name="questionId" value="${questionId}" />
+                        <input type="hidden" name="parentAnswerId" value="${answerId}" />
+                        <div class="text-center w-100">
+                                <textarea id="reply-text" class="form-control mb-1" rows="3" placeholder="Write your reply here" name="explanation"></textarea>
+                        </div>
                         <div class="text-center">
                             <button type="button" class="btn btn-danger w-75 mb-2 mt-1" onclick="closeReplyInput()">Close</button>
                             <button type="submit" class="btn btn-primary w-75">Post</button>
                         </div>
                     </form>
                 </div>`);
-        }
-        else {
+        } else {
             closeReplyInput();
-        };
+        }
+
+        $("#reply-form, #answer-form").validate({
+            rules: {
+                explanation: {
+                    required: true,
+                    minlength: 10
+                }
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
     }
 
     function closeReplyInput() {
         selectedId = null;
         $("#reply-input").remove();
     }
-
-    // $(document).ready(function () {
-    //     $("#replyButton").click(function () {
-
-    //         $("#reply-form").validate({
-    //             rules: {
-    //                 replyText: {
-    //                     required: true,
-    //                     minlength: 10
-    //                 }
-    //             },
-    //             messages: {
-    //                 replyText: {
-    //                     required: "Please enter your reply",
-    //                     minlength: "Your reply must be at least 10 characters long"
-    //                 }
-    //             },
-    //             submitHandler: function (form) {
-    //                 postReply();
-    //             }
-    //         });
-    //     });
-    // });
-
-    function postReply() {
-        var replyText = $("#reply-text").val();
-
-        $.ajax({
-            url: "/answer",
-            type: "POST",
-            data: { replyText: replyText },
-            success: function (response) {
-                console.log("Reply posted successfully:", response);
-                closeReplyInput();
-            },
-            error: function (error) {
-                console.error("Error posting reply:", error);
-            }
-        });
-    }
-
 
 </script>
