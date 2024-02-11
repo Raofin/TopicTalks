@@ -39,7 +39,7 @@ internal class AnswerService(IAnswerRepository _answerRepository) : IAnswerServi
         }
     }
 
-    public async Task<ErrorOr<Answer>> Get(long questionId, long answerId)
+    /*public async Task<ErrorOr<Answer>> Get(long questionId, long answerId)
     {
         try
         {
@@ -49,7 +49,7 @@ internal class AnswerService(IAnswerRepository _answerRepository) : IAnswerServi
         {
             return Error.Failure($"Error: {ex.Message}");
         }
-    }
+    }*/
 
     public async Task<ErrorOr<Answer>> Update(AnswerVM model)
     {
@@ -76,6 +76,37 @@ internal class AnswerService(IAnswerRepository _answerRepository) : IAnswerServi
         try
         {
             return await _answerRepository.Delete(answerId);
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure($"Error: {ex.Message}");
+        }
+    }
+
+   public async Task<ErrorOr<List<AnswerVM>>> AnswersWithReplies(long questionId, long parentAnswerId = 0)
+    {
+        try
+        {
+            var answers = await _answerRepository.Get(questionId, parentAnswerId);
+
+            if(answers.IsError) throw new Exception();
+
+            var answerModel = answers.Value.Select(ans => new AnswerVM {
+                AnswerId = ans.AnswerId,
+                ParentAnswerId = ans.ParentAnswerId,
+                QuestionId = ans.QuestionId,
+                Explanation = ans.Explanation,
+                UserId = ans.UserId,
+                CreatedAt = ans.CreatedAt
+            }).ToList();
+
+            foreach (var item in answerModel)
+            {
+                var replies = await AnswersWithReplies(questionId, item.AnswerId);
+                item.Answers = replies.Value;
+            }
+
+            return answerModel;
         }
         catch (Exception ex)
         {

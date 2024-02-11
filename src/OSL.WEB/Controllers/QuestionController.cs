@@ -5,7 +5,7 @@ using OSL.WEB.Attributes;
 
 namespace OSL.WEB.Controllers
 {
-    public class QuestionController(IQuestionService _questionService) : Controller
+    public class QuestionController(IQuestionService _questionService, IAnswerService _answerService) : Controller
     {
         [Authorize]
         [HttpGet("post-question")]
@@ -55,14 +55,34 @@ namespace OSL.WEB.Controllers
         public async Task<IActionResult> QuestionDetails(int questionId)
         {
             var question = await _questionService.Get(questionId);
+            var answer = await _answerService.AnswersWithReplies(questionId);
 
-            if (question.IsError)
+            if (question.IsError || answer.IsError)
             {
-                ViewData["Error"] = question.FirstError.Code ?? "An error occurred";
+                ViewData["Error"] = question.FirstError.Code ?? answer.FirstError.Code ?? "An error occured.";
                 return RedirectToAction("index", "home");
             }
 
-            return View(question.Value);
+            var model = new QuestionAnswerVM {
+                Question = question.Value,
+                AnswerVMs = answer.Value
+            };
+
+            return View(model);
         }
+
+        /*[HttpGet("answer/{questionId}")]
+        public async Task<IActionResult> QuestionDetails(long questionId)
+        {
+            var answer = await _answerService.AnswersWithReplies(questionId);
+
+            if (answer.IsError)
+            {
+                ViewData["Error"] = answer.FirstError.Code ?? "An error occurred";
+                return RedirectToAction("index", "home");
+            }
+
+            return View(answer.Value);
+        }*/
     }
 }

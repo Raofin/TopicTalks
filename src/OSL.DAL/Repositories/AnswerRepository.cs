@@ -49,13 +49,32 @@ internal class AnswerRepository(OslDbContext _dbContext) : IAnswerRepository
         }
     }
 
-    public async Task<ErrorOr<Answer>> Get(long questionId, long answerId)
+    public async Task<ErrorOr<List<Answer>>> Get(long questionId, long parentAnswerId)
+    {
+        try
+        {
+            var answers = await _dbContext.Answers
+                .Include(a => a.User)
+                .Where(a => a.QuestionId == questionId && a.ParentAnswerId == parentAnswerId)
+                .ToListAsync();
+
+            return answers;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure($"Error: {ex.Message}");
+        }
+    }
+
+    public async Task<ErrorOr<Answer>> Get(long questionId, long answerId, long parentAnswerId)
     {
         try
         {
             var answer = await _dbContext.Answers
                             .Include(a => a.User)
-                            .FirstOrDefaultAsync(a => a.QuestionId == questionId && a.AnswerId == answerId);
+                            .FirstOrDefaultAsync(a => a.QuestionId == questionId 
+                                && a.AnswerId == answerId 
+                                && a.ParentAnswerId == parentAnswerId);
 
             if (answer == null)
             {

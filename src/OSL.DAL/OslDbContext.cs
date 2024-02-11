@@ -48,11 +48,6 @@ public partial class OslDbContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.ParentAnswerId).HasDefaultValue(0L);
 
-            entity.HasOne(d => d.Question).WithMany(p => p.Answers)
-                .HasForeignKey(d => d.QuestionId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Answers_Questions");
-
             entity.HasOne(d => d.User).WithMany(p => p.Answers)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.SetNull)

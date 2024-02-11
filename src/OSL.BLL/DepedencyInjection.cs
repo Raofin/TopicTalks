@@ -11,6 +11,7 @@ public static class DepedencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPasswordHashService, PasswordHashService>();
         services.AddScoped<IQuestionService, QuestionService>();
+        services.AddScoped<IAnswerService, AnswerService>();
 
         return services;
     }

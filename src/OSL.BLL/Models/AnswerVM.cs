@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OSL.DAL.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace OSL.BLL.Models;
 
@@ -19,7 +20,11 @@ public class AnswerVM
     public string Explanation { get; set; } = null!;
 
     [Required]
-    public long UserId { get; set; }
+    public long? UserId { get; set; }
 
     public DateTime CreatedAt { get; set; }
+
+    public User? User { get; set; }
+
+    public List<AnswerVM>? Answers { get; set; }
 }

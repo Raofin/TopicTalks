@@ -126,3 +126,8 @@ a {
 .q-list-container p {
   margin-bottom: 5px;
 }
+
+.link-text {
+  color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
+  cursor: pointer;
+}
