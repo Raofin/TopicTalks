@@ -11,11 +11,17 @@ builder.Services.AddSession();
 builder.Services.AddRepositories();
 builder.Services.AddServices();
 
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowOrigin",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    //app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 
@@ -27,6 +33,8 @@ app.UseRouting();
 app.UseSession();
 
 app.UseAuthorization();
+
+app.UseCors("AllowOrigin");
 
 app.MapControllerRoute(
     name: "default",
