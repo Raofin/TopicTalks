@@ -98,7 +98,7 @@ function toastMessageNext(message, type = ToastType.Error, timer = 6000) {
     sessionStorage.setItem('toastData', JSON.stringify(toastData));
 }
 
-$(document).on('ready', () => {
+document.addEventListener('DOMContentLoaded', function () {
     var toastDataString = sessionStorage.getItem('toastData');
 
     if (toastDataString) {
@@ -108,3 +108,15 @@ $(document).on('ready', () => {
         sessionStorage.removeItem('toastData');
     }
 });
+
+function getFormattedDate() {
+    const timeZone = 'Asia/Dhaka';
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        timeZone: timeZone
+    };
+
+    return new Date().toLocaleDateString('en-US', options);
+}

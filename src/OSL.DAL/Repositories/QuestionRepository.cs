@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OSL.DAL.Entities;
 using OSL.DAL.Interfaces;
+using OSL.DAL.Models;
 
 namespace OSL.DAL.Repositories;
 
@@ -18,30 +19,38 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
         }
         catch (Exception ex)
         {
-            return Error.Failure($"Error: {ex.Message}");
+            return Error.Unexpected(description: ex.Message);
         }
     }
 
-    public async Task<ErrorOr<List<Question>>> Get(string? searchText)
+    public async Task<ErrorOr<List<QuestionModel>>> Get(string? searchText)
     {
         try
         {
+            var searchTextLower = searchText.ToLower();
+
             var questions = await _dbContext.Questions
                 .Include(q => q.User)
                 .OrderByDescending(q => q.CreatedAt)
-                .Where(q => string.IsNullOrEmpty(searchText)
-                         || q.Topic.ToLower().Contains(searchText.ToLower())
-                         || q.Explanation.ToLower().Contains(searchText.ToLower()))
-                .Select(q => new Question {
-                    QuestionId = q.QuestionId,
-                    Topic = q.Topic,
-                    Explanation = q.Explanation,
-                    UserId = q.UserId,
-                    CreatedAt = q.CreatedAt,
-                    UpdatedAt = q.UpdatedAt,
-                    User = q.User
+                .Where(q => string.IsNullOrEmpty(searchTextLower)
+                         || q.Topic.ToLower().Contains(searchTextLower)
+                         || q.Explanation.ToLower().Contains(searchTextLower))
+                .Select(q => new QuestionModel {
+                    Question = new Question {
+                        QuestionId = q.QuestionId,
+                        Topic = q.Topic,
+                        Explanation = q.Explanation,
+                        UserId = q.UserId,
+                        CreatedAt = q.CreatedAt,
+                        UpdatedAt = q.UpdatedAt,
+                        User = q.User,
+                    },
+                    HasTeachersResponse = _dbContext.Answers
+                        .Where(a => a.QuestionId == q.QuestionId)
+                        .Any(a => a.User != null &&
+                                    a.User.UserRoles != null &&
+                                    a.User.UserRoles.Any(ur => ur.Role != null && ur.Role.RoleName == "Teacher"))
                 })
-                .AsQueryable()
                 .AsNoTracking()
                 .ToListAsync();
 
@@ -49,7 +58,7 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
         }
         catch (Exception ex)
         {
-            return Error.Failure($"Error: {ex.Message}");
+            return Error.Unexpected(description: ex.Message);
         }
     }
 
@@ -63,14 +72,14 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
 
             if (question == null)
             {
-                return Error.NotFound("Question not found.");
+                return Error.NotFound();
             }
 
             return question;
         }
         catch (Exception ex)
         {
-            return Error.Failure($"Error: {ex.Message}");
+            return Error.Unexpected(description: ex.Message);
         }
     }
 
@@ -87,7 +96,7 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
         }
         catch (Exception ex)
         {
-            return Error.Failure($"Error: {ex.Message}");
+            return Error.Unexpected(description: ex.Message);
         }
     }
 
@@ -95,16 +104,19 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
     {
         try
         {
-            var questions = await _dbContext.Questions
-                                 .Include(a => a.User)
-                                 .Where(a => a.User != null && a.User.UserId == userId)
-                                 .ToListAsync();
+            var questions = await (
+                from answer in _dbContext.Answers
+                where answer.UserId == userId
+                join question in _dbContext.Questions.Include(q => q.User)
+                    on answer.QuestionId equals question.QuestionId
+                select question
+            ).ToListAsync();
 
             return questions;
         }
         catch (Exception ex)
         {
-            return Error.Failure($"Error: {ex.Message}");
+            return Error.Unexpected(description: ex.Message);
         }
     }
 
@@ -116,7 +128,7 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
 
             if (existingQuestion == null)
             {
-                return Error.NotFound("Question not found.");
+                return Error.NotFound();
             }
 
             existingQuestion.Topic = updatedQuestion.Topic;
@@ -129,7 +141,7 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
         }
         catch (Exception ex)
         {
-            return Error.Failure($"Error: {ex.Message}");
+            return Error.Unexpected(description: ex.Message);
         }
     }
 
@@ -141,7 +153,7 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
 
             if (questionToDelete == null)
             {
-                return Error.NotFound("Question not found.");
+                return Error.NotFound();
             }
 
             _dbContext.Questions.Remove(questionToDelete);
@@ -151,7 +163,7 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
         }
         catch (Exception ex)
         {
-            return Error.Failure($"Error: {ex.Message}");
+            return Error.Unexpected(description: ex.Message);
         }
     }
 }

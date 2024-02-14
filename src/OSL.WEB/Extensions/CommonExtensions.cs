@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc;
+using ErrorOr;
 
 namespace OSL.WEB.Extensions;
 
@@ -18,5 +19,10 @@ public static class ModelStateExtensions
             ErrorMessage = "Validation failed",
             Errors = errors
         });
+    }
+
+    public static string ErrorDescription<T>(this ErrorOr<T> result)
+    {
+        return result.FirstError.Description ?? "Internal server error. Please try again later.";
     }
 }

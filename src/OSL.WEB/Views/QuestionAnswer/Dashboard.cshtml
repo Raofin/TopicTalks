@@ -1,33 +1,38 @@
-﻿﻿@using OSL.WEB.Extensions
-@model List<OSL.DAL.Entities.Question>
+﻿@using OSL.BLL.Enums
+﻿@using OSL.WEB.Extensions
+@model List<OSL.DAL.Models.QuestionModel>
 
 <div class="container mt-5">
     <div class="text-center mb-3 w-50 m-auto">
         <input class="form-control text-center" style="height: 50px; font-size: 20px" type="text" id="searchInput" placeholder="Type anything to search">
     </div>
     <div id="questionContainer">
-        @foreach (var question in Model)
+        @foreach (var item in Model)
         {
-            <div class="q-list-container">
+            <div id="question-@item.Question.QuestionId" class="q-list-container">
                 <form asp-action="index" asp-controller="Question" method="post">
                     <div class="d-flex justify-content-between">
-                        <p><strong>@(question.User != null ? question.User.Email : "Delete User")</strong></p>
-                        <p>@($"{question.CreatedAt.ToString("MMM dd, yyyy | hh:mm tt")} ({question.CreatedAt.TimeAgo()})")</p>
+                        <p><strong>@(item.Question.User != null ? item.Question.User.Email : "Delete User")</strong></p>
+                        <p>@($"{item.Question.CreatedAt.ToString("MMM dd, yyyy | hh:mm tt")} ({item.Question.CreatedAt.TimeAgo()})")</p>
                     </div>
 
                     <div class="form-group row">
-                        <p>@question.Explanation</p>
+                        <p>@item.Question.Explanation</p>
                     </div>
 
                     <div class="d-flex justify-content-between">
                         <div class="d-flex gap-2 topic">
-                            @foreach (var topic in question.Topic.SplitAndTrim())
+                            @foreach (var topic in item.Question.Topic.SplitAndTrim())
                             {
                                 <p>@topic</p>
                             }
                         </div>
                         <div>
-                            <a href="/question/@question.QuestionId" class="btn btn-primary">Answers</a>
+                            <a href="/question/@item.Question.QuestionId" class="btn btn-primary">Answers</a>
+                            @if (!item.HasTeachersResponse && (Context.UserRole() == RoleType.Moderator.ToString() || item.Question.UserId.ToString() == Context.UserId()))
+                            {
+                                <button type="button" class="btn btn-danger" onclick="deleteQuestion(@item.Question.QuestionId)">Delete</button>
+                            }
                         </div>
                     </div>
                 </form>
@@ -44,27 +49,32 @@
             data: { searchText: searchText },
             dataType: 'json',
             success: function (questions) {
-                $('#questionContainer').empty(); 
+                $('#questionContainer').empty();
 
-                questions.forEach(function (question) {
-                    var topicsHtml = formatTopics(question.topic);
+                if (questions.length === 0) {
+                    $('#questionContainer').html('<h1 class="text-danger text-center">No questions found.</p>');
+                    return;
+                }
+
+                questions.forEach(function (item) {
+                    var topicsHtml = formatTopics(item.question.topic);
 
                     var questionHtml = `
-                            <div class="q-list-container">
-                                <form action="/question/${question.questionId}" method="post">
+                            <div class="q-list-container" id="question-${item.question.questionId}">
+                                <form action="/question/${item.question.questionId}" method="post">
                                     <div class="d-flex justify-content-between">
-                                        <p><strong>${question.user != null ? question.user.email : 'Delete User'}</strong></p>
-                                        <p>${formatDate(question.createdAt)} (${timeAgo(question.createdAt)})</p>
+                                        <p><strong>${item.question.user != null ? item.question.user.email : 'Delete User'}</strong></p>
+                                        <p>${formatDate(item.question.createdAt)} (${timeAgo(item.question.createdAt)})</p>
                                     </div>
                                     <div class="form-group row">
-                                        <p>${question.explanation}</p>
+                                         <p>${item.question.explanation}</p>
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <div class="d-flex gap-2 topic">
                                             ${topicsHtml}
                                         </div>
                                         <div>
-                                            <a href="/question/${question.questionId}" class="btn btn-primary">Answers</a>
+                                            <a href="/question/${item.question.questionId}" class="btn btn-primary">Answers</a>
                                         </div>
                                     </div>
                                 </form>
@@ -75,6 +85,22 @@
             },
             error: function (error) {
                 console.error('Error fetching questions:', error);
+            }
+        });
+    }
+
+    function deleteQuestion(questionId) {
+        $.ajax({
+            url: `/delete-question?questionId=${questionId}`,
+            method: 'DELETE',
+            dataType: 'json',
+            success: function () {
+                $(`#question-${questionId}`).remove();
+                toastMessage("Question Deleted!", ToastType.Success);
+            },
+            error: function (xhr) {
+                errorMessage = xhr.responseText || "Internal server error. Please try again later.";
+                toastMessage(errorMessage);
             }
         });
     }

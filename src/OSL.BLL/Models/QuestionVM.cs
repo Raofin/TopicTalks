@@ -16,8 +16,7 @@ public class QuestionVM
     [MaxLength(int.MaxValue)]
     public required string Explanation { get; set; }
 
-    [Required]
-    public long UserId { get; set; }
+    public long? UserId { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

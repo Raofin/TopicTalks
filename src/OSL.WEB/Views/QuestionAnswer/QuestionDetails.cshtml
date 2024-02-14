@@ -11,16 +11,22 @@
     {
         foreach (var answer in answers)
         {
-            <div id="answer-@(answer.AnswerId)" class="rounded border p-3 mb-3" style="margin-left: @(marginLeft)px;">
+            <div id="answer-@(answer.AnswerId) parent-@(answer.ParentAnswerId)" class="rounded border p-3 mb-3" style="margin-left: @(marginLeft)px;">
                 <div class="d-flex justify-content-between">
                     <p><strong>@(answer.User?.Email ?? "Delete User")</strong> on @($"{answer.CreatedAt.ToString("MMM dd, yyyy")} ({answer.CreatedAt.TimeAgo()})")</p>
                     @if (isTeacher || isCurrentUser)
                     {
-                        <p><span class="link-text" onclick="appendInput(@(answer.QuestionId), @(answer.AnswerId))">Reply</span></p>
+                        <div class="d-flex gap-2">
+                            @if (Context.UserRole() == RoleType.Moderator.ToString() || answer.UserId.ToString() == Context.UserId())
+                            {
+                                <p><span class="link-text text-danger" onclick="deleteAnswer(@(answer.AnswerId))">Delete</span></p>
+                            }
+                            <p><span class="link-text" onclick="appendInput(@(answer.QuestionId), @(answer.AnswerId))">Reply</span></p>
+                        </div>
                     }
                 </div>
                 <div class="form-group row">
-                    <p>@answer.Explanation</p>
+                    <p id="explanation">@answer.Explanation</p>
                 </div>
             </div>
 
@@ -54,12 +60,20 @@
                     <p>@topic</p>
                 }
             </div>
+            @if (!Model.HasTeachersAnswer && (Context.UserRole() == RoleType.Moderator.ToString() || Model.Question.UserId.ToString() == Context.UserId()))
+            {
+                <div>
+                    <button type="button" class="btn btn-danger" onclick="deleteQuestion(@Model.Question.QuestionId)">Delete</button>
+                </div>
+            }
         </div>
         <hr />
 
-        @{
-            RenderAnswers(Model.AnswerVMs);
-        }
+        <div id="answer-container">
+            @{
+                RenderAnswers(Model.AnswerVMs);
+            }
+        </div>
 
         @if (isTeacher || isCurrentUser)
         {
@@ -88,9 +102,9 @@
         }
 
         if (!$("#reply-input").length) {
-            $("#answer-" + answerId).append(`
+            $(`[id*='answer-${answerId}']`).append(`
                         <div id="reply-input">
-                            <form action="/answer" method="post" id="reply-form" class="col-sm-9 w-100 d-flex">
+                            <form id="reply-form" class="col-sm-9 w-100 d-flex">
                                 <input type="hidden" name="questionId" value="${questionId}" />
                                 <input type="hidden" name="parentAnswerId" value="${answerId}" />
                                 <div class="text-center w-100">
@@ -102,25 +116,145 @@
                                 </div>
                             </form>
                         </div>`);
+
+            $('#reply-form').validate({
+                rules: {
+                    explanation: {
+                        required: true,
+                        minlength: 10
+                    }
+                },
+                messages: {
+                    explanation: {
+                        required: "Please enter your explanation",
+                        minlength: "Explanation must be at least 10 characters"
+                    }
+                },
+                submitHandler: function (form) {
+                    $.ajax({
+                        url: '/answer',
+                        type: 'POST',
+                        data: $(form).serialize(),
+                        success: function (response) {
+                            appendReply(response);
+                            toastMessage("Reply Submitted!", ToastType.Success);
+                            closeReplyInput();
+                        },
+                        error: function (xhr) {
+                            toastMessage(xhr.responseText);
+                        }
+                    });
+                }
+            });
         } else {
             closeReplyInput();
         }
-
-        $("#reply-form, #answer-form").validate({
-            rules: {
-                explanation: {
-                    required: true,
-                    minlength: 10
-                }
-            },
-            submitHandler: function (form) {
-                form.submit();
-            }
-        });
     }
+
+    $('#answer-form').validate({
+        rules: {
+            explanation: {
+                required: true,
+                minlength: 10
+            }
+        },
+        messages: {
+            explanation: {
+                required: "Please enter your explanation",
+                minlength: "Explanation must be at least 10 characters"
+            }
+        },
+        submitHandler: function (form) {
+            $.ajax({
+                url: '/answer',
+                type: 'POST',
+                data: $(form).serialize(),
+                success: function (response) {
+                    appendAnswer(response);
+                    toastMessage("Answer Submitted!", ToastType.Success);
+                    $("#answer-form")[0].reset();
+                },
+                error: function (xhr) {
+                    toastMessage(xhr.responseText);
+                }
+            });
+        }
+    });
 
     function closeReplyInput() {
         selectedId = null;
         $("#reply-input").remove();
+    }
+
+    function appendAnswer(response) {
+        var answer = `
+                <div id="answer-${response.answerId} parent-${response.parentAnswerId}" class="rounded border p-3 mb-3">
+                    <div class="d-flex justify-content-between">
+                        <p><strong>${response.email}</strong> on ${getFormattedDate()} (0 seconds ago)</p>
+                        <div class="d-flex gap-2">
+                            <span class="link-text text-danger" onclick="deleteAnswer(${response.AnswerId})">Delete</span>
+                            <span class="link-text" onclick="appendInput(${response.questionId}, ${response.answerId})">Reply</span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <p>${response.explanation}</p>
+                    </div>
+                </div>`;
+
+        $("#answer-container").append(answer);
+    }
+
+    function appendReply(response) {
+        let marginLeftParent = parseFloat($(`[id*='answer-${response.parentAnswerId}']`).css('margin-left'));
+        let marginLeft = marginLeftParent + 50;
+
+        let reply = `
+                    <div id="answer-${response.answerId}" class="rounded border p-3 mb-3" style="margin-left: ${marginLeft}px;">
+                        <div class="d-flex justify-content-between">
+                            <p><strong>${response.email}</strong> on ${getFormattedDate()} (0 seconds ago)</p>
+                            <div class="d-flex gap-2">
+                                <span class="link-text text-danger" onclick="deleteAnswer(${response.AnswerId})">Delete</span>
+                                <span class="link-text" onclick="appendInput(${response.questionId}, ${response.answerId})">Reply</span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <p>${response.explanation}</p>
+                        </div>
+                    </div>`;
+
+        $(`[id*='answer-${response.parentAnswerId}']`).after(reply);
+    }
+
+    function deleteQuestion(questionId) {
+        $.ajax({
+            url: `/delete-question?questionId=${questionId}`,
+            method: 'DELETE',
+            dataType: 'json',
+            success: function () {
+                toastMessageNext("Question Deleted!", ToastType.Success);
+                window.location.href = '/';
+            },
+            error: function (xhr) {
+                errorMessage = xhr.responseText || "Internal server error. Please try again later.";
+                toastMessage(errorMessage);
+            }
+        });
+    }
+
+    function deleteAnswer(answerId) {
+        $.ajax({
+            url: `/delete-answer?answerId=${answerId}`,
+            method: 'DELETE',
+            dataType: 'json',
+            success: function (response) {
+                toastMessage("Answer Deleted!", ToastType.Success);
+                $(`[id*='answer-${answerId}']`).remove();
+                $(`[id*='parent-${answerId}']`).remove();
+            },
+            error: function (xhr) {
+                errorMessage = xhr.responseText || "Internal server error. Please try again later.";
+                toastMessage(errorMessage);
+            }
+        });
     }
 </script>

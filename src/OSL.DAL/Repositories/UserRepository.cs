@@ -54,7 +54,7 @@ internal class UserRepository(OslDbContext _dbContext) : IUserRepository
         }
     }
 
-    public async Task<ErrorOr<User>> GetUser(string email, long roleId)
+    public async Task<ErrorOr<User>> Get(string email, long roleId)
     {
         try
         {
@@ -62,6 +62,24 @@ internal class UserRepository(OslDbContext _dbContext) : IUserRepository
                         .Include(u => u.UserRoles)
                         .ThenInclude(ur => ur.Role)
                         .Where(u => u.Email == email && u.UserRoles.Any(ur => ur.RoleId == roleId))
+                        .FirstOrDefaultAsync();
+
+            return user is null
+                ? Error.NotFound()
+                : user;
+        }
+        catch (Exception ex)
+        {
+            return Error.Unexpected(description: ex.Message);
+        }
+    }
+
+    public async Task<ErrorOr<User>> Get(long? userId)
+    {
+        try
+        {
+            var user = await _dbContext.Users
+                        .Where(u => u.UserId == userId)
                         .FirstOrDefaultAsync();
 
             return user is null

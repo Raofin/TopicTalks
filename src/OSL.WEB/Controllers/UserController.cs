@@ -74,6 +74,6 @@ public class UserController(IUserService _userService, IHttpContextAccessor _htt
             await _httpAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
-        return RedirectToAction("index", "home");
+        return RedirectToAction("index", "default");
     }
 }

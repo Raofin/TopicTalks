@@ -3,6 +3,7 @@ using OSL.BLL.Interfaces;
 using OSL.BLL.Models;
 using OSL.DAL.Entities;
 using OSL.DAL.Interfaces;
+using OSL.DAL.Models;
 
 namespace OSL.BLL.Services;
 
@@ -38,7 +39,7 @@ internal class QuestionService(IQuestionRepository _questionRepository) : IQuest
         }
     }
 
-    public async Task<ErrorOr<List<Question>>> Get(string? searchText)
+    public async Task<ErrorOr<List<QuestionModel>>> Get(string? searchText)
     {
         try
         {

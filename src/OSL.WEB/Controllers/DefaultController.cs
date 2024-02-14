@@ -2,7 +2,7 @@
 
 namespace OSL.WEB.Controllers;
 
-public class HomeController() : Controller
+public class DefaultController() : Controller
 {
     [Route("401")]
     public IActionResult Unauthorized401()

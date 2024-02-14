@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using OSL.DAL.Entities;
 using OSL.DAL.Interfaces;
+using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 
 namespace OSL.DAL.Repositories;
 
@@ -14,6 +16,8 @@ internal class AnswerRepository(OslDbContext _dbContext) : IAnswerRepository
             _dbContext.Answers.Add(answer);
             await _dbContext.SaveChangesAsync();
 
+            answer.User = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == answer.UserId);
+
             return answer;
         }
         catch (Exception ex)
@@ -22,14 +26,13 @@ internal class AnswerRepository(OslDbContext _dbContext) : IAnswerRepository
         }
     }
 
-    public async Task<ErrorOr<IEnumerable<Answer>>> Get(long questionId)
+    public async Task<ErrorOr<Answer>> Get(long answerId)
     {
         try
         {
-            var answers = await _dbContext.Answers
+            var answer = await _dbContext.Answers
                 .Include(a => a.User)
-                .Where(a => a.QuestionId == questionId)
-                //.OrderByDescending(a => a.AnswerId)
+                .Where(a => a.AnswerId == answerId)
                 .Select(a => new Answer {
                     AnswerId = a.AnswerId,
                     ParentAnswerId = a.ParentAnswerId,
@@ -39,9 +42,14 @@ internal class AnswerRepository(OslDbContext _dbContext) : IAnswerRepository
                     CreatedAt = a.CreatedAt,
                     User = a.User
                 })
-                .ToListAsync();
+                .FirstOrDefaultAsync();
 
-            return answers;
+            if (answer == null)
+            {
+                return Error.NotFound();
+            }
+
+            return answer;
         }
         catch (Exception ex)
         {
@@ -72,8 +80,8 @@ internal class AnswerRepository(OslDbContext _dbContext) : IAnswerRepository
         {
             var answer = await _dbContext.Answers
                             .Include(a => a.User)
-                            .FirstOrDefaultAsync(a => a.QuestionId == questionId 
-                                && a.AnswerId == answerId 
+                            .FirstOrDefaultAsync(a => a.QuestionId == questionId
+                                && a.AnswerId == answerId
                                 && a.ParentAnswerId == parentAnswerId);
 
             if (answer == null)
@@ -116,21 +124,41 @@ internal class AnswerRepository(OslDbContext _dbContext) : IAnswerRepository
     {
         try
         {
-            var answerToDelete = await _dbContext.Answers.FindAsync(answerId);
+            var answersToDelete = await _dbContext.Answers
+                .Where(a => a.AnswerId == answerId || a.ParentAnswerId == answerId)
+                .ToListAsync();
 
-            if (answerToDelete == null)
+            if (answersToDelete.Count == 0)
             {
                 return Error.NotFound("Answer not found.");
             }
 
-            _dbContext.Answers.Remove(answerToDelete);
+            _dbContext.RemoveRange(answersToDelete);
             await _dbContext.SaveChangesAsync();
 
             return answerId;
         }
         catch (Exception ex)
         {
-            return Error.Failure($"Error: {ex.Message}");
+            return Error.Unexpected(description: ex.Message);
+        }
+    }
+
+    public async Task<ErrorOr<bool>> HasTeachersAnswer(int questionId)
+    {
+        try
+        {
+            var hasTeachersAnswer = await _dbContext.Answers
+                .Where(a => a.QuestionId == questionId)
+                .AnyAsync(a => a.User != null &&
+                          a.User.UserRoles != null &&
+                          a.User.UserRoles.Any(ur => ur.Role != null && ur.Role.RoleName == "Teacher"));
+
+            return hasTeachersAnswer;
+        }
+        catch (Exception ex)
+        {
+            return Error.Unexpected(description: ex.Message);
         }
     }
 }

@@ -17,7 +17,11 @@ public class AnswerVM
     [MaxLength(int.MaxValue)]
     public string Explanation { get; set; } = null!;
 
+    public bool? hasTeachersAnswer { get; set; }
+
     public long? UserId { get; set; }
+
+    public string? Email { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

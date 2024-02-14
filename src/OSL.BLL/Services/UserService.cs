@@ -52,7 +52,7 @@ internal class UserService(IPasswordHashService _passwordHashService, IUserRepos
     {
         try
         {
-            var user = await _userRepository.GetUser(model.Email, (long)model.Role);
+            var user = await _userRepository.Get(model.Email, (long)model.Role);
 
             if (user.IsError)
             {
@@ -74,5 +74,10 @@ internal class UserService(IPasswordHashService _passwordHashService, IUserRepos
         {
             return Error.Unexpected(description: ex.Message);
         }
+    }
+
+    public async Task<ErrorOr<User>> Get(long? userId)
+    {
+        return await _userRepository.Get(userId);
     }
 }
