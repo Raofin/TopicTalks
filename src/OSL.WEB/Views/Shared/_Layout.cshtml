@@ -73,10 +73,10 @@
                     {
                         var email = Context.UserEmail();
                         <li class="nav-item">
-                            <p class="nav-link text-dark nav-text"><strong>@email</strong></p>
+                            <p class="nav-link text-dark nav-text mb-0"><strong>@email</strong></p>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-danger fw-bold nav-text" href="/logout">Logout</a>
+                            <span class="nav-link link-text text-danger fw-bold nav-text" onclick="logout()">Logout</span>
                         </li>
                     }
                 </ul>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OSL.BLL.Enums;
 using OSL.BLL.Interfaces;
 using OSL.BLL.Models;
@@ -39,12 +40,14 @@ public class QuestionAnswerController(
         return Ok(question.Value);
     }
 
+    [Authorize(Roles = nameof(RoleType.Student))]
     [HttpGet("post-question")]
     public IActionResult PostQuestion()
     {
         return View();
     }
 
+    [Authorize(Roles = nameof(RoleType.Student))]
     [HttpPost("question/post-question")]
     public async Task<IActionResult> PostQuestion(QuestionVM model)
     {
@@ -65,6 +68,7 @@ public class QuestionAnswerController(
         return Ok(question.Value);
     }
 
+    [Authorize]
     [HttpGet("question/{questionId}")]
     public async Task<IActionResult> QuestionDetails(int questionId)
     {
@@ -88,6 +92,7 @@ public class QuestionAnswerController(
         return View(model);
     }
 
+    [Authorize]
     [HttpGet("question-data/{questionId}")]
     public async Task<IActionResult> GetQuestion(int questionId)
     {
@@ -110,6 +115,7 @@ public class QuestionAnswerController(
         return Ok(model);
     }
 
+    [Authorize]
     [HttpPatch("question")]
     public async Task<IActionResult> UpdateQuestion(QuestionVM model)
     {
@@ -128,6 +134,7 @@ public class QuestionAnswerController(
         return Ok(updatedQuestion.Value);
     }
 
+    [Authorize]
     [HttpGet("answer/{answerId}")]
     public async Task<IActionResult> Answer(long answerId)
     {
@@ -142,6 +149,7 @@ public class QuestionAnswerController(
         return Ok(answer.Value);
     }
 
+    [Authorize(Roles = nameof(RoleType.Student) + "," + nameof(RoleType.Teacher))]
     [HttpPost("answer")]
     public async Task<IActionResult> PostAnswer(AnswerVM model)
     {
@@ -172,6 +180,7 @@ public class QuestionAnswerController(
         return Ok(ans);
     }
 
+    [Authorize]
     [HttpPatch("answer")]
     public async Task<IActionResult> UpdateAnswer(AnswerVM model)
     {
@@ -190,7 +199,7 @@ public class QuestionAnswerController(
         return Ok(updatedAnswer.Value);
     }
 
-
+    [Authorize(Roles = nameof(RoleType.Student))]
     [HttpGet("my-questions")]
     public async Task<IActionResult> MyQuestions()
     {
@@ -207,6 +216,7 @@ public class QuestionAnswerController(
         return View(questions.Value);
     }
 
+    [Authorize(Roles = nameof(RoleType.Teacher))]
     [HttpGet("my-responses")]
     public async Task<IActionResult> MyResponses()
     {
@@ -223,6 +233,7 @@ public class QuestionAnswerController(
         return View(questions.Value);
     }
 
+    [Authorize]
     [HttpDelete("delete-question")]
     public async Task<IActionResult> DeleteQuestion(long questionId)
     {
@@ -248,6 +259,7 @@ public class QuestionAnswerController(
         return Unauthorized("You dont have permission to delete that question.");
     }
 
+    [Authorize]
     [HttpDelete("delete-answer")]
     public async Task<IActionResult> DeleteAnswer(long answerId)
     {

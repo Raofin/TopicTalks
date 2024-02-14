@@ -120,3 +120,11 @@ function getFormattedDate() {
 
     return new Date().toLocaleDateString('en-US', options);
 }
+
+function logout() {
+    $.get(`/logout`)
+        .done(() => {
+            toastMessageNext("You are logged out!", ToastType.Error)
+            window.location.href = '/login';
+        });
+}
