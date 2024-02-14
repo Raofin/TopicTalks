@@ -27,7 +27,7 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
     {
         try
         {
-            var searchTextLower = searchText.ToLower();
+            var searchTextLower = searchText?.ToLower();
 
             var questions = await _dbContext.Questions
                 .Include(q => q.User)
@@ -131,8 +131,8 @@ internal class QuestionRepository(OslDbContext _dbContext) : IQuestionRepository
                 return Error.NotFound();
             }
 
-            existingQuestion.Topic = updatedQuestion.Topic;
-            existingQuestion.Explanation = updatedQuestion.Explanation;
+            existingQuestion.Topic = updatedQuestion.Topic ?? existingQuestion.Topic;
+            existingQuestion.Explanation = updatedQuestion.Explanation ?? existingQuestion.Explanation;
             existingQuestion.UpdatedAt = DateTime.Now;
 
             await _dbContext.SaveChangesAsync();

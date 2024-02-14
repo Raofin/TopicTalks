@@ -32,7 +32,7 @@ internal class AnswerService(IAnswerRepository _answerRepository) : IAnswerServi
             ParentAnswerId = model.ParentAnswerId,
             QuestionId = model.QuestionId,
             Explanation = model.Explanation,
-            UserId = model.UserId
+            UserId = model.UserId,
         };
 
         return await _answerRepository.Update(answer);

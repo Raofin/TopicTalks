@@ -88,6 +88,60 @@ public class QuestionAnswerController(
         return View(model);
     }
 
+    [HttpGet("question-data/{questionId}")]
+    public async Task<IActionResult> GetQuestion(int questionId)
+    {
+        var question = await _questionService.Get(questionId);
+
+        if (question.IsError)
+        {
+            return BadRequest(question.ErrorDescription());
+        }
+
+        var model = new QuestionVM {
+            QuestionId = question.Value.QuestionId,
+            Topic = question.Value.Topic,
+            Explanation = question.Value.Explanation,
+            UserId = question.Value.UserId,
+            CreatedAt = question.Value.CreatedAt,
+            UpdatedAt = question.Value.UpdatedAt
+        };
+
+        return Ok(model);
+    }
+
+    [HttpPatch("question")]
+    public async Task<IActionResult> UpdateQuestion(QuestionVM model)
+    {
+        if (!ModelState.IsValid)
+        {
+            ModelState.ValidationFailed();
+        }
+
+        var updatedQuestion = await _questionService.UpdateQuestion(model);
+
+        if (updatedQuestion.IsError)
+        {
+            return BadRequest(updatedQuestion.ErrorDescription());
+        }
+
+        return Ok(updatedQuestion.Value);
+    }
+
+    [HttpGet("answer/{answerId}")]
+    public async Task<IActionResult> Answer(long answerId)
+    {
+
+        var answer = await _answerService.Get(answerId);
+
+        if (answer.IsError)
+        {
+            return BadRequest(answer.ErrorDescription());
+        }
+
+        return Ok(answer.Value);
+    }
+
     [HttpPost("answer")]
     public async Task<IActionResult> PostAnswer(AnswerVM model)
     {
@@ -117,6 +171,25 @@ public class QuestionAnswerController(
 
         return Ok(ans);
     }
+
+    [HttpPatch("answer")]
+    public async Task<IActionResult> UpdateAnswer(AnswerVM model)
+    {
+        if (!ModelState.IsValid)
+        {
+            ModelState.ValidationFailed();
+        }
+
+        var updatedAnswer = await _answerService.Update(model);
+
+        if (updatedAnswer.IsError)
+        {
+            return BadRequest(updatedAnswer.ErrorDescription());
+        }
+
+        return Ok(updatedAnswer.Value);
+    }
+
 
     [HttpGet("my-questions")]
     public async Task<IActionResult> MyQuestions()
