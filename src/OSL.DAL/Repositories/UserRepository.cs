@@ -55,7 +55,7 @@ internal class UserRepository(OslDbContext _dbContext) : IUserRepository
         }
     }
 
-    public async Task<ErrorOr<User>> Login(string email, long roleId)
+    public async Task<ErrorOr<User>> GetUser(string email, long roleId)
     {
         try
         {

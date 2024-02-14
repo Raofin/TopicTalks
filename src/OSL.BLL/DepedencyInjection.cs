@@ -8,6 +8,7 @@ public static class DepedencyInjection
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPasswordHashService, PasswordHashService>();
         services.AddScoped<IQuestionService, QuestionService>();

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using OSL.BLL;
 using OSL.DAL;
@@ -5,6 +6,8 @@ using OSL.DAL;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<OslDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 
@@ -17,6 +20,20 @@ builder.Services.AddCors(options => {
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options => {
+        options.Cookie.Name = "OLS_Cookies";
+        options.LoginPath = "/Login";
+        options.AccessDeniedPath = "/401";
+
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Strict;
+    });
+
+builder.Services.AddMvc();
 
 var app = builder.Build();
 
@@ -32,6 +49,7 @@ app.UseRouting();
 
 app.UseSession();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseCors("AllowOrigin");

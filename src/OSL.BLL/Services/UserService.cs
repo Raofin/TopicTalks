@@ -3,10 +3,11 @@ using OSL.BLL.Interfaces;
 using OSL.BLL.Models;
 using OSL.DAL.Entities;
 using OSL.DAL.Interfaces;
+using System.Net;
 
 namespace OSL.BLL.Services;
 
-internal class UserService(IPasswordHashService _passwordHashService, IUserRepository _userRepository) : IUserService
+internal class UserService(IPasswordHashService _passwordHashService, IUserRepository _userRepository, IAuthService _tokenService) : IUserService
 {
     public async Task<bool> IsEmailExists(string email)
     {
@@ -51,22 +52,30 @@ internal class UserService(IPasswordHashService _passwordHashService, IUserRepos
     {
         try
         {
-            var user = await _userRepository.Login(model.Email, (long)model.Role);
+            var user = await _userRepository.GetUser(model.Email, (long)model.Role);
 
             if (user.IsError)
             {
-                return user;
-            }
-            else if (user.Value is null || !_passwordHashService.VerifyPassword(user.Value.PasswordHash, user.Value.Salt, model.Password))
-            {
-                return Error.Unauthorized();
+                return user.Errors;
             }
 
-            return user;
+            var isUserVerified = _passwordHashService.VerifyPassword(user.Value.PasswordHash, user.Value.Salt, model.Password);
+
+            if (isUserVerified)
+            {
+                await _tokenService.Authenticate(user.Value);
+
+                return user;
+            }
+
+            return Error.Unauthorized();
         }
         catch (Exception ex)
         {
-            return Error.Failure($"Error: {ex.Message}");
+            return Error.Unexpected(
+                HttpStatusCode.InternalServerError.ToString(), 
+                $"Error: {ex.Message}"
+            );
         }
     }
 }
