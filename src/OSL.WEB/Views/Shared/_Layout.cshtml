@@ -1,5 +1,6 @@
 ﻿@using OSL.BLL.Enums;
 @using System.Text.Json
+@using OSL.WEB.Extensions;
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,8 +12,10 @@
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 
+    <script src="~/lib/bootstrap/js/bootstrap.js"></script>
     <script src="~/lib/jquery/jquery.js"></script>
     <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+    <script src="~/js/site.js"></script>
 </head>
 <body>
     <header>
@@ -24,22 +27,22 @@
                 </a>
 
                 <ul class="navbar-nav">
-                    @if (Context.Session.GetString("Role") != null)
+                    @if (Context.UserRole() != null)
                     {
                         <li class="nav-item">
-                            <span class="nav-link text-dark role">@Context.Session.GetString("Role")</span>
+                            <span class="nav-link text-dark role">@Context.UserRole()</span>
                         </li>
                     }
                 </ul>
 
                 <ul class="navbar-nav mx-auto d-flex">
-                    @if (Context.Session.GetString("UserId") != null)
+                    @if (Context.UserId() != null)
                     {
                         <li class="nav-item">
                             <a class="nav-link text-dark nav-text" href="/">Dashboard</a>
                         </li>
                     }
-                    @if (Context.Session.GetString("Role") == RoleType.Student.ToString())
+                    @if (Context.UserRole() == RoleType.Student.ToString())
                     {
                         <li class="nav-item">
                             <a class="nav-link text-dark nav-text" href="/post-question">Post Questions</a>
@@ -48,7 +51,7 @@
                             <a class="nav-link text-dark nav-text" href="/my-questions">My Questions</a>
                         </li>
                     }
-                    @if (Context.Session.GetString("Role") == RoleType.Teacher.ToString())
+                    @if (Context.UserRole() == RoleType.Teacher.ToString())
                     {
                         <li class="nav-item">
                             <a class="nav-link text-dark nav-text" href="/my-responses">My Responses</a>
@@ -57,7 +60,7 @@
                 </ul>
 
                 <ul class="navbar-nav">
-                    @if (Context.Session.GetString("UserId") is null)
+                    @if (Context.UserId() is null)
                     {
                         <li class="nav-item">
                             <a class="nav-link text-dark nav-text" href="/login">Login</a>
@@ -68,7 +71,7 @@
                     }
                     else
                     {
-                        var email = Context.Session.GetString("Email");
+                        var email = Context.UserEmail();
                         <li class="nav-item">
                             <p class="nav-link text-dark nav-text"><strong>@email</strong></p>
                         </li>
@@ -93,10 +96,6 @@
             &copy; 2024 <a href="https://rawfin.net">Rawfin</a>. All rights reserved.
         </div>
     </footer>
-
-    <script src="~/lib/bootstrap/js/bootstrap.js"></script>
-
-    <script src="~/js/site.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

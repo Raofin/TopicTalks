@@ -1,15 +1,14 @@
 ﻿using ErrorOr;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OSL.BLL.Interfaces;
 using OSL.BLL.Models;
-using OSL.BLL.Services;
+using OSL.WEB.Extensions;
 
 namespace OSL.WEB.Controllers;
 
-public class UserController(IUserService _userService, IAuthService _authService, IHttpContextAccessor _httpAccessor) : Controller
+public class UserController(IUserService _userService, IHttpContextAccessor _httpAccessor) : Controller
 {
     [HttpGet("register")]
     public IActionResult Register()
@@ -22,19 +21,21 @@ public class UserController(IUserService _userService, IAuthService _authService
     {
         if (!ModelState.IsValid)
         {
-            ViewData["Error"] = "Please fill out all the fields properly.";
-            return View(model);
+            ModelState.ValidationFailed();
         }
 
         var registration = await _userService.RegisterUser(model);
 
-        if (registration.IsError)
+        if (registration.Errors.Any(e => e.Type is ErrorType.Conflict))
         {
-            ViewData["Error"] = registration.FirstError.Description;
-            return View(model);
+            return Conflict("User with the provided email already exists.");
+        }
+        else if (registration.IsError)
+        {
+            return BadRequest(registration.FirstError.Description ?? "An error occurred.");
         }
 
-        return RedirectToAction("login");
+        return Ok();
     }
 
     [HttpGet("login")]
@@ -48,35 +49,22 @@ public class UserController(IUserService _userService, IAuthService _authService
     {
         if (!ModelState.IsValid)
         {
-            ViewData["Error"] = "Please fill out all the fields properly.";
-            return View(model);
+            ModelState.ValidationFailed();
         }
 
         var login = await _userService.Login(model);
 
-        if (!login.IsError)
+        if (login.Errors.Any(e => e.Type is ErrorType.NotFound or ErrorType.Unauthorized))
         {
-            return RedirectToAction("index", "home");
+            return Unauthorized("Invalid Credentials.");
         }
-        else if (login.Errors.Any(e => e.Type is ErrorType.Unauthorized))
+        else if (login.IsError)
         {
-            ViewData["Error"] = "Invalid credentials";
+            return BadRequest(login.FirstError.Description ?? "An error occurred.");
         }
-        else
-        {
-            ViewData["Error"] = login.FirstError.Description ?? "An error occurred";
-        }
-
-        return View(model);
+     
+        return Ok();
     }
-
-    [Authorize]
-    [HttpGet("get")]
-    public IActionResult Gett()
-    {
-        return Ok(_authService.UserEmail);
-    }
-
 
     [HttpGet("logout")]
     public async Task<IActionResult> LogoutAsync()

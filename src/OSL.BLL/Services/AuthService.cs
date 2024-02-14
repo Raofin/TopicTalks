@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS8766 
+﻿#pragma warning disable CS8603 // Possible null reference return.
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
@@ -12,9 +12,9 @@ namespace OSL.BLL.Services;
 
 internal class AuthService(IHttpContextAccessor http) : IAuthService
 {
-    public string? UserId => http.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
-    public string? UserEmail => http.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
-    public string? UserRole => http.HttpContext.User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+    public string UserId => http.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+    public string UserEmail => http.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
+    public string UserRole => http.HttpContext.User.FindFirst(ClaimTypes.Role)?.Value.ToString();
 
     public async Task Authenticate(User user)
     {

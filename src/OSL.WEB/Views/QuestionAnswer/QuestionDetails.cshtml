@@ -1,6 +1,40 @@
-﻿@using OSL.BLL.Models
+﻿@using OSL.BLL.Enums
+@using OSL.BLL.Models
 @using OSL.WEB.Extensions
 @model QuestionAnswerVM
+
+@{
+    var isCurrentUser = Context.UserId() == Model.Question.UserId.ToString();
+    var isTeacher = Context.UserRole() == RoleType.Teacher.ToString();
+
+    void RenderAnswers(List<AnswerVM> answers, int marginLeft = 0)
+    {
+        foreach (var answer in answers)
+        {
+            <div id="answer-@(answer.AnswerId)" class="rounded border p-3 mb-3" style="margin-left: @(marginLeft)px;">
+                <div class="d-flex justify-content-between">
+                    <p><strong>@(answer.User?.Email ?? "Delete User")</strong> on @($"{answer.CreatedAt.ToString("MMM dd, yyyy")} ({answer.CreatedAt.TimeAgo()})")</p>
+                    @if (isTeacher || isCurrentUser)
+                    {
+                        <p><span class="link-text" onclick="appendInput(@(answer.QuestionId), @(answer.AnswerId))">Reply</span></p>
+                    }
+                </div>
+                <div class="form-group row">
+                    <p>@answer.Explanation</p>
+                </div>
+            </div>
+
+            @if (answer.Answers != null)
+            {
+                RenderAnswers(answer.Answers, marginLeft + 50);
+            }
+            else
+            {
+                marginLeft = 0;
+            }
+        }
+    }
+}
 
 <div class="container mt-5">
     <div id="question-details" class="q-list-container">
@@ -24,44 +58,23 @@
         <hr />
 
         @{
-            void RenderAnswers(List<AnswerVM> answers, int marginLeft = 0)
-            {
-                foreach (var answer in answers)
-                {
-                    <div id="answer-@(answer.AnswerId)" class="rounded border p-3 mb-3" style="margin-left: @(marginLeft)px;">
-                        <div class="d-flex justify-content-between">
-                            <p><strong>@(answer.User?.Email ?? "Delete User")</strong> on @($"{answer.CreatedAt.ToString("MMM dd, yyyy")} ({answer.CreatedAt.TimeAgo()})")</p>
-                            <p><span class="link-text" onclick="appendInput(@(answer.QuestionId), @(answer.AnswerId))">Reply</span></p>
-                        </div>
-                        <div class="form-group row">
-                            <p>@answer.Explanation</p>
-                        </div>
-                    </div>
-
-                    @if (answer.Answers != null)
-                    {
-                        RenderAnswers(answer.Answers, marginLeft + 50);
-                    }
-                    else
-                    {
-                        marginLeft = 0;
-                    }
-                }
-            }
             RenderAnswers(Model.AnswerVMs);
         }
 
-        <div id="answer-input" class="col-sm-9 w-100">
-            <form action="/answer" method="post" id="answer-form">
-                <input type="hidden" name="questionId" value="@(Model.Question.QuestionId)" />
-                <div class="text-center w-100">
-                    <textarea id="reply-text" class="form-control mb-2" rows="3" placeholder="Write your answer here" name="explanation"></textarea>
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Post Answer</button>
-                </div>
-            </form>
-        </div>
+        @if (isTeacher || isCurrentUser)
+        {
+            <div id="answer-input" class="col-sm-9 w-100">
+                <form action="/answer" method="post" id="answer-form">
+                    <input type="hidden" name="questionId" value="@(Model.Question.QuestionId)" />
+                    <div class="text-center w-100">
+                        <textarea id="reply-text" class="form-control mb-2" rows="3" placeholder="Write your answer here" name="explanation"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Post Answer</button>
+                    </div>
+                </form>
+            </div>
+        }
     </div>
 </div>
 
@@ -76,19 +89,19 @@
 
         if (!$("#reply-input").length) {
             $("#answer-" + answerId).append(`
-                <div id="reply-input">
-                    <form action="/answer" method="post" id="reply-form" class="col-sm-9 w-100 d-flex">
-                        <input type="hidden" name="questionId" value="${questionId}" />
-                        <input type="hidden" name="parentAnswerId" value="${answerId}" />
-                        <div class="text-center w-100">
-                                <textarea id="reply-text" class="form-control mb-1" rows="3" placeholder="Write your reply here" name="explanation"></textarea>
-                        </div>
-                        <div class="text-center">
-                            <button type="button" class="btn btn-danger w-75 mb-2 mt-1" onclick="closeReplyInput()">Close</button>
-                            <button type="submit" class="btn btn-primary w-75">Post</button>
-                        </div>
-                    </form>
-                </div>`);
+                        <div id="reply-input">
+                            <form action="/answer" method="post" id="reply-form" class="col-sm-9 w-100 d-flex">
+                                <input type="hidden" name="questionId" value="${questionId}" />
+                                <input type="hidden" name="parentAnswerId" value="${answerId}" />
+                                <div class="text-center w-100">
+                                        <textarea id="reply-text" class="form-control mb-1" rows="3" placeholder="Write your reply here" name="explanation"></textarea>
+                                </div>
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-danger w-75 mb-2 mt-1" onclick="closeReplyInput()">Close</button>
+                                    <button type="submit" class="btn btn-primary w-75">Post</button>
+                                </div>
+                            </form>
+                        </div>`);
         } else {
             closeReplyInput();
         }
@@ -110,5 +123,4 @@
         selectedId = null;
         $("#reply-input").remove();
     }
-
 </script>

@@ -18,7 +18,6 @@ internal class UserRepository(OslDbContext _dbContext) : IUserRepository
         return await _dbContext.Users.AnyAsync(u => u.UserId == userId);
     }
 
-
     public async Task<ErrorOr<User>> Register(User user, UserRole userRole, UserDetail? userDetail)
     {
         using (IDbContextTransaction transaction = _dbContext.Database.BeginTransaction())
@@ -50,7 +49,7 @@ internal class UserRepository(OslDbContext _dbContext) : IUserRepository
             catch (Exception ex)
             {
                 transaction.Rollback();
-                return Error.Failure($"Error: {ex.Message}");
+                return Error.Unexpected(description: ex.Message);
             }
         }
     }
@@ -71,7 +70,7 @@ internal class UserRepository(OslDbContext _dbContext) : IUserRepository
         }
         catch (Exception ex)
         {
-            return Error.Failure($"Error: {ex.Message}");
+            return Error.Unexpected(description: ex.Message);
         }
     }
 }

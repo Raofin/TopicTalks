@@ -13,6 +13,10 @@
     {
       "library": "jquery-validate@1.20.0",
       "destination": "wwwroot/lib/jquery-validate/"
+    },
+    {
+      "library": "popper.js@2.11.8",
+      "destination": "wwwroot/lib/popper.js/"
     }
   ]
 }

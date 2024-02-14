@@ -49,9 +49,9 @@
                 </div>
             </div>
 
-            <div class="form-group mb-3">
+            <div class="form-group mb-2">
                 <label asp-for="Role">Role</label>
-                <select asp-for="Role" class="form-control">
+                <select id="Role" asp-for="Role" class="form-control">
                     <option value="" selected disabled>Select a role...</option>
                     @foreach (var role in Enum.GetValues(typeof(RoleType)))
                     {
@@ -144,7 +144,23 @@
                 }
             },
             submitHandler: function (form) {
-                form.submit();
+                $.ajax({
+                    url: '/register',
+                    type: 'POST',
+                    data: $(form).serialize(),
+                    success: function (response) {
+                        toastMessageNext("Registration Successful!", ToastType.Success);
+                        window.location.href = '/login';
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 409) {
+                            $('#Role').after('<span class="text-danger d-block text-center">' + xhr.responseText + '</span>');
+                        } else {
+                            errorMessage = xhr.responseText || "Internal server error. Please try again later.";
+                            toastMessage(errorMessage);
+                        }
+                    }
+                });
             }
         });
     });

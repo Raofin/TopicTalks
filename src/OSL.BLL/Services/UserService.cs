@@ -25,7 +25,7 @@ internal class UserService(IPasswordHashService _passwordHashService, IUserRepos
         {
             if (await IsEmailExists(model.Email))
             {
-                return Error.Conflict("User with the provided email already exists.");
+                return Error.Conflict();
             }
 
             (string hashedPassword, string salt) = _passwordHashService.HashPasswordWithSalt(model.Password);
@@ -44,7 +44,7 @@ internal class UserService(IPasswordHashService _passwordHashService, IUserRepos
         }
         catch (Exception ex)
         {
-            return Error.Failure($"Error: {ex.Message}");
+            return Error.Unexpected(description: ex.Message);
         }
     }
 
@@ -68,14 +68,11 @@ internal class UserService(IPasswordHashService _passwordHashService, IUserRepos
                 return user;
             }
 
-            return Error.Unauthorized();
+            return Error.Unauthorized(description: "Invalid crediantials");
         }
         catch (Exception ex)
         {
-            return Error.Unexpected(
-                HttpStatusCode.InternalServerError.ToString(), 
-                $"Error: {ex.Message}"
-            );
+            return Error.Unexpected(description: ex.Message);
         }
     }
 }

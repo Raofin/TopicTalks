@@ -137,8 +137,8 @@ a {
 }
 
 .error {
-  color: red;
-  border-color: darkred;
+  color: #DC3545;
+  border-color: #DC3545;
 }
 
   .error:focus {
