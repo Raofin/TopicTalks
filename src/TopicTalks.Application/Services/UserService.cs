@@ -1,82 +1,99 @@
 ﻿using ErrorOr;
+using TopicTalks.Application.Dtos;
+using TopicTalks.Application.Dtos.Extensions;
 using TopicTalks.Application.Interfaces;
+using TopicTalks.Contracts.Common;
+using TopicTalks.Domain;
 using TopicTalks.Domain.Entities;
-using TopicTalks.Domain.Interfaces;
-using TopicTalks.Domain.Models;
 
 namespace TopicTalks.Application.Services;
 
-internal class UserService(IPasswordHashService _passwordHashService, IUserRepository _userRepository, IAuthService _tokenService) : IUserService
+internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordService, IAuthService tokenService) : IUserService
 {
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IPasswordService _passwordService = passwordService; 
+    private readonly IAuthService _tokenService = tokenService;
+
     public async Task<bool> IsEmailExists(string email)
     {
-        return await _userRepository.IsEmailExists(email);
+        return await _unitOfWork.User.IsEmailExists(email);
     }
 
     public async Task<bool> IsUserExists(long userId)
     {
-        return await _userRepository.IsUserExists(userId);
+        return await _unitOfWork.User.IsUserExists(userId);
     }
 
-    public async Task<ErrorOr<User>> RegisterUser(RegisterVM model)
+    public async Task<ErrorOr<User?>> GetAsync(long userId)
     {
-        try
-        {
-            if (await IsEmailExists(model.Email))
-            {
-                return Error.Conflict();
-            }
+        var user = await _unitOfWork.User.GetAsync(userId);
 
-            (string hashedPassword, string salt) = _passwordHashService.HashPasswordWithSalt(model.Password);
-
-            var user = new User {
-                Email = model.Email,
-                PasswordHash = hashedPassword,
-                Salt = salt
-            };
-
-            var userRole = new UserRole {
-                RoleId = (long)model.Role,
-            };
-
-            return await _userRepository.Register(user, userRole, model.UserDetail);
-        }
-        catch (Exception ex)
-        {
-            return Error.Unexpected(description: ex.Message);
-        }
+        return user == null
+            ? Error.NotFound()
+            : user;
     }
 
-    public async Task<ErrorOr<string>> Login(LoginVM model)
+    public async Task<ErrorOr<RegistrationResponse>> Register(RegistrationRequest request)
     {
-        try
+        if (await IsEmailExists(request.Email))
         {
-            var user = await _userRepository.Get(model.Email, (long)model.Role);
-
-            if (user.IsError)
-            {
-                return user.Errors;
-            }
-
-            var isUserVerified = _passwordHashService.VerifyPassword(user.Value.PasswordHash, user.Value.Salt, model.Password);
-
-            if (isUserVerified)
-            {
-                var token = _tokenService.GenerateJwtToken(user.Value);
-
-                return token;
-            }
-
-            return Error.Unauthorized(description: "Invalid crediantials");
+            return Error.Conflict();
         }
-        catch (Exception ex)
+
+        var (hashedPassword, salt) = _passwordService.HashPasswordWithSalt(request.Password);
+
+        var user = new User {
+            Email = request.Email,
+            PasswordHash = hashedPassword,
+            Salt = salt,
+        };
+
+        user.UserRoles.Add(new UserRole {
+            RoleId = (long)request.Role,
+        });
+
+        if (request?.UserDetails != null)
         {
-            return Error.Unexpected(description: ex.Message);
+            user.UserDetails.Add(new UserDetail {
+                Name = request.UserDetails.Name,
+                InstituteName = request.UserDetails.InstituteName,
+                IdCardNumber = request.UserDetails.IdCardNumber,
+            });
         }
+
+        await _unitOfWork.User.AddAsync(user);
+        await _unitOfWork.Complete();
+
+        var x = user;
+
+        var response = new RegistrationResponse(
+            UserId: user.UserId,
+            Email: user.Email,
+            UserDetails: user.UserDetails.FirstOrDefault().ToDto(),
+            Role: user.UserRoles.Select(ur => (RoleName?)ur.RoleId).ToList()
+        );
+
+        return response;
     }
 
-    public async Task<ErrorOr<User>> Get(long? userId)
+    public async Task<ErrorOr<string>> Login(LoginRequest request)
     {
-        return await _userRepository.Get(userId);
+        var user = await _unitOfWork.User.GetAsync(request.Email, (long)request.Role);
+
+        if (user == null)
+        {
+            return Error.NotFound();
+        }
+
+        var isUserVerified = _passwordService.VerifyPassword(user.PasswordHash, user.Salt, request.Password);
+
+        if (!isUserVerified)
+        {
+            return Error.Unauthorized();
+        }
+
+        var token = _tokenService.GenerateJwtToken(user);
+
+        return token;
     }
 }

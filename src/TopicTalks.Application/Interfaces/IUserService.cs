@@ -1,13 +1,14 @@
 ﻿using ErrorOr;
+using TopicTalks.Application.Dtos;
 using TopicTalks.Domain.Entities;
-using TopicTalks.Domain.Models;
 
 namespace TopicTalks.Application.Interfaces;
 
 public interface IUserService
 {
-    Task<ErrorOr<User>> Get(long? userId);
     Task<bool> IsEmailExists(string email);
-    Task<ErrorOr<string>> Login(LoginVM model);
-    Task<ErrorOr<User>> RegisterUser(RegisterVM model);
+    Task<bool> IsUserExists(long userId);
+    Task<ErrorOr<RegistrationResponse>> Register(RegistrationRequest request);
+    Task<ErrorOr<string>> Login(LoginRequest request);
+    Task<ErrorOr<User?>> GetAsync(long userId);
 }
