@@ -362,4 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-/src/OSL.WEB/wwwroot/lib
+# Client Libraries
+\src\TopicTalks.Web\wwwroot\lib

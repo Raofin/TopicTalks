@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "Api \u0026 Web Debug",
+    "Projects": [
+      {
+        "Name": "src\\TopicTalks.Api\\TopicTalks.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Name": "src\\TopicTalks.Web\\TopicTalks.Web.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      }
+    ]
+  }
+]

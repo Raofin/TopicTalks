@@ -1,0 +1,106 @@
+﻿@using TopicTalks.Web.Enums
+@using TopicTalks.Web.Models
+@using TopicTalks.Web.Extensions
+@model QuestionAnswerVM
+
+@{
+    var isCurrentUser = Context.UserId() == Model.Question.UserId.ToString();
+    var isTeacher = Context.UserRole() == RoleType.Teacher.ToString();
+
+    void RenderAnswers(List<AnswerVM> answers, int marginLeft = 0)
+    {
+        foreach (var answer in answers)
+        {
+            <div id="answer-@(answer.AnswerId) parent-@(answer.ParentAnswerId)" class="rounded border p-3 mb-3" style="margin-left: @(marginLeft)px;">
+                <div class="d-flex justify-content-between">
+                    <p><strong>@(answer.User?.Email ?? "Delete User")</strong> on @($"{answer.CreatedAt.ToString("MMM dd, yyyy")} ({answer.CreatedAt.TimeAgo()})")</p>
+                    <div class="d-flex gap-2">
+                        @if (Context.UserRole() == RoleType.Moderator.ToString() || answer.UserId.ToString() == Context.UserId())
+                        {
+                            <span class="link-text text-danger" onclick="deleteAnswer(@(answer.AnswerId))">Delete</span>
+                            <span class="link-text text-success" onclick="appendInput(@(answer.QuestionId), @(answer.AnswerId), 'edit')">Edit</span>
+                        }
+                        @if (Context.UserRole() == RoleType.Teacher.ToString() || answer.UserId.ToString() == Context.UserId())
+                        {
+                            <span class="link-text" onclick="appendInput(@(answer.QuestionId), @(answer.AnswerId))">Reply</span>
+                        }
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <p id="explanation-@(answer.AnswerId)">@answer.Explanation</p>
+                </div>
+            </div>
+
+            @if (answer.Answers != null)
+            {
+                RenderAnswers(answer.Answers, marginLeft + 50);
+            }
+            else
+            {
+                marginLeft = 0;
+            }
+        }
+    }
+}
+
+<div class="container mt-5">
+    <div id="question-details" class="q-list-container">
+        <div id="question-container">
+            <div class="d-flex justify-content-between">
+                @{
+                    var edited = "";
+                    if (Model.Question.UpdatedAt != null)
+                        edited = $"Edited at {Model.Question.UpdatedAt?.ToString("MMM dd, yyyy")}";
+                }
+                <p><strong>@(Model.Question.User?.Email ?? "Delete User")</strong> <i id="edited-at">@edited</i></p>
+                <p>@Model.Question.CreatedAt.ToString("MMM dd, yyyy | hh:mm tt") (@Model.Question.CreatedAt.TimeAgo())</p>
+            </div>
+            <div class="form-group row">
+                <p id="explanation">@Model.Question.Explanation</p>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div class="d-flex gap-2 topic">
+                    @foreach (var topic in Model.Question.Topic.SplitAndTrim())
+                    {
+                        <p>@topic</p>
+                    }
+                </div>
+                <div class="d-flex gap-2">
+                    @if (!Model.HasTeachersAnswer && (Context.UserRole() == RoleType.Moderator.ToString() || Model.Question.UserId.ToString() == Context.UserId()))
+                    {
+                        <span class="link-text text-danger" onclick="deleteQuestion(@Model.Question.QuestionId)">Delete</span>
+                    }
+                    @if (Context.UserRole() == RoleType.Moderator.ToString() || Model.Question.UserId.ToString() == Context.UserId())
+                    {
+                        <span class="link-text text-success" onclick="appendQuestionEditInput(@Model.Question.QuestionId)">Edit</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div id="answer-container">
+            @{
+                RenderAnswers(Model.AnswerVMs);
+            }
+        </div>
+
+        @if (isTeacher || isCurrentUser)
+        {
+            <div id="answer-input" class="col-sm-9 w-100">
+                <form action="/answer" method="post" id="answer-form">
+                    <input type="hidden" name="questionId" value="@(Model.Question.QuestionId)" />
+                    <div class="text-center w-100">
+                        <textarea id="reply-text" class="form-control mb-2" rows="3" placeholder="Write your answer here" name="explanation"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Post Answer</button>
+                    </div>
+                </form>
+            </div>
+        }
+    </div>
+</div>
+
+<script src="~/js/question-answer.js"></script>
