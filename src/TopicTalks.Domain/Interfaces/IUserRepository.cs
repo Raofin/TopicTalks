@@ -1,13 +1,10 @@
-﻿using ErrorOr;
-using TopicTalks.Domain.Entities;
+﻿using TopicTalks.Domain.Entities;
 
 namespace TopicTalks.Domain.Interfaces;
 
-public interface IUserRepository
+public interface IUserRepository : IRepository<User>
 {
     Task<bool> IsEmailExists(string email);
     Task<bool> IsUserExists(long? userId);
-    Task<ErrorOr<User>> Get(string email, long roleId);
-    Task<ErrorOr<User>> Get(long? userId);
-    Task<ErrorOr<User>> Register(User user, UserRole userRole, UserDetail? userDetail);
+    Task<User?> GetAsync(string email, long roleId);
 }

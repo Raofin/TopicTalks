@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using ErrorOr;
 using TopicTalks.Domain.Entities;
 using TopicTalks.Domain.Interfaces;
 
 namespace TopicTalks.Infrastructure.Persistence.Repositories;
 
-internal class UserRepository(TopicTalksDbContext _dbContext) : IUserRepository
+internal class UserRepository(TopicTalksDbContext dbContext) : Repository<User>(dbContext), IUserRepository
 {
+    private readonly TopicTalksDbContext _dbContext = dbContext;
+
     public async Task<bool> IsEmailExists(string email)
     {
         return await _dbContext.Users.AnyAsync(u => u.Email == email);
@@ -18,77 +18,14 @@ internal class UserRepository(TopicTalksDbContext _dbContext) : IUserRepository
         return await _dbContext.Users.AnyAsync(u => u.UserId == userId);
     }
 
-    public async Task<ErrorOr<User>> Register(User user, UserRole userRole, UserDetail? userDetail)
+    public async Task<User?> GetAsync(string email, long roleId)
     {
-        using (IDbContextTransaction transaction = _dbContext.Database.BeginTransaction())
-        {
-            try
-            {
-                _dbContext.Users.Add(user);
-                await _dbContext.SaveChangesAsync();
+        var user = await _dbContext.Users
+                    .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                    .Where(u => u.Email == email && u.UserRoles.Any(ur => ur.RoleId == roleId))
+                    .FirstOrDefaultAsync();
 
-                var userRoleEntity = new UserRole {
-                    UserId = user.UserId,
-                    RoleId = userRole.RoleId
-                };
-
-                _dbContext.UserRoles.Add(userRoleEntity);
-                await _dbContext.SaveChangesAsync();
-
-                if (userDetail?.Name is not null)
-                {
-                    userDetail.UserId = user.UserId;
-                    _dbContext.UserDetails.Add(userDetail);
-                    await _dbContext.SaveChangesAsync();
-                }
-
-                transaction.Commit();
-
-                return user;
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                return Error.Unexpected(description: ex.Message);
-            }
-        }
-    }
-
-    public async Task<ErrorOr<User>> Get(string email, long roleId)
-    {
-        try
-        {
-            var user = await _dbContext.Users
-                        .Include(u => u.UserRoles)
-                        .ThenInclude(ur => ur.Role)
-                        .Where(u => u.Email == email && u.UserRoles.Any(ur => ur.RoleId == roleId))
-                        .FirstOrDefaultAsync();
-
-            return user is null
-                ? Error.NotFound()
-                : user;
-        }
-        catch (Exception ex)
-        {
-            return Error.Unexpected(description: ex.Message);
-        }
-    }
-
-    public async Task<ErrorOr<User>> Get(long? userId)
-    {
-        try
-        {
-            var user = await _dbContext.Users
-                        .Where(u => u.UserId == userId)
-                        .FirstOrDefaultAsync();
-
-            return user is null
-                ? Error.NotFound()
-                : user;
-        }
-        catch (Exception ex)
-        {
-            return Error.Unexpected(description: ex.Message);
-        }
+        return user;
     }
 }

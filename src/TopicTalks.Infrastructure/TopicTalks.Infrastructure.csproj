@@ -16,8 +16,4 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Persistence\Repositories\" />
-	</ItemGroup>
-
 </Project>
