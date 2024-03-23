@@ -21,10 +21,11 @@ internal class UserRepository(TopicTalksDbContext dbContext) : Repository<User>(
     public async Task<User?> GetAsync(string email, long roleId)
     {
         var user = await _dbContext.Users
-                    .Include(u => u.UserRoles)
-                    .ThenInclude(ur => ur.Role)
-                    .Where(u => u.Email == email && u.UserRoles.Any(ur => ur.RoleId == roleId))
-                    .FirstOrDefaultAsync();
+            .Include(u => u.UserDetails)
+            .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .Where(u => u.Email == email && u.UserRoles.Any(ur => ur.RoleId == roleId))
+            .FirstOrDefaultAsync();
 
         return user;
     }

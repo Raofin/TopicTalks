@@ -9,6 +9,6 @@ public interface IUserService
     Task<bool> IsEmailExists(string email);
     Task<bool> IsUserExists(long userId);
     Task<ErrorOr<RegistrationResponse>> Register(RegistrationRequest request);
-    Task<ErrorOr<string>> Login(LoginRequest request);
+    Task<ErrorOr<LoginResponse>> Login(LoginRequest request);
     Task<ErrorOr<User?>> GetAsync(long userId);
 }

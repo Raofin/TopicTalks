@@ -7,3 +7,11 @@ public record LoginRequest(
     string Password,
     RoleName Role
 );
+
+public record LoginResponse(
+    long UserId,
+    string AccessToken,
+    string Email,
+    UserDetailDto? UserDetails,
+    List<RoleName?> Role
+);

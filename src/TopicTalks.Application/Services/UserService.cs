@@ -11,7 +11,7 @@ namespace TopicTalks.Application.Services;
 internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordService, IAuthService tokenService) : IUserService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IPasswordService _passwordService = passwordService; 
+    private readonly IPasswordService _passwordService = passwordService;
     private readonly IAuthService _tokenService = tokenService;
 
     public async Task<bool> IsEmailExists(string email)
@@ -76,7 +76,7 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
         return response;
     }
 
-    public async Task<ErrorOr<string>> Login(LoginRequest request)
+    public async Task<ErrorOr<LoginResponse>> Login(LoginRequest request)
     {
         var user = await _unitOfWork.User.GetAsync(request.Email, (long)request.Role);
 
@@ -92,8 +92,14 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
             return Error.Unauthorized();
         }
 
-        var token = _tokenService.GenerateJwtToken(user);
+        var response = new LoginResponse(
+            UserId: user.UserId,
+            AccessToken: _tokenService.GenerateJwtToken(user),
+            Email: user.Email,
+            UserDetails: user.UserDetails.FirstOrDefault().ToDto(),
+            Role: user.UserRoles.Select(ur => (RoleName?)ur.RoleId).ToList()
+        );
 
-        return token;
+        return response;
     }
 }

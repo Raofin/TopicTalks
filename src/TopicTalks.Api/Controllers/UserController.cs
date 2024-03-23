@@ -26,7 +26,7 @@ public class UserController(IUserService userService) : ControllerBase
     {
         var login = await _userService.Login(request);
 
-        return login.IsError
+        return login.Errors.Any(e => e.Type is ErrorType.NotFound or ErrorType.Unauthorized)
             ? Unauthorized("Invalid Credentials.")
             : Ok(login.Value);
     }
