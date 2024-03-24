@@ -15,7 +15,7 @@ builder.Services.AddSession();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowOrigin",
-        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
 builder.Services
@@ -52,9 +52,9 @@ else
     app.UseHsts();
 }
 
+app.UseStaticFiles();
 app.UseWebOptimizer();
 app.UseWebMarkupMin();
-app.UseStaticFiles();
 
 
 app.UseHttpsRedirection();
