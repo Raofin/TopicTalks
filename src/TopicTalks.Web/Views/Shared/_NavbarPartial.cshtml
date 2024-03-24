@@ -1,0 +1,68 @@
+﻿@using TopicTalks.Web.Extensions
+@using TopicTalks.Web.Enums
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="padding: 20px 100px;">
+    <div class="container-fluid">
+        <a class="navbar-brand logo-container" asp-area="" asp-controller="Default" asp-action="Index">
+            <img src="~/img/logo.svg" class="logo" />
+            <span class="logo-text">TopicTalks</span>
+        </a>
+
+        <ul class="navbar-nav">
+            @if (Context.UserRole() != null)
+            {
+                <li class="nav-item">
+                    <span class="nav-link text-dark role">@Context.UserRole()</span>
+                </li>
+            }
+        </ul>
+
+        <ul class="navbar-nav mx-auto d-flex">
+            @if (Context.UserId() != null)
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark nav-text" href="/">Dashboard</a>
+                </li>
+            }
+            @if (Context.UserRole() == RoleType.Student.ToString())
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark nav-text" href="/post-question">Post Questions</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark nav-text" href="/my-questions">My Questions</a>
+                </li>
+            }
+            @if (Context.UserRole() == RoleType.Teacher.ToString())
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark nav-text" href="/my-responses">My Responses</a>
+                </li>
+            }
+        </ul>
+
+        <ul class="navbar-nav">
+            @if (Context.UserId() is null)
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark nav-text" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark nav-text" href="/register">Register</a>
+                </li>
+            }
+            else
+            {
+                var email = Context.UserEmail();
+                <li class="nav-item">
+                    <p class="nav-link text-dark nav-text mb-0"><strong>@email</strong></p>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link link-text text-danger fw-bold nav-text" onclick="logout()">Logout</span>
+                </li>
+            }
+        </ul>
+
+    </div>
+</nav>

@@ -1,5 +1,5 @@
-﻿@using TopicTalks.Web.Enums
-@using TopicTalks.Web.Models
+﻿@using static TopicTalks.Web.Configs.AppSettings
+@using TopicTalks.Web.Enums
 @model TopicTalks.Web.Models.LoginVM
 
 <div class="container mt-5">
@@ -9,19 +9,19 @@
         <form id="login-form">
             <div class="form-group mb-3">
                 <label asp-for="Email">Email Address</label>
-                <input id="emailInput" asp-for="Email" name="Email" class="form-control" placeholder="Enter your email" />
+                <input id="emailInput" asp-for="Email" name="email" class="form-control" placeholder="Enter your email" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
                 <label asp-for="Password">Password</label>
-                <input asp-for="Password" type="password" name="Password" class="form-control" placeholder="Enter your password" />
+                <input asp-for="Password" type="password" name="password" class="form-control" placeholder="Enter your password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
             <div id="role" class="form-group mb-2">
                 <label asp-for="Role">Role</label>
-                <select asp-for="Role" name="Role" class="form-control">
+                <select asp-for="Role" name="role" class="form-control">
                     <option value="" selected disabled>Select a role...</option>
                     @foreach (var role in Enum.GetValues(typeof(RoleType)))
                     {
@@ -38,32 +38,36 @@
 </div>
 
 <script>
-    $("#login-form").submit(function (event) {
-        event.preventDefault();
-    });
-    $(document).ready(function () {
+    document.addEventListener("DOMContentLoaded", function () {
+
+        $("#login-form").submit(function (event) {
+            event.preventDefault();
+        });
+
         $('#login-form').validate({
             rules: {
-                Email: {
+                email: {
                     required: true,
                     email: true,
                     minlength: 8
                 },
-                Password: {
+                password: {
                     required: true,
                     minlength: 4
                 },
-                Role: {
+                role: {
                     required: true
                 }
             },
             messages: {
                 Email: {
                     required: "Please enter your email address",
-                    email: "Please enter a valid email address"
+                    email: "Please enter a valid email address",
+                    minlength: "Email must be at least 8 characters long"
                 },
                 Password: {
-                    required: "Please enter your password"
+                    required: "Please enter your password",
+                    minlength: "Password must be at least 4 characters long"
                 },
                 Role: {
                     required: "Please select a role"
@@ -71,14 +75,17 @@
             },
             submitHandler: function (form) {
                 $.ajax({
-                    url: '/login',
+                    url: '@ApiBaseUrl/api/User/login',
                     type: 'POST',
-                    data: $(form).serialize(),
+                    contentType: 'application/json',
+                    data: formToJson(form),
                     success: function (response) {
+                        console.log(response);
                         toastMessageNext("Login Successful!", ToastType.Success);
-                        window.location.href = '/';
+                        // window.location.href = '/';
                     },
                     error: function (xhr) {
+                        console.log(xhr.responseText);
                         if (xhr.status === 401) {
                             errorMessage = "Login failed. Please check your credentials and role selection.";
                             $('#role').after('<span class="text-danger d-block text-center">' + errorMessage + '</span>');
@@ -92,5 +99,3 @@
         });
     });
 </script>
-
-

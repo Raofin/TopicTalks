@@ -1,4 +1,16 @@
 ﻿
+function formToJson(formElement) {
+    const formDataArray = Array.from(new FormData(formElement));
+    const formDataObject = {};
+
+    formDataArray.forEach(([key, value]) => {
+        formDataObject[key] = value;
+    });
+
+    return JSON.stringify(formDataObject);
+}
+
+
 function formatDate(dateString) {
     const options = { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit', hour12: true };
     return new Date(dateString).toLocaleDateString('en-US', options);

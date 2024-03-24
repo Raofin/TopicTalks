@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using TopicTalks.Web.Configs;
 using TopicTalks.Web.Enums;
+using WebMarkupMin.AspNetCore8;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.InitializeAppSettings();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
@@ -11,9 +15,7 @@ builder.Services.AddSession();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowOrigin",
-        builder => builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
+        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
 builder.Services
@@ -33,22 +35,31 @@ builder.Services
         options.Cookie.SameSite = SameSiteMode.Strict;
     });
 
+
 builder.Services.AddMvc();
+builder.Services.InitializeWebOptimizer(builder);
+builder.Services.InitializeWebMarkupMin();
+
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler();
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+app.UseWebOptimizer();
+app.UseWebMarkupMin();
 app.UseStaticFiles();
 
+
+app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseSession();
-
 app.UseAuthentication();
 app.UseAuthorization();
 

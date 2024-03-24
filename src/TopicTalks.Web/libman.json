@@ -4,23 +4,22 @@
   "libraries": [
     {
       "library": "bootstrap@5.3.3",
-      "destination": "wwwroot/lib/bootstrap/",
+      "destination": "wwwroot/lib/bootstrap-5.3.3/",
       "files": [
-        "js/bootstrap.min.js",
         "css/bootstrap.min.css",
         "js/bootstrap.bundle.min.js"
       ]
     },
     {
       "library": "jquery@3.7.1",
-      "destination": "wwwroot/lib/jquery/",
+      "destination": "wwwroot/lib/jquery-3.7.1/",
       "files": [
         "jquery.min.js"
       ]
     },
     {
       "library": "jquery-validate@1.20.0",
-      "destination": "wwwroot/lib/jquery-validate/",
+      "destination": "wwwroot/lib/jquery-validate-1.20.0/",
       "files": [
         "jquery.validate.min.js"
       ]
