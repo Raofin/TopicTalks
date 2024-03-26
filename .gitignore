@@ -363,4 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Client Libraries
-\src\TopicTalks.Web\wwwroot\lib
+src/TopicTalks.Web/wwwroot/lib
