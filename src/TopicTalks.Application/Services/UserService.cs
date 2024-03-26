@@ -94,7 +94,7 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
 
         var response = new LoginResponse(
             UserId: user.UserId,
-            AccessToken: _tokenService.GenerateJwtToken(user),
+            Token: _tokenService.GenerateJwtToken(user),
             Email: user.Email,
             UserDetails: user.UserDetails.FirstOrDefault().ToDto(),
             Role: user.UserRoles.Select(ur => (RoleName?)ur.RoleId).ToList()

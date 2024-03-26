@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TopicTalks.Web.Services;
+using TopicTalks.Web.VIewModels;
 
 namespace TopicTalks.Web.Controllers;
 
-public class UserController(IHttpContextAccessor _httpAccessor) : Controller
+public class UserController(IAuthService authService) : Controller
 {
+    private readonly IAuthService _authService = authService;
+
     [HttpGet("register")]
     public IActionResult Register()
     {
@@ -18,14 +21,19 @@ public class UserController(IHttpContextAccessor _httpAccessor) : Controller
         return View();
     }
 
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginViewModel login)
+    {
+        var isSignInSuccessful = await _authService.SignInWithTokenAsync(login.Token);
+
+        return isSignInSuccessful ? Ok() : Unauthorized();
+    }
+
     [HttpGet("logout")]
     public async Task<IActionResult> LogoutAsync()
     {
-        if (_httpAccessor.HttpContext != null)
-        {
-            await _httpAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        }
-
-        return Ok();
+        await _authService.SignOutAsync();
+        return RedirectToAction("Index", "Home");
     }
+
 }

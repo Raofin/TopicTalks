@@ -10,7 +10,7 @@ public record LoginRequest(
 
 public record LoginResponse(
     long UserId,
-    string AccessToken,
+    string Token,
     string Email,
     UserDetailDto? UserDetails,
     List<RoleName?> Role

@@ -1,4 +1,4 @@
-﻿@using static TopicTalks.Web.Configs.AppSettings
+﻿@using static TopicTalks.Web.Configs.AppSettingsFetcher
 @using TopicTalks.Web.Enums
 @model TopicTalks.Web.Models.LoginVM
 
@@ -82,7 +82,7 @@
                     success: function (response) {
                         console.log(response);
                         toastMessageNext("Login Successful!", ToastType.Success);
-                        // window.location.href = '/';
+                        $.post('/login', response).done(function () { window.location.href = '/protected'; });
                     },
                     error: function (xhr) {
                         console.log(xhr.responseText);
