@@ -4,17 +4,20 @@ using TopicTalks.Infrastructure.Persistence;
 using TopicTalks.Application;
 using FluentValidation.AspNetCore;
 using TopicTalks.Api.Validators;
+using TopicTalks.Api.Configs;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddAppSettingFetcher();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerConfig();
 builder.Services.AddHealthChecks();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddApplication()
-                .AddInfrastructure();
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
@@ -23,12 +26,10 @@ builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
 builder.Services.AddDbContext<TopicTalksDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddAuthConfig();
 builder.Services.AddCors(options => {
-    options.AddPolicy("AllowSpecificOrigin",
-        builder => builder
-            .WithOrigins("*")
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+    options.AddPolicy("AllowOrigin",
+        policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
 var app = builder.Build();
@@ -39,11 +40,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowSpecificOrigin");
 app.MapHealthChecks("health");
 
+app.UseCors("AllowOrigin");
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

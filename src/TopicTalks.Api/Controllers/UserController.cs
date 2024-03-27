@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Interfaces;
@@ -29,5 +30,16 @@ public class UserController(IUserService userService) : ControllerBase
         return login.Errors.Any(e => e.Type is ErrorType.NotFound or ErrorType.Unauthorized)
             ? Unauthorized("Invalid Credentials.")
             : Ok(login.Value);
+    }
+
+    [Authorize]
+    [HttpGet("User")]
+    public async Task<IActionResult> GetUser(long userId)
+    {
+        var user = await _userService.GetAsync(userId);
+
+        return user.Errors.Any(e => e.Type is ErrorType.NotFound)
+            ? NotFound("User not found.")
+            : Ok(user.Value);
     }
 }
