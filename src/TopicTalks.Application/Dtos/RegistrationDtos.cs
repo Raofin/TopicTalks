@@ -7,7 +7,7 @@ public record RegistrationRequest(
     string Password,
     string ConfirmPassword,
     RoleName Role,
-    UserDetailDto UserDetails
+    UserDetailDto? UserDetails
 );
 
 public record RegistrationResponse(

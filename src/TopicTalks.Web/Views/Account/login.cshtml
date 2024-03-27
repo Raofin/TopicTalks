@@ -1,12 +1,11 @@
-﻿@using static TopicTalks.Web.Configs.AppSettingsFetcher
-@using TopicTalks.Web.Enums
-@model TopicTalks.Web.Models.LoginVM
+﻿@using TopicTalks.Web.Enums
+@model TopicTalks.Web.ViewModels.LoginViewModel
 
 <div class="container mt-5">
     <div class="container-div" style="max-width: 430px;">
         <h2 class="mb-4 text-center">Login</h2>
 
-        <form id="login-form">
+        <form id="login-form" asp-controller="Account" asp-action="Login" method="post">
             <div class="form-group mb-3">
                 <label asp-for="Email">Email Address</label>
                 <input id="emailInput" asp-for="Email" name="email" class="form-control" placeholder="Enter your email" />
@@ -28,6 +27,8 @@
                         <option value="@role">@role</option>
                     }
                 </select>
+                <span id="error-response" class="text-danger d-block text-center"></span>
+
             </div>
 
             <div class="text-center pt-2">
@@ -37,9 +38,9 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
+@section Scripts
+{
+    <script>
         $("#login-form").submit(function (event) {
             event.preventDefault();
         });
@@ -75,27 +76,22 @@
             },
             submitHandler: function (form) {
                 $.ajax({
-                    url: '@ApiBaseUrl/api/User/login',
+                    url: '/login',
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: formToJson(form),
+                    data: $(form).serialize(),
                     success: function (response) {
-                        console.log(response);
                         toastMessageNext("Login Successful!", ToastType.Success);
-                        $.post('/login', response).done(function () { window.location.href = '/protected'; });
+                        window.location.href = '/dashboard';
                     },
                     error: function (xhr) {
-                        console.log(xhr.responseText);
                         if (xhr.status === 401) {
-                            errorMessage = "Login failed. Please check your credentials and role selection.";
-                            $('#role').after('<span class="text-danger d-block text-center">' + errorMessage + '</span>');
+                            $('#error-response').html("Login failed. Please check your credentials and role selection.");
                         } else {
-                            errorMessage = xhr.responseText || "Internal server error. Please try again later.";
-                            toastMessage(errorMessage);
+                            toastMessage("Internal server error. Please try again later.");
                         }
                     }
                 });
             }
         });
-    });
-</script>
+    </script>
+}

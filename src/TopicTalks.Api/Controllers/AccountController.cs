@@ -6,9 +6,9 @@ using TopicTalks.Application.Interfaces;
 
 namespace TopicTalks.Api.Controllers;
 
-[Route("api/[controller]")]
+[Route("api")]
 [ApiController]
-public class UserController(IUserService userService) : ControllerBase
+public class AccountController(IUserService userService) : ControllerBase
 {
     private readonly IUserService _userService = userService;
 

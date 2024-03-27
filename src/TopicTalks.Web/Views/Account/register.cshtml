@@ -1,12 +1,11 @@
 ﻿@using TopicTalks.Web.Enums
-@using TopicTalks.Web.Models
-@model TopicTalks.Web.Models.RegisterVM
+@model TopicTalks.Web.ViewModels.RegisterViewModel
 
 <div class="container mt-5">
     <div class="container-div" style="max-width: 430px;">
         <h2 class="mb-4 text-center">Registration</h2>
 
-        <form id="registration" asp-action="register" method="post">
+        <form id="registration" asp-controller="Account" asp-action="Register" method="post">
             <div class="form-group mb-3">
                 <label asp-for="Email">Email Address</label>
                 <input asp-for="Email" class="form-control" placeholder="Enter your email" />
@@ -28,7 +27,7 @@
             <!-- Additional input fields for Student role -->
             <div class="card rounded-border mb-3 student-details" id="additionalFields" style="display: none;">
                 <div class="card-body">
-                    <h5 class="text-center">Student Deatils</h5>
+                    <h5 class="text-center">Student Details</h5>
                     <div class="form-group">
                         <label asp-for="UserDetail.Name">Name</label>
                         <input asp-for="UserDetail.Name" class="form-control" placeholder="Enter your name" />
@@ -67,9 +66,9 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
+@section Scripts
+{
+    <script>
         $("#additionalFields").hide();
 
         $("#Role").change(function () {
@@ -154,15 +153,16 @@
                         window.location.href = '/login';
                     },
                     error: function (xhr) {
-                        if (xhr.status === 409) {
-                            $('#Role').after('<span class="text-danger d-block text-center">' + xhr.responseText + '</span>');
+                        if (xhr.status == 409) {
+                            toastMessage("User with the provided email already exists.");
+                        } else if (xhr.status === 422){
+                            toastMessage("Please fill out all the fields properly.");
                         } else {
-                            errorMessage = xhr.responseText || "Internal server error. Please try again later.";
-                            toastMessage(errorMessage);
+                            toastMessage("Internal server error. Please try again later.");
                         }
                     }
                 });
             }
         });
-    });
-</script>
+    </script>
+}
