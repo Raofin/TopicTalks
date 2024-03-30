@@ -2,9 +2,10 @@
 
 namespace TopicTalks.Domain;
 
-public interface IUnitOfWork
+public interface IUnitOfWork : IDisposable
 {
     IUserRepository User { get; }
-    Task<int> Complete();
-    Task Dispose();
+    IAnswerRepository Answer { get; }
+
+    Task<int> CommitAsync();
 }

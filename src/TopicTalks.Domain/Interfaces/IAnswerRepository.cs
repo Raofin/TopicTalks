@@ -1,15 +1,12 @@
-﻿using ErrorOr;
-using TopicTalks.Domain.Entities;
+﻿using TopicTalks.Domain.Entities;
 
 namespace TopicTalks.Domain.Interfaces;
 
-public interface IAnswerRepository
+public interface IAnswerRepository : IRepository<Answer>
 {
-    Task<ErrorOr<Answer>> Create(Answer answer);
-    Task<ErrorOr<Answer>> Get(long answerId);
-    Task<ErrorOr<List<Answer>>> Get(long questionId, long parentAnswerId);
-    Task<ErrorOr<Answer>> Get(long questionId, long answerId, long parentAnswerId);
-    Task<ErrorOr<Answer>> Update(Answer updatedAnswer);
-    Task<ErrorOr<long>> Delete(long answerId);
-    Task<ErrorOr<bool>> HasTeachersAnswer(int questionId);
+    Task<Answer?> GetWithUserAsync(long answerId);
+    Task<List<Answer>> GetParentAnswersAsync(long questionId, long parentAnswerId);
+    Task<Answer?> GetRepliesAsync(long questionId, long answerId, long parentAnswerId);
+    Task RemoveWithRepliesAsync(long answerId);
+    Task<bool> HasTeachersAnswerAsync(int questionId);
 }

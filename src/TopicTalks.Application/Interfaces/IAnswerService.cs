@@ -1,15 +1,14 @@
 ﻿using ErrorOr;
-using TopicTalks.Domain.Entities;
-using TopicTalks.Domain.Models;
+using TopicTalks.Application.Dtos;
 
 namespace TopicTalks.Application.Interfaces;
 
 public interface IAnswerService
 {
-    Task<ErrorOr<List<AnswerVM>>> AnswersWithReplies(long questionId, long parentAnswerId = 0);
-    Task<ErrorOr<Answer>> Create(AnswerVM model);
-    Task<ErrorOr<long>> Delete(long answerId);
-    Task<ErrorOr<Answer>> Get(long answerId);
-    Task<ErrorOr<bool>> HasTeachersAnswer(int questionId);
-    Task<ErrorOr<Answer>> Update(AnswerVM model);
+    Task<AnswerResponseDto?> Create(AnswerRequestDto dto);
+    Task<ErrorOr<AnswerResponseDto>> GetWithUserAsync(long questionId);
+    Task<ErrorOr<Success>> UpdateAsync(AnswerRequestDto dto);
+    Task<ErrorOr<Success>> DeleteAsync(long answerId);
+    Task<bool> HasTeachersAnswer(int questionId);
+    Task<List<AnswerWithRepliesDto>> AnswersWithReplies(long questionId, long parentAnswerId = 0);
 }

@@ -62,7 +62,7 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
         }
 
         await _unitOfWork.User.AddAsync(user);
-        await _unitOfWork.Complete();
+        await _unitOfWork.CommitAsync();
 
         var x = user;
 
