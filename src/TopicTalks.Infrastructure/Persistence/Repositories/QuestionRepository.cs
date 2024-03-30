@@ -6,8 +6,10 @@ using TopicTalks.Domain.Models;
 
 namespace TopicTalks.Infrastructure.Persistence.Repositories;
 
-internal class QuestionRepository(TopicTalksDbContext _dbContext) : IQuestionRepository
+internal class QuestionRepository(AppDbContext dbContext) : IQuestionRepository
 {
+    private readonly AppDbContext _dbContext = dbContext;
+
     public async Task<ErrorOr<Question>> CreateQuestion(Question question)
     {
         try

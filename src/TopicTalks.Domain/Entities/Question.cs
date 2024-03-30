@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace TopicTalks.Domain.Entities;
 
-namespace TopicTalks.Domain.Entities;
-
-public partial class Question
+public class Question
 {
     public long QuestionId { get; set; }
 
@@ -17,5 +14,5 @@ public partial class Question
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual User? User { get; set; }
+    public User? User { get; set; }
 }

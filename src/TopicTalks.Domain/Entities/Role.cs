@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace TopicTalks.Domain.Entities;
 
-namespace TopicTalks.Domain.Entities;
-
-public partial class Role
+public class Role
 {
     public long RoleId { get; set; }
 

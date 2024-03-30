@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace TopicTalks.Domain.Entities;
 
-namespace TopicTalks.Domain.Entities;
-
-public partial class UserRole
+public class UserRole
 {
-    public long UserRoleId { get; set; }
+    public long UserId { get; set; }
 
-    public long? UserId { get; set; }
+    public long RoleId { get; set; }
 
-    public long? RoleId { get; set; }
+    public User User { get; set; } = null!;
 
-    public virtual Role? Role { get; set; }
-
-    public virtual User? User { get; set; }
+    public Role Role { get; set; } = null!;
 }

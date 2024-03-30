@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace TopicTalks.Domain.Entities;
 
-namespace TopicTalks.Domain.Entities;
-
-public partial class User
+public class User
 {
     public long UserId { get; set; }
 
@@ -15,11 +12,11 @@ public partial class User
 
     public DateTime CreatedAt { get; set; }
 
-    public virtual ICollection<Answer> Answers { get; set; } = new List<Answer>();
+    public ICollection<Answer> Answers { get; set; } = new List<Answer>();
 
-    public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
+    public ICollection<Question> Questions { get; set; } = new List<Question>();
 
-    public virtual ICollection<UserDetail> UserDetails { get; set; } = new List<UserDetail>();
+    public ICollection<UserDetail> UserDetails { get; set; } = new List<UserDetail>();
 
-    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

@@ -5,6 +5,7 @@ using TopicTalks.Application;
 using FluentValidation.AspNetCore;
 using TopicTalks.Api.Validators;
 using TopicTalks.Api.Configs;
+using TopicTalks.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
 
-builder.Services.AddDbContext<TopicTalksDbContext>(
+builder.Services.AddDbContext<AppDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddAuthConfig();

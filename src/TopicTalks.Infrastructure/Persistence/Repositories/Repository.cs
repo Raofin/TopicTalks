@@ -4,7 +4,7 @@ using TopicTalks.Domain.Interfaces;
 
 namespace TopicTalks.Infrastructure.Persistence.Repositories;
 
-internal class Repository<TEntity>(TopicTalksDbContext context) : IRepository<TEntity> where TEntity : class
+internal class Repository<TEntity>(AppDbContext context) : IRepository<TEntity> where TEntity : class
 {
     private readonly DbSet<TEntity> _entities = context.Set<TEntity>();
 

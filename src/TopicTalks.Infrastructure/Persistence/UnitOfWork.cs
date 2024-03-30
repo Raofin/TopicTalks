@@ -3,9 +3,9 @@ using TopicTalks.Domain.Interfaces;
 
 namespace TopicTalks.Infrastructure.Persistence;
 
-internal class UnitOfWork(TopicTalksDbContext dbContext, IUserRepository userRepository) : IUnitOfWork
+internal class UnitOfWork(AppDbContext dbContext, IUserRepository userRepository) : IUnitOfWork
 {
-    private readonly TopicTalksDbContext _context = dbContext;
+    private readonly AppDbContext _context = dbContext;
 
     public IUserRepository User { get; } = userRepository;
 

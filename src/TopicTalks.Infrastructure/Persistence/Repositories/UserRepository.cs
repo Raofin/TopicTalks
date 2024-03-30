@@ -4,9 +4,9 @@ using TopicTalks.Domain.Interfaces;
 
 namespace TopicTalks.Infrastructure.Persistence.Repositories;
 
-internal class UserRepository(TopicTalksDbContext dbContext) : Repository<User>(dbContext), IUserRepository
+internal class UserRepository(AppDbContext dbContext) : Repository<User>(dbContext), IUserRepository
 {
-    private readonly TopicTalksDbContext _dbContext = dbContext;
+    private readonly AppDbContext _dbContext = dbContext;
 
     public async Task<bool> IsEmailExists(string email)
     {

@@ -3,9 +3,9 @@ using TopicTalks.Domain.Entities;
 
 namespace TopicTalks.Infrastructure.Persistence;
 
-public partial class TopicTalksDbContext
+public static class SeedData
 {
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder)
+    public static void Seed(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Role>().HasData(
             new Role { RoleId = 1, RoleName = "Student" },
@@ -20,9 +20,9 @@ public partial class TopicTalksDbContext
         );
 
         modelBuilder.Entity<UserRole>().HasData(
-            new UserRole { UserRoleId = 1, UserId = 1, RoleId = 1 },
-            new UserRole { UserRoleId = 2, UserId = 2, RoleId = 2 },
-            new UserRole { UserRoleId = 3, UserId = 3, RoleId = 3 }
+            new UserRole { UserId = 1, RoleId = 1 },
+            new UserRole { UserId = 2, RoleId = 2 },
+            new UserRole { UserId = 3, RoleId = 3 }
         );
 
         modelBuilder.Entity<UserDetail>().HasData(
@@ -45,7 +45,5 @@ public partial class TopicTalksDbContext
             new Answer { AnswerId = 4, ParentAnswerId = 0, QuestionId = 1, Explanation = "Lorem ipsum dolor sit amet, consectetur adipiscing.", UserId = 2, CreatedAt = DateTime.Now },
             new Answer { AnswerId = 5, ParentAnswerId = 4, QuestionId = 1, Explanation = "Lorem ipsum dolor sit amet.", UserId = 1, CreatedAt = DateTime.Now }
         );
-
-        base.OnModelCreating(modelBuilder);
     }
 }

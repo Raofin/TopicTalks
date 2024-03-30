@@ -5,8 +5,10 @@ using TopicTalks.Domain.Interfaces;
 
 namespace TopicTalks.Infrastructure.Persistence.Repositories;
 
-internal class AnswerRepository(TopicTalksDbContext _dbContext) : IAnswerRepository
+internal class AnswerRepository(AppDbContext dbContext) : IAnswerRepository
 {
+    private readonly AppDbContext _dbContext = dbContext;
+
     public async Task<ErrorOr<Answer>> Create(Answer answer)
     {
         try
