@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using TopicTalks.Api.Attributes;
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Interfaces;
 using TopicTalks.Domain.Enums;
@@ -25,7 +26,7 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
             : Ok(answer.Value);
     }
 
-    [Authorize(Roles = nameof(RoleType.Student) + "," + nameof(RoleType.Teacher))]
+    [AuthorizeRoles(RoleType.Student, RoleType.Teacher)]
     [HttpPost]
     public async Task<IActionResult> PostAnswer(AnswerRequestDto dto)
     {

@@ -2,6 +2,7 @@
 using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TopicTalks.Api.Attributes;
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Interfaces;
 using TopicTalks.Domain.Enums;
@@ -91,7 +92,7 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
             };
     }
 
-    [Authorize(Roles = nameof(RoleType.Student))]
+    [AuthorizeStudent]
     [HttpGet("currentUser/questions")]
     public async Task<IActionResult> GetCurrentUserQuestions()
     {
@@ -102,7 +103,7 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
         return Ok(questions);
     }
 
-    [Authorize(Roles = nameof(RoleType.Teacher))]
+    [AuthorizeTeacher]
     [HttpGet("currentUser/responses")]
     public async Task<IActionResult> GetCurrentUserResponses()
     {
