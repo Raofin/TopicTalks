@@ -17,7 +17,7 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
 
     [Authorize]
     [HttpGet("{answerId}")]
-    public async Task<IActionResult> Answer(long answerId)
+    public async Task<IActionResult> Get(long answerId)
     {
         var answer = await _answerService.GetWithUserAsync(answerId);
 
@@ -28,7 +28,7 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
 
     [AuthorizeRoles(RoleType.Student, RoleType.Teacher)]
     [HttpPost]
-    public async Task<IActionResult> PostAnswer(AnswerRequestDto dto)
+    public async Task<IActionResult> Create(AnswerRequestDto dto)
     {
         var answer = await _answerService.Create(dto);
 
@@ -37,7 +37,7 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
 
     [Authorize]
     [HttpPatch]
-    public async Task<IActionResult> UpdateAnswer(AnswerRequestDto dto)
+    public async Task<IActionResult> Update(AnswerRequestDto dto)
     {
         var response = await _answerService.UpdateAsync(dto);
 
@@ -51,7 +51,7 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
 
     [Authorize]
     [HttpDelete]
-    public async Task<IActionResult> DeleteAnswer(long answerId)
+    public async Task<IActionResult> Delete(long answerId)
     {
         var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
