@@ -53,22 +53,11 @@ internal class QuestionService(IUnitOfWork unitOfWork) : IQuestionService
             );
     }
 
-    public async Task<List<QuestionResponseWithTeacherDto>> SearchAsync(string? searchText)
+    public async Task<List<QuestionResponseDto>> SearchAsync(string? searchText)
     {
         var questions = await _unitOfWork.Question.SearchAsync(searchText?.Trim());
 
-        var responseDtos = questions.Select(q => new QuestionResponseWithTeacherDto(
-            QuestionId: q.QuestionId,
-            Topic: q.Topic,
-            Explanation: q.Explanation,
-            HasTeachersResponse: q.HasTeachersResponse,
-            UserInfo: q.User is null ? null : new UserBasicInfo(
-                UserId: q.User.UserId,
-                Email: q.User.Email
-            ),
-            CreatedAt: q.CreatedAt,
-            UpdatedAt: q.UpdatedAt
-        )).ToList();
+        var responseDtos = questions.Select(q => q.ToDto()).ToList();
 
         return responseDtos;
     }
@@ -85,6 +74,38 @@ internal class QuestionService(IUnitOfWork unitOfWork) : IQuestionService
         var questions = await _unitOfWork.Question.GetByUserResponses(userId);
 
         return questions.Select(q => q.ToDto()).ToList();
+    }
+
+    public async Task<ErrorOr<QuestionWithAnswersDto>> GetWithAnswersAsync(long questionId)
+    {
+        var question = await _unitOfWork.Question.GetWithAnswers(questionId);
+
+        return question is null
+            ? Error.NotFound()
+            : new QuestionWithAnswersDto(
+                QuestionId: question.QuestionId,
+                Topic: question.Topic,
+                Explanation: question.Explanation,
+                HasTeachersResponse: question.Answers
+                    .Any(answer => answer.User is not null && answer.User.UserRoles
+                        .Any(ur => ur.Role.RoleName == nameof(RoleType.Teacher))),
+                UserInfo: question.User is null
+                    ? null
+                    : new UserBasicInfo(question.User.UserId, question.User.Email),
+                Answers: question.Answers.Select(answer => new AnswerResponseDto(
+                        answer.AnswerId,
+                        answer.ParentAnswerId,
+                        answer.QuestionId,
+                        answer.Explanation,
+                        answer.CreatedAt,
+                        answer.User is null
+                            ? null
+                            : new UserBasicInfo(answer.User.UserId, answer.User.Email)
+                    )
+                ).ToList(),
+                CreatedAt: question.CreatedAt,
+                UpdatedAt: question.UpdatedAt
+            );
     }
 
     public async Task<ErrorOr<QuestionResponseDto>> UpdateAsync(QuestionRequestDto dto)

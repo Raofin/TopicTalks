@@ -33,6 +33,10 @@ public class QuestionConfig : IEntityTypeConfiguration<Question>
             .OnDelete(DeleteBehavior.SetNull)
             .HasConstraintName("FK_Questions_Users");
 
+        entity.HasMany(q => q.Answers)
+            .WithOne(a => a.Question)
+            .HasForeignKey(a => a.QuestionId);
+
         // Index Configuration
         entity.HasIndex(e => e.UserId, "IX_Questions_UserId");
     }

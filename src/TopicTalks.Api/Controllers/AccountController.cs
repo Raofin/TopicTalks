@@ -1,12 +1,13 @@
 ﻿using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Interfaces;
 
 namespace TopicTalks.Api.Controllers;
 
-[Route("api")]
+[Route("api/account")]
 [ApiController]
 public class AccountController(IUserService userService) : ControllerBase
 {
@@ -33,9 +34,11 @@ public class AccountController(IUserService userService) : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("User")]
-    public async Task<IActionResult> GetUser(long userId)
+    [HttpGet("details")]
+    public async Task<IActionResult> GetUser()
     {
+        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
         var user = await _userService.GetAsync(userId);
 
         return user.Errors.Any(e => e.Type is ErrorType.NotFound)

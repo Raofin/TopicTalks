@@ -14,5 +14,7 @@ public class Answer
 
     public DateTime CreatedAt { get; set; }
 
+    public Question Question { get; set; } = null!;
+
     public User? User { get; set; }
 }

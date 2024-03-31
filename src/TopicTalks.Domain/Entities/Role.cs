@@ -6,5 +6,5 @@ public class Role
 
     public string RoleName { get; set; } = null!;
 
-    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

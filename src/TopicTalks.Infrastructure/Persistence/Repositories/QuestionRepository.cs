@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TopicTalks.Domain.Entities;
 using TopicTalks.Domain.Enums;
 using TopicTalks.Domain.Interfaces;
@@ -79,6 +78,19 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
         ).ToListAsync();
 
         return questions;
+    }
+
+    public async Task<Question?> GetWithAnswers(long questionId)
+    {
+        var question = await _dbContext.Questions
+            .Include(q => q.Answers)
+            .ThenInclude(a => a.User)
+            .ThenInclude(u => u!.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .Where(q => q.QuestionId == questionId)
+            .SingleOrDefaultAsync();
+
+        return question;
     }
 
     public void Update(Question question)

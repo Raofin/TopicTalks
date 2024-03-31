@@ -3,6 +3,7 @@ using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Interfaces;
 using TopicTalks.Domain;
 using TopicTalks.Domain.Entities;
+using TopicTalks.Domain.Enums;
 
 namespace TopicTalks.Application.Services;
 
@@ -47,28 +48,53 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
                 );
     }
 
-    public async Task<ErrorOr<Success>> UpdateAsync(AnswerRequestDto dto)
+    public async Task<ErrorOr<AnswerResponseDto>> UpdateAsync(AnswerRequestDto dto)
     {
-        var answer = new Answer {
-            AnswerId = dto.AnswerId,
-            Explanation = dto.Explanation
-        };
+        var answer = await _unitOfWork.Answer.GetAsync(dto.AnswerId);
 
-        await _unitOfWork.Answer.AddAsync(answer);
+        if (answer is null)
+        {
+            return Error.NotFound();
+        }
+
+        answer.Explanation = dto.Explanation;
+
+        _unitOfWork.Answer.Update(answer);
         var updates = await _unitOfWork.CommitAsync();
 
         return updates == 0
-            ? Error.NotFound()
-            : Result.Success;
+            ? Error.Unexpected()
+            : new AnswerResponseDto(
+                AnswerId: answer.AnswerId,
+                ParentAnswerId: answer.ParentAnswerId,
+                QuestionId: answer.QuestionId,
+                Explanation: answer.Explanation,
+                CreatedAt: answer.CreatedAt,
+                UserInfo: answer.User is null
+                    ? null
+                    : new UserBasicInfo(answer.User.UserId, answer.User.Email)
+            );
     }
 
-    public async Task<ErrorOr<Success>> DeleteAsync(long answerId)
+    public async Task<ErrorOr<Success>> DeleteAsync(long answerId, string role, long userId)
     {
-        await _unitOfWork.Answer.RemoveWithRepliesAsync(answerId);
+        var answer = await _unitOfWork.Answer.GetAsync(answerId);
+
+        if (answer is null)
+        {
+            return Error.NotFound();
+        }
+
+        if (answer.UserId != userId || role is not nameof(RoleType.Student) and not nameof(RoleType.Teacher))
+        {
+            return Error.Unauthorized();
+        }
+
+        _unitOfWork.Answer.Remove(answer);
         var deletes = await _unitOfWork.CommitAsync();
 
         return deletes == 0
-            ? Error.NotFound()
+            ? Error.Unexpected()
             : Result.Success;
     }
 

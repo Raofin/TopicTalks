@@ -33,6 +33,17 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
             : Ok(response.Value);
     }
 
+    [Authorize]
+    [HttpGet("withAnswers/{questionId}")]
+    public async Task<IActionResult> GetWithAnswers(int questionId)
+    {
+        var question = await _questionService.GetWithAnswersAsync(questionId);
+
+        return question.IsError
+            ? NotFound()
+            : Ok(question.Value);
+    }
+
     [HttpGet("search/{query}")]
     public async Task<IActionResult> Search(string query = "")
     {

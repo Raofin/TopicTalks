@@ -41,15 +41,6 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
         return answer;
     }
 
-    public async Task RemoveWithRepliesAsync(long answerId)
-    {
-        var answersWithReplies = await _dbContext.Answers
-                .Where(a => a.AnswerId == answerId || a.ParentAnswerId == answerId)
-                .ToListAsync();
-
-        _dbContext.RemoveRange(answersWithReplies);
-    }
-
     public async Task<bool> HasTeachersAnswerAsync(int questionId)
     {
         var hasTeachersAnswer = await _dbContext.Answers
@@ -60,5 +51,10 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
                 .AnyAsync();
 
         return hasTeachersAnswer;
+    }
+
+    public void Update(Answer answer)
+    {
+        _dbContext.Answers.Update(answer);
     }
 }

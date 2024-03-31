@@ -19,5 +19,7 @@ public class Question
 
     public DateTime? UpdatedAt { get; set; }
 
+    public ICollection<Answer> Answers { get; set; } = new List<Answer>();
+
     public User? User { get; set; }
 }
