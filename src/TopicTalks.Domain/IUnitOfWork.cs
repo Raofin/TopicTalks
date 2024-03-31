@@ -6,6 +6,7 @@ public interface IUnitOfWork : IDisposable
 {
     IUserRepository User { get; }
     IAnswerRepository Answer { get; }
+    IQuestionRepository Question { get; }
 
     Task<int> CommitAsync();
 }

@@ -1,171 +1,88 @@
-﻿using ErrorOr;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TopicTalks.Domain.Entities;
+using TopicTalks.Domain.Enums;
 using TopicTalks.Domain.Interfaces;
-using TopicTalks.Domain.Models;
 
 namespace TopicTalks.Infrastructure.Persistence.Repositories;
 
-internal class QuestionRepository(AppDbContext dbContext) : IQuestionRepository
+internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>(dbContext), IQuestionRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task<ErrorOr<Question>> CreateQuestion(Question question)
+    public async Task<List<Question>> SearchAsync(string? searchText)
     {
-        try
-        {
-            _dbContext.Questions.Add(question);
-            await _dbContext.SaveChangesAsync();
+        var searchTextLower = searchText?.ToLower();
 
-            return question;
-        }
-        catch (Exception ex)
-        {
-            return Error.Unexpected(description: ex.Message);
-        }
-    }
-
-    public async Task<ErrorOr<List<QuestionModel>>> Get(string? searchText)
-    {
-        try
-        {
-            var searchTextLower = searchText?.ToLower();
-
-            var questions = await _dbContext.Questions
-                .Include(q => q.User)
-                .OrderByDescending(q => q.CreatedAt)
-                .Where(q => string.IsNullOrEmpty(searchTextLower)
-                         || q.Topic.ToLower().Contains(searchTextLower)
-                         || q.Explanation.ToLower().Contains(searchTextLower))
-                .Select(q => new QuestionModel {
-                    Question = new Question {
-                        QuestionId = q.QuestionId,
-                        Topic = q.Topic,
-                        Explanation = q.Explanation,
-                        UserId = q.UserId,
-                        CreatedAt = q.CreatedAt,
-                        UpdatedAt = q.UpdatedAt,
-                        User = q.User,
-                    },
-                    HasTeachersResponse = _dbContext.Answers
-                        .Where(a => a.QuestionId == q.QuestionId)
-                        .Any(a => a.User != null &&
-                                    a.User.UserRoles != null &&
-                                    a.User.UserRoles.Any(ur => ur.Role != null && ur.Role.RoleName == "Teacher"))
-                })
-                .AsNoTracking()
-                .ToListAsync();
-
-            return questions;
-        }
-        catch (Exception ex)
-        {
-            return Error.Unexpected(description: ex.Message);
-        }
-    }
-
-    public async Task<ErrorOr<Question>> Get(long questionId)
-    {
-        try
-        {
-            var question = await _dbContext.Questions
-                            .Include(q => q.User)
-                            .FirstOrDefaultAsync(q => q.QuestionId == questionId);
-
-            if (question == null)
+        var questions = await _dbContext.Questions
+            .Include(q => q.User)
+            .OrderByDescending(q => q.CreatedAt)
+            .Where(q => string.IsNullOrEmpty(searchTextLower)
+                        || q.Topic.ToLower().Contains(searchTextLower)
+                        || q.Explanation.ToLower().Contains(searchTextLower))
+            .Select(q => new Question
             {
-                return Error.NotFound();
-            }
+                QuestionId = q.QuestionId,
+                Topic = q.Topic,
+                Explanation = q.Explanation,
+                UserId = q.UserId,
+                CreatedAt = q.CreatedAt,
+                UpdatedAt = q.UpdatedAt,
+                User = q.User,
+                HasTeachersResponse = _dbContext.Answers
+                    .Where(a => a.QuestionId == q.QuestionId)
+                    .Any(a => a.User != null && a.User.UserRoles
+                        .Any(ur => ur.Role.RoleName == nameof(RoleType.Teacher)))
+            })
+            .AsNoTracking()
+            .ToListAsync();
 
-            return question;
-        }
-        catch (Exception ex)
-        {
-            return Error.Unexpected(description: ex.Message);
-        }
+        return questions;
     }
 
-    public async Task<ErrorOr<List<Question>>> GetMyQuestions(long userId)
+    public async Task<List<Question>> GetWithUser()
     {
-        try
-        {
-            var questions = await _dbContext.Questions
-                            .Include(q => q.User)
-                            .Where(q => q.User != null && q.User.UserId == userId)
-                            .ToListAsync();
+        var questions = await _dbContext.Questions
+            .Include(q => q.User)
+            .ToListAsync();
 
-            return questions;
-        }
-        catch (Exception ex)
-        {
-            return Error.Unexpected(description: ex.Message);
-        }
+        return questions;
     }
 
-    public async Task<ErrorOr<List<Question>>> GetMyRespondedQuestions(long userId)
+    public async Task<Question?> GetWithUser(long questionId)
     {
-        try
-        {
-            var questions = await (
-                from answer in _dbContext.Answers
-                where answer.UserId == userId
-                join question in _dbContext.Questions.Include(q => q.User)
-                    on answer.QuestionId equals question.QuestionId
-                select question
-            ).ToListAsync();
+        var question = await _dbContext.Questions
+            .Include(q => q.User)
+            .FirstOrDefaultAsync(q => q.QuestionId == questionId);
 
-            return questions;
-        }
-        catch (Exception ex)
-        {
-            return Error.Unexpected(description: ex.Message);
-        }
+        return question;
     }
 
-    public async Task<ErrorOr<Question>> Update(Question updatedQuestion)
+    public async Task<List<Question>> GetByUserId(long userId)
     {
-        try
-        {
-            var existingQuestion = await _dbContext.Questions.FindAsync(updatedQuestion.QuestionId);
+        var questions = await _dbContext.Questions
+            .Include(q => q.User)
+            .Where(q => q.User != null && q.User.UserId == userId)
+            .ToListAsync();
 
-            if (existingQuestion == null)
-            {
-                return Error.NotFound();
-            }
-
-            existingQuestion.Topic = updatedQuestion.Topic ?? existingQuestion.Topic;
-            existingQuestion.Explanation = updatedQuestion.Explanation ?? existingQuestion.Explanation;
-            existingQuestion.UpdatedAt = DateTime.Now;
-
-            await _dbContext.SaveChangesAsync();
-
-            return existingQuestion;
-        }
-        catch (Exception ex)
-        {
-            return Error.Unexpected(description: ex.Message);
-        }
+        return questions;
     }
 
-    public async Task<ErrorOr<long>> Delete(long questionId)
+    public async Task<List<Question>> GetByUserResponses(long userId)
     {
-        try
-        {
-            var questionToDelete = await _dbContext.Questions.FindAsync(questionId);
+        var questions = await (
+            from answer in _dbContext.Answers
+            where answer.UserId == userId
+            join question in _dbContext.Questions.Include(q => q.User)
+                on answer.QuestionId equals question.QuestionId
+            select question
+        ).ToListAsync();
 
-            if (questionToDelete == null)
-            {
-                return Error.NotFound();
-            }
+        return questions;
+    }
 
-            _dbContext.Questions.Remove(questionToDelete);
-            await _dbContext.SaveChangesAsync();
-
-            return questionId;
-        }
-        catch (Exception ex)
-        {
-            return Error.Unexpected(description: ex.Message);
-        }
+    public void Update(Question question)
+    {
+        _dbContext.Questions.Update(question);
     }
 }

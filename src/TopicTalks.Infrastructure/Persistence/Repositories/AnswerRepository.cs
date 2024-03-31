@@ -54,9 +54,9 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
     {
         var hasTeachersAnswer = await _dbContext.Answers
                 .Where(a => a.QuestionId == questionId
-                            && a.User != null
-                            && a.User.UserRoles.Any(
-                                ur => ur.Role.RoleName == nameof(RoleType.Teacher)))
+                    && a.User != null 
+                    && a.User.UserRoles.Any(
+                        ur => ur.Role.RoleName == nameof(RoleType.Teacher)))
                 .AnyAsync();
 
         return hasTeachersAnswer;

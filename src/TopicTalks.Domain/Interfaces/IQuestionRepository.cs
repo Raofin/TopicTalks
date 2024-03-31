@@ -1,16 +1,13 @@
-﻿using ErrorOr;
-using TopicTalks.Domain.Entities;
-using TopicTalks.Domain.Models;
+﻿using TopicTalks.Domain.Entities;
 
 namespace TopicTalks.Domain.Interfaces;
 
-public interface IQuestionRepository
+public interface IQuestionRepository : IRepository<Question>
 {
-    Task<ErrorOr<Question>> CreateQuestion(Question question);
-    Task<ErrorOr<long>> Delete(long questionId);
-    Task<ErrorOr<Question>> Get(long questionId);
-    Task<ErrorOr<List<QuestionModel>>> Get(string? searchText);
-    Task<ErrorOr<List<Question>>> GetMyQuestions(long userId);
-    Task<ErrorOr<List<Question>>> GetMyRespondedQuestions(long userId);
-    Task<ErrorOr<Question>> Update(Question updatedQuestion);
+    Task<List<Question>> SearchAsync(string? searchText);
+    Task<List<Question>> GetWithUser();
+    Task<Question?> GetWithUser(long questionId);
+    Task<List<Question>> GetByUserId(long userId);
+    Task<List<Question>> GetByUserResponses(long userId);
+    void Update(Question question);
 }
