@@ -121,7 +121,6 @@ internal class QuestionService(IUnitOfWork unitOfWork) : IQuestionService
         question.Explanation = dto.Explanation;
         question.UpdatedAt = DateTime.Now;
 
-        _unitOfWork.Question.Update(question);
         await _unitOfWork.CommitAsync();
 
         return question.ToDto();

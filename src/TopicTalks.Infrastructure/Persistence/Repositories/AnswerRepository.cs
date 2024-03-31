@@ -52,9 +52,4 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
 
         return hasTeachersAnswer;
     }
-
-    public void Update(Answer answer)
-    {
-        _dbContext.Answers.Update(answer);
-    }
 }

@@ -8,5 +8,4 @@ public interface IAnswerRepository : IRepository<Answer>
     Task<List<Answer>> GetParentAnswersAsync(long questionId, long parentAnswerId);
     Task<Answer?> GetRepliesAsync(long questionId, long answerId, long parentAnswerId);
     Task<bool> HasTeachersAnswerAsync(int questionId);
-    void Update(Answer answer);
 }

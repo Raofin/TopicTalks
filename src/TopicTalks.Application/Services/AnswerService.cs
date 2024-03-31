@@ -50,7 +50,7 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
 
     public async Task<ErrorOr<AnswerResponseDto>> UpdateAsync(AnswerRequestDto dto)
     {
-        var answer = await _unitOfWork.Answer.GetAsync(dto.AnswerId);
+        var answer = await _unitOfWork.Answer.GetWithUserAsync(dto.AnswerId);
 
         if (answer is null)
         {
@@ -59,7 +59,6 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
 
         answer.Explanation = dto.Explanation;
 
-        _unitOfWork.Answer.Update(answer);
         var updates = await _unitOfWork.CommitAsync();
 
         return updates == 0

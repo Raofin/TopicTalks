@@ -10,5 +10,4 @@ public interface IQuestionRepository : IRepository<Question>
     Task<List<Question>> GetByUserId(long userId);
     Task<List<Question>> GetByUserResponses(long userId);
     Task<Question?> GetWithAnswers(long questionId);
-    void Update(Question question);
 }

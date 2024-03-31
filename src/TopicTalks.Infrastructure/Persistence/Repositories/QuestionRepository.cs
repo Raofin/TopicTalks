@@ -92,9 +92,4 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
 
         return question;
     }
-
-    public void Update(Question question)
-    {
-        _dbContext.Questions.Update(question);
-    }
 }
