@@ -32,6 +32,7 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor) : IAuthServ
                 ExpiresUtc = DateTimeOffset.Now.AddDays(7) // Set cookie expiration to 7 days
             };
 
+            await _contextAccessor.HttpContext.SignOutAsync();
             await _contextAccessor.HttpContext.SignInAsync(principal, properties);
 
             return true; // Sign in successful
@@ -109,7 +110,7 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor) : IAuthServ
             var token = new JwtSecurityToken(
                 issuer: "https://rawfin.net",
                 audience: "https://rawfin.net",
-                expires: DateTime.UtcNow.AddHours(1),
+                expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: credentials,
                 claims: claims
             );

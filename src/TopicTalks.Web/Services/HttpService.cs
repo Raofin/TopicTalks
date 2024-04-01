@@ -1,7 +1,5 @@
-﻿#pragma warning disable CS8602 // Dereference of a possibly null reference
-
-using System.Net.Http.Headers;
-using static TopicTalks.Web.Configs.AppSettingsFetcher;
+﻿using System.Net.Http.Headers;
+using TopicTalks.Web.Configs;
 
 namespace TopicTalks.Web.Services;
 
@@ -13,13 +11,13 @@ internal class HttpService(IHttpContextAccessor httpContextAccessor, IHttpClient
 
     public HttpClient Client {
         get {
+
             var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(ApiBaseUrl);
+            client.BaseAddress = new Uri(AppSettingsFetcher.ApiBaseUrl);
 
-
-            if (_httpContextAccessor.HttpContext?.User.Identity.IsAuthenticated == true)
+            if (_httpContextAccessor.HttpContext!.User.Identity!.IsAuthenticated)
             {
-                var token = GetTokenFromHttpContext();
+                var token = GetToken();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
@@ -27,13 +25,13 @@ internal class HttpService(IHttpContextAccessor httpContextAccessor, IHttpClient
         }
     }
 
-    private string GetTokenFromHttpContext()
+    private string GetToken()
     {
-        var authHeader = _httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString();
+        var authHeader = _httpContextAccessor.HttpContext?.Request.Headers.Authorization.ToString();
 
         // Retrieve token if it exists, otherwise generate a new one
-        return authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase) 
-            ? authHeader["Bearer ".Length..].Trim() 
+        return authHeader is not null && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
+            ? authHeader["Bearer ".Length..].Trim()
             : _authService.GenerateJwtToken();
     }
 }

@@ -81,7 +81,7 @@
                     data: $(form).serialize(),
                     success: function (response) {
                         toastMessageNext("Login Successful!", ToastType.Success);
-                        window.location.href = '/dashboard';
+                        window.location.href = '/';
                     },
                     error: function (xhr) {
                         if (xhr.status === 401) {

@@ -11,7 +11,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddAuthConfig();
 
-builder.Services.AddSingleton<IAuthService, AuthService>();
+builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IHttpService, HttpService>();
 
 builder.Services.AddMvc();
