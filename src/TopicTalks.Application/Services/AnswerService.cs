@@ -11,7 +11,7 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<AnswerResponseDto?> Create(AnswerRequestDto dto)
+    public async Task<AnswerResponseDto?> Create(AnswerDto dto)
     {
         var answer = new Answer {
             ParentAnswerId = dto.ParentAnswerId,
@@ -48,7 +48,7 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
                 );
     }
 
-    public async Task<ErrorOr<AnswerResponseDto>> UpdateAsync(AnswerRequestDto dto)
+    public async Task<ErrorOr<AnswerResponseDto>> UpdateAsync(AnswerDto dto)
     {
         var answer = await _unitOfWork.Answer.GetWithUserAsync(dto.AnswerId);
 
@@ -109,7 +109,6 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
         var dtos = answers.Select(ans => new AnswerWithRepliesDto {
             AnswerId = ans.AnswerId,
             ParentAnswerId = ans.ParentAnswerId,
-            QuestionId = ans.QuestionId,
             Explanation = ans.Explanation,
             CreatedAt = ans.CreatedAt,
             UserInfo = ans.User == null ? null : new UserBasicInfo(

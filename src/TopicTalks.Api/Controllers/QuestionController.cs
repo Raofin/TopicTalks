@@ -5,20 +5,19 @@ using Microsoft.AspNetCore.Mvc;
 using TopicTalks.Api.Attributes;
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Interfaces;
-using TopicTalks.Domain.Enums;
 
 namespace TopicTalks.Api.Controllers;
 
 [Route("api/question")]
 [ApiController]
-public class QuestionController(IQuestionService questionService) : ControllerBase
+public class QuestionController(IQuestionService questionService, IHttpContextAccessor accessor) : ControllerBase
 {
     private readonly IQuestionService _questionService = questionService;
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get(string? searchQuery)
     {
-        var questions = await _questionService.GetAsync();
+        var questions = await _questionService.SearchAsync(searchQuery);
 
         return Ok(questions);
     }
@@ -45,26 +44,25 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
             : Ok(question.Value);
     }
 
-    [HttpGet("search/{query}")]
-    public async Task<IActionResult> Search(string query = "")
-    {
-        var questions = await _questionService.SearchAsync(query);
-
-        return Ok(questions);
-    }
-
-    [Authorize(Roles = nameof(RoleType.Student))]
+    [AuthorizeStudent]
     [HttpPost]
     public async Task<IActionResult> Create(QuestionRequestDto dto)
     {
-        var response = await _questionService.CreateAsync(dto);
+        var question = new QuestionDto(
+                QuestionId: 0,
+                Topic: dto.Topic,
+                Explanation: dto.Explanation,
+                UserId: long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+            );
+
+        var response = await _questionService.CreateAsync(question);
 
         return Ok(response);
     }
 
     [Authorize]
     [HttpPatch]
-    public async Task<IActionResult> Update(QuestionRequestDto dto)
+    public async Task<IActionResult> Update(QuestionDto dto)
     {
         var response = await _questionService.UpdateAsync(dto);
 

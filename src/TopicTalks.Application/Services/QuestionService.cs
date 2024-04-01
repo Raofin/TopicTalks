@@ -8,11 +8,12 @@ using TopicTalks.Domain.Enums;
 
 namespace TopicTalks.Application.Services;
 
-internal class QuestionService(IUnitOfWork unitOfWork) : IQuestionService
+internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerService) : IQuestionService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IAnswerService _answerService = answerService;
 
-    public async Task<QuestionResponseDto> CreateAsync(QuestionRequestDto dto)
+    public async Task<QuestionResponseDto> CreateAsync(QuestionDto dto)
     {
         var question = new Question {
             Topic = dto.Topic,
@@ -79,6 +80,7 @@ internal class QuestionService(IUnitOfWork unitOfWork) : IQuestionService
     public async Task<ErrorOr<QuestionWithAnswersDto>> GetWithAnswersAsync(long questionId)
     {
         var question = await _unitOfWork.Question.GetWithAnswers(questionId);
+        var answers = await _answerService.AnswersWithReplies(questionId);
 
         return question is null
             ? Error.NotFound()
@@ -92,23 +94,13 @@ internal class QuestionService(IUnitOfWork unitOfWork) : IQuestionService
                 UserInfo: question.User is null
                     ? null
                     : new UserBasicInfo(question.User.UserId, question.User.Email),
-                Answers: question.Answers.Select(answer => new AnswerResponseDto(
-                        answer.AnswerId,
-                        answer.ParentAnswerId,
-                        answer.QuestionId,
-                        answer.Explanation,
-                        answer.CreatedAt,
-                        answer.User is null
-                            ? null
-                            : new UserBasicInfo(answer.User.UserId, answer.User.Email)
-                    )
-                ).ToList(),
+                Answers: answers,
                 CreatedAt: question.CreatedAt,
                 UpdatedAt: question.UpdatedAt
             );
     }
 
-    public async Task<ErrorOr<QuestionResponseDto>> UpdateAsync(QuestionRequestDto dto)
+    public async Task<ErrorOr<QuestionResponseDto>> UpdateAsync(QuestionDto dto)
     {
         var question = await _unitOfWork.Question.GetWithUser(dto.QuestionId);
 

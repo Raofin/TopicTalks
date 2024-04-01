@@ -82,12 +82,14 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
 
     public async Task<Question?> GetWithAnswers(long questionId)
     {
+        Console.Clear();
         var question = await _dbContext.Questions
-            .Include(q => q.Answers)
-            .ThenInclude(a => a.User)
+            .Include(a => a.User)
             .ThenInclude(u => u!.UserRoles)
             .ThenInclude(ur => ur.Role)
+            .Include(q => q.Answers)
             .Where(q => q.QuestionId == questionId)
+            .AsSingleQuery()
             .SingleOrDefaultAsync();
 
         return question;

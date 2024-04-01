@@ -3,7 +3,7 @@ using TopicTalks.Application.Dtos;
 
 namespace TopicTalks.Api.Validators;
 
-public class AnswerRequestDtoValidator : AbstractValidator<AnswerRequestDto>
+public class AnswerRequestDtoValidator : AbstractValidator<AnswerDto>
 {
     public AnswerRequestDtoValidator()
     {

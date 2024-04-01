@@ -15,7 +15,15 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
 {
     private readonly IAnswerService _answerService = answerService;
 
-    [Authorize]
+    [HttpGet("{questionId}")]
+    public async Task<IActionResult> GetAnswerWithReplies(long questionId)
+    {
+        var answer = await _answerService.AnswersWithReplies(questionId);
+
+        return Ok(answer);
+    }
+
+/*    [Authorize]
     [HttpGet("{answerId}")]
     public async Task<IActionResult> Get(long answerId)
     {
@@ -24,20 +32,28 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
         return answer.IsError
             ? NotFound()
             : Ok(answer.Value);
-    }
-
+    }*/
+    
     [AuthorizeRoles(RoleType.Student, RoleType.Teacher)]
     [HttpPost]
     public async Task<IActionResult> Create(AnswerRequestDto dto)
     {
-        var answer = await _answerService.Create(dto);
+        var answer = new AnswerDto(
+               AnswerId: 0,
+               ParentAnswerId: dto.ParentAnswerId,
+               QuestionId: dto.QuestionId,
+               Explanation: dto.Explanation,
+               UserId: long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+            );
+        
+        var response = await _answerService.Create(answer);
 
-        return Ok(answer);
+        return Ok(response);
     }
 
     [Authorize]
     [HttpPatch]
-    public async Task<IActionResult> Update(AnswerRequestDto dto)
+    public async Task<IActionResult> Update(AnswerDto dto)
     {
         var response = await _answerService.UpdateAsync(dto);
 
