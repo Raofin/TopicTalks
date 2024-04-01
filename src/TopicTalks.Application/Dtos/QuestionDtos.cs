@@ -12,6 +12,12 @@ public record QuestionRequestDto(
     string Explanation
 );
 
+public record QuestionUpdateRequestDto(
+    long QuestionId,
+    string Topic,
+    string Explanation
+);
+
 public record QuestionResponseDto(
     long QuestionId,
     string Topic,

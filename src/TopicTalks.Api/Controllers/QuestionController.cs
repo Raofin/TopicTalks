@@ -22,9 +22,19 @@ public class QuestionController(IQuestionService questionService, IHttpContextAc
         return Ok(questions);
     }
 
-    [Authorize]
     [HttpGet("{questionId}")]
     public async Task<IActionResult> Get(long questionId)
+    {
+        var response = await _questionService.GetAsync(questionId);
+
+        return response.IsError
+            ? NotFound()
+            : Ok(response.Value);
+    }
+
+    [Authorize]
+    [HttpGet("withUserDetails/{questionId}")]
+    public async Task<IActionResult> GetWithUserDetails(long questionId)
     {
         var response = await _questionService.GetWithUserAsync(questionId);
 
@@ -62,9 +72,16 @@ public class QuestionController(IQuestionService questionService, IHttpContextAc
 
     [Authorize]
     [HttpPatch]
-    public async Task<IActionResult> Update(QuestionDto dto)
+    public async Task<IActionResult> Update(QuestionUpdateRequestDto dto)
     {
-        var response = await _questionService.UpdateAsync(dto);
+        var question = new QuestionDto(
+                QuestionId: dto.QuestionId, 
+                Topic: dto.Topic, 
+                Explanation: dto.Explanation, 
+                UserId: long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+            );
+
+        var response = await _questionService.UpdateAsync(question);
 
         return response.IsError
             ? NotFound()

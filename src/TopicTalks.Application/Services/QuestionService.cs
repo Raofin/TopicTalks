@@ -36,6 +36,14 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
         return questions.Select(q => q.ToDto()).ToList();
     }
 
+    public async Task<ErrorOr<QuestionResponseDto>> GetAsync(long questionId)
+    {
+        var question = await _unitOfWork.Question.GetAsync(questionId);
+        return question is null
+            ? Error.NotFound()
+            : question.ToDto();
+    }
+
     public async Task<ErrorOr<QuestionResponseDto>> GetWithUserAsync(long questionId)
     {
         var question = await _unitOfWork.Question.GetWithUser(questionId);
@@ -80,7 +88,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
     public async Task<ErrorOr<QuestionWithAnswersDto>> GetWithAnswersAsync(long questionId)
     {
         var question = await _unitOfWork.Question.GetWithAnswers(questionId);
-        var answers = await _answerService.AnswersWithReplies(questionId);
+        var answers = await _answerService.GetAnswersWithRepliesAsync(questionId);
 
         return question is null
             ? Error.NotFound()

@@ -48,9 +48,9 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
                 );
     }
 
-    public async Task<ErrorOr<AnswerResponseDto>> UpdateAsync(AnswerDto dto)
+    public async Task<ErrorOr<AnswerResponseDto>> UpdateAsync(AnswerUpdateRequestDto dto)
     {
-        var answer = await _unitOfWork.Answer.GetWithUserAsync(dto.AnswerId);
+        var answer = await _unitOfWork.Answer.GetAsync(dto.AnswerId);
 
         if (answer is null)
         {
@@ -59,11 +59,9 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
 
         answer.Explanation = dto.Explanation;
 
-        var updates = await _unitOfWork.CommitAsync();
+        await _unitOfWork.CommitAsync();
 
-        return updates == 0
-            ? Error.Unexpected()
-            : new AnswerResponseDto(
+        return new AnswerResponseDto(
                 AnswerId: answer.AnswerId,
                 ParentAnswerId: answer.ParentAnswerId,
                 QuestionId: answer.QuestionId,
@@ -102,7 +100,7 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
         return await _unitOfWork.Answer.HasTeachersAnswerAsync(questionId);
     }
 
-    public async Task<List<AnswerWithRepliesDto>> AnswersWithReplies(long questionId, long parentAnswerId = 0)
+    public async Task<List<AnswerWithRepliesDto>> GetAnswersWithRepliesAsync(long questionId, long parentAnswerId = 0)
     {
         var answers = await _unitOfWork.Answer.GetParentAnswersAsync(questionId, parentAnswerId);
 
@@ -119,7 +117,7 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
 
         foreach (var item in dtos)
         {
-            var replies = await AnswersWithReplies(questionId, item.AnswerId);
+            var replies = await GetAnswersWithRepliesAsync(questionId, item.AnswerId);
             item.Answers = replies;
         }
 

@@ -74,16 +74,4 @@ public class HomeController(IHttpService httpService) : Controller
                 _ => Problem()
             };
     }
-
-    [HttpPost("post-answer")]
-    public async Task<IActionResult> PostAnswer(AnswerRequestViewModel request)
-    {
-        var response = await _httpService.Client.PostAsync("api/answer", request.ToStringContent());
-
-        return response.IsSuccessStatusCode
-            ? Ok(response.DeserializeTo<AnswerViewModel>())
-            : new StatusCodeResult((int)response.StatusCode);
-    }
-
-
 }

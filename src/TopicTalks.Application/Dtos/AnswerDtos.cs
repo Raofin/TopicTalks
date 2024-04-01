@@ -14,6 +14,11 @@ public record AnswerRequestDto(
     string Explanation
 );
 
+public record AnswerUpdateRequestDto(
+    long AnswerId,
+    string Explanation
+);
+
 public record AnswerResponseDto(
     long AnswerId,
     long? ParentAnswerId,

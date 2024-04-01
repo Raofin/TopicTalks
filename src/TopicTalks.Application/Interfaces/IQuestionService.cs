@@ -7,6 +7,7 @@ public interface IQuestionService
 {
     Task<QuestionResponseDto> CreateAsync(QuestionDto dto);
     Task<List<QuestionResponseDto>> GetAsync();
+    Task<ErrorOr<QuestionResponseDto>> GetAsync(long question);
     Task<ErrorOr<QuestionResponseDto>> GetWithUserAsync(long questionId);
     Task<List<QuestionResponseDto>> SearchAsync(string? searchText);
     Task<List<QuestionResponseDto>> GetByUserIdAsync(long userId);

@@ -12,8 +12,12 @@ public record AnswerViewModel(
 public record AnswerRequestViewModel(
     long? ParentAnswerId,
     long QuestionId,
-    string Explanation,
-    long UserId
+    string Explanation
+);
+
+public record AnswerUpdateRequestViewModel(
+    long AnswerId,
+    string Explanation
 );
 
 public record AnswerWithRepliesViewModel(

@@ -14,6 +14,12 @@ public record QuestionRequestViewModel(
     string Explanation
 );
 
+public record QuestionUpdateRequestViewModel(
+    string QuestionId,
+    string Topic,
+    string Explanation
+);
+
 public record QuestionWithAnswersViewModel(
     long QuestionId,
     string Topic,

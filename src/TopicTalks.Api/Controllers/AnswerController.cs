@@ -15,25 +15,39 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
 {
     private readonly IAnswerService _answerService = answerService;
 
-    [HttpGet("{questionId}")]
-    public async Task<IActionResult> GetAnswerWithReplies(long questionId)
+    [HttpGet("{answerId}")]
+    public async Task<IActionResult> Get(long answerId)
     {
-        var answer = await _answerService.AnswersWithReplies(questionId);
+        var response = await _answerService.GetWithUserAsync(answerId);
+
+        if (response.IsError is false)
+            return Ok(response.Value);
+
+        return response.FirstError.Type == ErrorType.NotFound
+            ? NotFound()
+            : Problem();
+
+    }
+
+    [HttpGet("withReplies/{answerId}")]
+    public async Task<IActionResult> GetAnswerWithReplies(long answerId)
+    {
+        var answer = await _answerService.GetAnswersWithRepliesAsync(answerId);
 
         return Ok(answer);
     }
 
-/*    [Authorize]
-    [HttpGet("{answerId}")]
-    public async Task<IActionResult> Get(long answerId)
-    {
-        var answer = await _answerService.GetWithUserAsync(answerId);
+    /*    [Authorize]
+        [HttpGet("{answerId}")]
+        public async Task<IActionResult> Get(long answerId)
+        {
+            var answer = await _answerService.GetWithUserAsync(answerId);
 
-        return answer.IsError
-            ? NotFound()
-            : Ok(answer.Value);
-    }*/
-    
+            return answer.IsError
+                ? NotFound()
+                : Ok(answer.Value);
+        }*/
+
     [AuthorizeRoles(RoleType.Student, RoleType.Teacher)]
     [HttpPost]
     public async Task<IActionResult> Create(AnswerRequestDto dto)
@@ -53,7 +67,7 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
 
     [Authorize]
     [HttpPatch]
-    public async Task<IActionResult> Update(AnswerDto dto)
+    public async Task<IActionResult> Update(AnswerUpdateRequestDto dto)
     {
         var response = await _answerService.UpdateAsync(dto);
 
@@ -66,7 +80,7 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
     }
 
     [Authorize]
-    [HttpDelete]
+    [HttpDelete("{answerId}")]
     public async Task<IActionResult> Delete(long answerId)
     {
         var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);

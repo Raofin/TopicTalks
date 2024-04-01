@@ -82,7 +82,6 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
 
     public async Task<Question?> GetWithAnswers(long questionId)
     {
-        Console.Clear();
         var question = await _dbContext.Questions
             .Include(a => a.User)
             .ThenInclude(u => u!.UserRoles)
