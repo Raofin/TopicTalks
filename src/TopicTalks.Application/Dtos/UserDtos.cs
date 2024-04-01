@@ -16,9 +16,9 @@ public record UserBasicInfo(
 );
 
 public record UserDetailDto(
-    string? Name,
-    string? InstituteName,
-    string? IdCardNumber
+    string Name,
+    string InstituteName,
+    string IdCardNumber
 );
 
 public record UserRoleDto(

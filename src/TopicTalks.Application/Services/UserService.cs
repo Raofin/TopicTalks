@@ -64,8 +64,6 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
         await _unitOfWork.User.AddAsync(user);
         await _unitOfWork.CommitAsync();
 
-        var x = user;
-
         var response = new RegistrationResponse(
             UserId: user.UserId,
             Email: user.Email,

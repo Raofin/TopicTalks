@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using TopicTalks.Web.Extensions;
 using TopicTalks.Web.Services;
 using TopicTalks.Web.ViewModels;
@@ -18,10 +17,17 @@ namespace TopicTalks.Web.Controllers
 
             return response.IsSuccessStatusCode
                 ? Ok(response.DeserializeTo<QuestionWithAnswersViewModel>())
-                : response.StatusCode switch {
-                    HttpStatusCode.Unauthorized => Unauthorized(),
-                    _ => Problem()
-                };
+                : new StatusCodeResult((int)response.StatusCode);
+        }
+
+        [HttpDelete("{questionId}")]
+        public async Task<IActionResult> Delete(long questionId)
+        {
+            var response = await _httpService.Client.DeleteAsync($"api/question/{questionId}");
+
+            return response.IsSuccessStatusCode
+                ? Ok()
+                : new StatusCodeResult((int)response.StatusCode);
         }
     }
 }

@@ -14,7 +14,7 @@ public class AnswerController(IHttpService httpService) : Controller
     public async Task<IActionResult> PostAnswer(AnswerRequestViewModel request)
     {
         var response = await _httpService.Client.PostAsync("api/answer", request.ToStringContent());
-        var x = response.DeserializeTo<AnswerViewModel>();
+
         return response.IsSuccessStatusCode
             ? Ok(response.DeserializeTo<AnswerViewModel>())
             : new StatusCodeResult((int)response.StatusCode);
@@ -44,11 +44,9 @@ public class AnswerController(IHttpService httpService) : Controller
     public async Task<IActionResult> GetAnswer(long answerId)
     {
         var response = await _httpService.Client.GetAsync($"api/answer/{answerId}");
-        var res = response.ToJson();
 
-        var x = response.DeserializeTo<AnswerViewModel>();
         return response.IsSuccessStatusCode
-            ? Ok(x)
+            ? Ok(response.DeserializeTo<AnswerViewModel>())
             : new StatusCodeResult((int)response.StatusCode);
     }
 }

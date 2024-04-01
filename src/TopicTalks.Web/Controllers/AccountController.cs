@@ -34,8 +34,6 @@ public class AccountController(IAuthService authService, IHttpService httpServic
 
             await _authService.SignInWithTokenAsync(loginResponse.Token);
 
-            var x = HttpContext.User;
-
             return Ok();
         }
 
@@ -71,6 +69,6 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     public async Task<IActionResult> LogoutAsync()
     {
         await _authService.SignOutAsync();
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Dashboard", "Home");
     }
 }

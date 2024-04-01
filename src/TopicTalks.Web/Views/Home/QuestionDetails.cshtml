@@ -24,11 +24,11 @@
                         @if (Context.UserRole() == nameof(RoleType.Moderator) || answerAuthorId == Context.UserId())
                         {
                             <span class="link-text text-danger" onclick="deleteAnswer(@(answer.AnswerId))">Delete</span>
-                            <span class="link-text text-success" onclick="appendInput(@(answer.QuestionId), @(answer.AnswerId), 'edit')">Edit</span>
+                            <span class="link-text text-success" onclick="appendInput(@(Model.QuestionId), @(answer.AnswerId), true)">Edit</span>
                         }
-                        @if (Context.UserRole() == nameof(RoleType.Teacher) || answerAuthorId == Context.UserId())
+                        @if (Context.UserRole() != nameof(RoleType.Moderator) || answerAuthorId == Context.UserId())
                         {
-                            <span class="link-text" onclick="appendInput(@(answer.QuestionId), @(answer.AnswerId))">Reply</span>
+                            <span class="link-text" onclick="appendInput(@(Model.QuestionId), @(answer.AnswerId))">Reply</span>
                         }
                     </div>
                 </div>
@@ -112,11 +112,9 @@
 @section Scripts
 {
     <script>
-
         $("#edit-question").on("click", function () {
-            var questionId = $("#question-container").attr("question");
-            var editedQuestion = appendQuestionEditInput(questionId);
-            console.log("clicked");
+            var questionId = $("#question-container").attr("question")
+            var editedQuestion = appendQuestionEditInput(questionId)
         });
 
         function appendQuestionEditInput(questionId) {
@@ -131,16 +129,18 @@
                                         <input type="text" id="question-topics" class="form-control mb-1" placeholder="Write your question topics here" name="topic" />
                                         <textarea id="explanation-input" class="form-control mb-1" rows="3" placeholder="Write your reply here" name="explanation"></textarea>
                                     </div>
-                                    <div class="text-center">
-                                        <button type="button" class="btn btn-danger w-75 mb-2 mt-1" onclick="closeReplyInput()">Close</button>
-                                        <button type="submit" class="btn btn-primary w-75">Confirm</button>
+                                    <div class="text-center d-flex justify-content-between align-items-end" style ="width: 150px;">
+                                        <div>
+                                            <button type="button" class="btn btn-primary mb-1 mt-1" style="width: 90px;" onclick="focusReplyTextArea()">Reply</button>
+                                            <button type="button" class="btn btn-danger mb-1 mt-1" style="width: 90px;" onclick="closeReplyInput()">Close</button>
+                                            <button type="submit" class="btn btn-success" style="width: 90px;">Confirm</button>
+                                        </div>
                                     </div>
                                 </form>
-                            </div>`);
+                            </div>`)
 
                 $.get(`@ApiBaseUrl/api/question/${questionId}`)
                     .done(function (data) {
-                        console.log(data)
                         $("#explanation-input").val(data.explanation)
                         $("#question-topics").val(data.topic)
                     })
@@ -165,23 +165,26 @@
                             type: 'PATCH',
                             data: $(form).serialize(),
                             success: function (response) {
-                                console.log(formToJson(form));
-                                $("#explanation").text(response.explanation);
+                                $("#explanation").text(response.explanation)
                                 $("#topics").html(formatTopics(response.topic))
                                 $("#edited-at").text("Edited at " + formatDate(new Date()))
-                                toastMessage("Edit Successful!", ToastType.Success);
-                                closeReplyInput();
+                                toastMessage("Edit Successful!", ToastType.Success)
+                                closeReplyInput()
                             },
                             error: function (xhr) {
-                                console.log(formToJson(form));
-                                toastMessage(xhr.responseText);
+                                toastMessage(xhr.responseText)
                             }
-                        });
+                        })
                     }
-                });
+                })
             } else {
-                closeReplyInput();
+                closeReplyInput()
             }
+        }
+
+        function focusReplyTextArea() {
+            closeReplyInput()
+            $('#reply-text').focus()
         }
     </script>
 }

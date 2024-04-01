@@ -29,7 +29,6 @@ public static class HttpExtensions
 
     public static string? UserId(this HttpContext http)
     {
-        var x = http.User;
         return http.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
 

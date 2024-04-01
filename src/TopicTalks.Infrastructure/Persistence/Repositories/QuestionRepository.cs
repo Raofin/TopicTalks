@@ -84,9 +84,10 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
     {
         var question = await _dbContext.Questions
             .Include(a => a.User)
+            .Include(q => q.Answers)
+            .ThenInclude(a => a.User)
             .ThenInclude(u => u!.UserRoles)
             .ThenInclude(ur => ur.Role)
-            .Include(q => q.Answers)
             .Where(q => q.QuestionId == questionId)
             .AsSingleQuery()
             .SingleOrDefaultAsync();
