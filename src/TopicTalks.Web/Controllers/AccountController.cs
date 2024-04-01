@@ -26,7 +26,7 @@ public class AccountController(IAuthService authService, IHttpService httpServic
             return UnprocessableEntity(ModelState);
         }
 
-        var response = await _httpService.Client.PostAsync("api/login", login.ToStringContent());
+        var response = await _httpService.Client.PostAsync("api/account/login", login.ToStringContent());
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
@@ -34,11 +34,13 @@ public class AccountController(IAuthService authService, IHttpService httpServic
 
             await _authService.SignInWithTokenAsync(loginResponse.Token);
 
+            var x = HttpContext.User;
+
             return Ok();
         }
 
-        return response.StatusCode == HttpStatusCode.Unauthorized 
-            ? Unauthorized() 
+        return response.StatusCode == HttpStatusCode.Unauthorized
+            ? Unauthorized()
             : BadRequest();
     }
 
@@ -56,10 +58,9 @@ public class AccountController(IAuthService authService, IHttpService httpServic
             return UnprocessableEntity(ModelState);
         }
 
-        var response = await _httpService.Client.PostAsync("api/register", register.ToStringContent());
+        var response = await _httpService.Client.PostAsync("api/account/register", register.ToStringContent());
 
-        return response.StatusCode switch
-        {
+        return response.StatusCode switch {
             HttpStatusCode.OK => Ok(),
             HttpStatusCode.Conflict => Conflict(),
             _ => Problem()

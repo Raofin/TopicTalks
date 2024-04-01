@@ -1,7 +1,7 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Text.Json;
 
 namespace TopicTalks.Web.Extensions;
 
@@ -12,10 +12,16 @@ public static class HttpExtensions
         return response.Content.ReadAsStringAsync().Result;
     }
 
+    public static T? DeserializeTo<T>(this HttpResponseMessage response)
+    {
+        var json = response.Content.ReadAsStringAsync().Result;
+        return JsonConvert.DeserializeObject<T>(json);
+    }
+
     public static StringContent ToStringContent(this object obj)
     {
         return new StringContent(
-            content: JsonSerializer.Serialize(obj),
+            content: JsonConvert.SerializeObject(obj),
             encoding: Encoding.UTF8,
             mediaType: "application/json"
         );
@@ -23,7 +29,8 @@ public static class HttpExtensions
 
     public static string? UserId(this HttpContext http)
     {
-        return http.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        var x = http.User;
+        return http.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
 
     public static string? UserEmail(this HttpContext http)

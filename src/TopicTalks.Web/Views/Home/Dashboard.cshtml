@@ -1,0 +1,93 @@
+﻿@using static TopicTalks.Web.Configs.AppSettingsFetcher
+@using TopicTalks.Web.Extensions
+@model List<TopicTalks.Web.ViewModels.QuestionViewModel>
+
+<div class="container mt-5">
+    <div class="text-center mb-3 w-50 m-auto">
+        <input class="form-control text-center" style="height: 50px; font-size: 20px" type="text" id="searchInput" placeholder="Type anything to search">
+    </div>
+    <div id="questionContainer">
+        @foreach (var item in Model)
+        {
+            <div id="question-@item.QuestionId" class="q-list-container">
+                <div class="d-flex justify-content-between">
+                    <p><strong>@(item.UserInfo != null ? item.UserInfo.Email : "Delete User")</strong></p>
+                    <p>@($"{item.CreatedAt:MMM dd, yyyy | hh:mm tt} ({item.CreatedAt.TimeAgo()})")</p>
+                </div>
+
+                <div class="form-group row">
+                    <p>@item.Explanation</p>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex gap-2 topic">
+                        @foreach (var topic in item.Topic.SplitAndTrim())
+                        {
+                            <p>@topic</p>
+                        }
+                    </div>
+                    <div>
+                        <a href="/question/@item.QuestionId" class="btn btn-primary">Answers</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts 
+{
+    <script>
+        $('#searchInput').on('input', function () {
+            var searchText = $(this).val();
+            fetchQuestions(searchText);
+        });
+
+        function fetchQuestions(searchText) {
+            $.ajax({
+                url: '@ApiBaseUrl/api/question?searchQuery=' + searchText,
+                method: 'GET',
+                data: { searchText: searchText },
+                dataType: 'json',
+                success: function (questions) {
+                    $('#questionContainer').empty();
+
+                    if (questions.length === 0) {
+                        $('#questionContainer').html('<h1 class="text-danger text-center">No questions found.</p>');
+                        return;
+                    }
+
+                    questions.forEach(function (item) {
+                        var topicsHtml = formatTopics(item.topic);
+
+                        var questionHtml = `
+                                <div class="q-list-container" id="question-${item.questionId}">
+                                    <form action="/question/${item.questionId}" method="post">
+                                        <div class="d-flex justify-content-between">
+                                            <p><strong>${item.userInfo != null ? item.userInfo.email : 'Delete User'}</strong></p>
+                                            <p>${formatDate(item.createdAt)} (${timeAgo(item.createdAt)})</p>
+                                        </div>
+                                        <div class="form-group row">
+                                                <p>${item.explanation}</p>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="d-flex gap-2 topic">
+                                                ${topicsHtml}
+                                            </div>
+                                            <div>
+                                                <a href="/question/${item.questionId}" class="btn btn-primary">Answers</a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>`;
+
+                        $('#questionContainer').append(questionHtml);
+                    });
+                },
+                error: function (error) {
+                    console.error('Error fetching questions:', error);
+                }
+            });
+        }
+    </script>
+}

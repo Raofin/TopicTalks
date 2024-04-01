@@ -63,7 +63,7 @@ function appendInput(questionId, answerId, edit) {
                 }
 
                 $.ajax({
-                    url: '/answer',
+                    url: '/post-answer',
                     type: 'POST',
                     data: $(form).serialize(),
                     success: function (response) {
@@ -168,7 +168,7 @@ $('#answer-form').validate({
     },
     submitHandler: function (form) {
         $.ajax({
-            url: '/answer',
+            url: '/post-answer',
             type: 'POST',
             data: $(form).serialize(),
             success: function (response) {

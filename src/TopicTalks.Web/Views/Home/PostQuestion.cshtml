@@ -1,10 +1,10 @@
-﻿@model TopicTalks.Web.Models.QuestionVM
+﻿@model TopicTalks.Web.ViewModels.QuestionRequestViewModel
 
 <div class="container mt-5">
     <div class="container-div" style="max-width: 600px;">
         <h2 class="mb-4 text-center">Post a Question</h2>
 
-        <form id="post-question" asp-action="post-question" method="post">
+        <form id="post-question">
             <div class="form-group row">
                 <label class="col-form-label">Topic</label>
                 <div class="col-sm-9 w-100">
@@ -28,8 +28,9 @@
     </div>
 </div>
 
-<script>
-    $(document).ready(function () {
+@section Scripts
+{
+    <script>
         $("#post-question").validate({
             rules: {
                 Topic: {
@@ -52,12 +53,12 @@
             },
             submitHandler: function (form) {
                 $.ajax({
-                    url: '/question/post-question',
+                    url: '/post-question',
                     type: 'POST',
                     data: $(form).serialize(),
                     success: function (response) {
                         toastMessageNext("Question Posted!", ToastType.Success);
-                        window.location.href = '/';
+                        window.location.href = `/#question-${response.questionId}`;
                     },
                     error: function (xhr) {
                         errorMessage = xhr.responseText || "Internal server error. Please try again later.";
@@ -66,5 +67,5 @@
                 });
             }
         });
-    });
-</script>
+    </script>
+}

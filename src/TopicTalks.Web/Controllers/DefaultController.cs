@@ -4,10 +4,10 @@ namespace TopicTalks.Web.Controllers;
 
 public class DefaultController() : Controller
 {
-    public IActionResult Index()
+/*    public IActionResult Index()
     {
         return View();
-    }
+    }*/
 
     [Route("401")]
     public IActionResult Unauthorized401()
