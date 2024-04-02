@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using TopicTalks.Application.Dtos;
-using TopicTalks.Application.Dtos.Extensions;
+using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
 using TopicTalks.Contracts.Common;
 using TopicTalks.Domain;
@@ -24,13 +24,24 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
         return await _unitOfWork.User.IsUserExists(userId);
     }
 
-    public async Task<ErrorOr<User?>> GetAsync(long userId)
+    public async Task<ErrorOr<UserDto>> GetWithDetailsAsync(long userId)
     {
-        var user = await _unitOfWork.User.GetAsync(userId);
+        var user = await _unitOfWork.User.GetWithDetailsAsync(userId);
 
-        return user == null
-            ? Error.NotFound()
-            : user;
+        if (user is null)
+        {
+            return Error.NotFound();
+        }
+
+        var userDto = new UserDto(
+                UserId: user.UserId,
+                Email: user.Email,
+                CreatedAt: user.CreatedAt,
+                UserDetails: user.UserDetails.ToDto(),
+                Roles: user.UserRoles.Select(ur => ur.Role.RoleName).ToList()
+            );
+
+        return userDto;
     }
 
     public async Task<ErrorOr<RegistrationResponse>> Register(RegistrationRequest request)
@@ -54,11 +65,11 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
 
         if (request?.UserDetails != null)
         {
-            user.UserDetails.Add(new UserDetail {
+            user.UserDetails = new UserDetail {
                 Name = request.UserDetails.Name,
                 InstituteName = request.UserDetails.InstituteName,
                 IdCardNumber = request.UserDetails.IdCardNumber,
-            });
+            };
         }
 
         await _unitOfWork.User.AddAsync(user);
@@ -67,7 +78,7 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
         var response = new RegistrationResponse(
             UserId: user.UserId,
             Email: user.Email,
-            UserDetails: user.UserDetails.FirstOrDefault().ToDto(),
+            UserDetails: user.UserDetails.ToDto(),
             Role: user.UserRoles.Select(ur => (RoleName?)ur.RoleId).ToList()
         );
 
@@ -76,7 +87,7 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
 
     public async Task<ErrorOr<LoginResponse>> Login(LoginRequest request)
     {
-        var user = await _unitOfWork.User.GetAsync(request.Email, (long)request.Role);
+        var user = await _unitOfWork.User.GetWithDetailsAsync(request.Email, (long)request.Role);
 
         if (user == null)
         {
@@ -94,7 +105,7 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
             UserId: user.UserId,
             Token: _tokenService.GenerateJwtToken(user),
             Email: user.Email,
-            UserDetails: user.UserDetails.FirstOrDefault().ToDto(),
+            UserDetails: user.UserDetails.ToDto(),
             Role: user.UserRoles.Select(ur => (RoleName?)ur.RoleId).ToList()
         );
 

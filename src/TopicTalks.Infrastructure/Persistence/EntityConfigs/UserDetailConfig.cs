@@ -27,8 +27,8 @@ public class UserDetailConfig : IEntityTypeConfiguration<UserDetail>
 
         // Relationship Configuration
         entity.HasOne(d => d.User)
-            .WithMany(p => p.UserDetails)
-            .HasForeignKey(d => d.UserId)
+            .WithOne(p => p.UserDetails)
+            .HasForeignKey<UserDetail>(d => d.UserId)
             .OnDelete(DeleteBehavior.SetNull)
             .HasConstraintName("FK_UserDetails_Users");
 

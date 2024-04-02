@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS8603 // Possible null reference return warning disable
-
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using TopicTalks.Domain.Entities;
 using TopicTalks.Domain.Enums;
@@ -14,9 +12,9 @@ namespace TopicTalks.Application.Services;
 
 internal class AuthService(IHttpContextAccessor http, IConfiguration configuration) : IAuthService
 {
-    public string UserId => http.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
-    public string UserEmail => http.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
-    public string UserRole => http.HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+    public string UserId => http.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sub)!.Value;
+    public string UserEmail => http.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
+    public string UserRole => http.HttpContext.User.FindFirst(ClaimTypes.Role)!.Value;
 
     public string GenerateJwtToken(User user)
     {

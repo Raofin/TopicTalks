@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using TopicTalks.Infrastructure.Persistence;
 using TopicTalks.Application;
 using FluentValidation.AspNetCore;
-using TopicTalks.Api.Validators;
 using TopicTalks.Api.Configs;
 using TopicTalks.Infrastructure;
 

@@ -10,5 +10,5 @@ public interface IUserService
     Task<bool> IsUserExists(long userId);
     Task<ErrorOr<RegistrationResponse>> Register(RegistrationRequest request);
     Task<ErrorOr<LoginResponse>> Login(LoginRequest request);
-    Task<ErrorOr<User?>> GetAsync(long userId);
+    Task<ErrorOr<UserDto>> GetWithDetailsAsync(long userId);
 }

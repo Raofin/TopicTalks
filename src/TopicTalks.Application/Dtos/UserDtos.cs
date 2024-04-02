@@ -1,18 +1,16 @@
 ﻿namespace TopicTalks.Application.Dtos;
 
-/*public record UserDto(
+public record UserBasicInfoDto(
+    long UserId,
+    string Email
+);
+
+public record UserDto(
     long UserId,
     string Email,
     DateTime CreatedAt,
-    List<QuestionDtos>? Questions,
-    List<AnswerResponseDto>? Answers,
-    List<UserDetailDto>? UserDetails,
-    List<UserRoleDto>? UserRoles
-);*/
-
-public record UserBasicInfo(
-    long? UserId,
-    string? Email
+    UserDetailDto? UserDetails,
+    List<string> Roles
 );
 
 public record UserDetailDto(

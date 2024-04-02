@@ -18,65 +18,56 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
     [HttpGet("{answerId}")]
     public async Task<IActionResult> Get(long answerId)
     {
-        var response = await _answerService.GetWithUserAsync(answerId);
+        var answerDto = await _answerService.GetWithUserAsync(answerId);
 
-        if (response.IsError is false)
-            return Ok(response.Value);
-
-        return response.FirstError.Type == ErrorType.NotFound
-            ? NotFound()
-            : Problem();
-
+        return !answerDto.IsError
+            ? Ok(answerDto.Value)
+            : answerDto.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("Answer was not found."),
+                _ => Problem("An unexpected error occurred.")
+            };
     }
 
     [HttpGet("withReplies/{answerId}")]
     public async Task<IActionResult> GetAnswerWithReplies(long answerId)
     {
-        var answer = await _answerService.GetAnswersWithRepliesAsync(answerId);
+        var answerDto = await _answerService.GetAnswersWithRepliesAsync(answerId);
 
-        return Ok(answer);
+        return Ok(answerDto);
     }
-
-    /*    [Authorize]
-        [HttpGet("{answerId}")]
-        public async Task<IActionResult> Get(long answerId)
-        {
-            var answer = await _answerService.GetWithUserAsync(answerId);
-
-            return answer.IsError
-                ? NotFound()
-                : Ok(answer.Value);
-        }*/
 
     [AuthorizeRoles(RoleType.Student, RoleType.Teacher)]
     [HttpPost]
-    public async Task<IActionResult> Create(AnswerRequestDto dto)
+    public async Task<IActionResult> Create(AnswerCreateDto dto)
     {
-        var answer = new AnswerDto(
-               AnswerId: 0,
-               ParentAnswerId: dto.ParentAnswerId,
-               QuestionId: dto.QuestionId,
-               Explanation: dto.Explanation,
-               UserId: long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
-            );
+        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         
-        var response = await _answerService.Create(answer);
+        var answerDto = await _answerService.Create(dto, userId);
 
-        return Ok(response);
+        return !answerDto.IsError
+            ? Ok(answerDto.Value)
+            : answerDto.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("Question or any parent answer was not found."),
+                _ => Problem("An unexpected error occurred.")
+            };
     }
 
     [Authorize]
     [HttpPatch]
-    public async Task<IActionResult> Update(AnswerUpdateRequestDto dto)
+    public async Task<IActionResult> Update(AnswerUpdateDto dto)
     {
-        var response = await _answerService.UpdateAsync(dto);
+        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var userRole = User.FindFirst(ClaimTypes.Role)!.Value;
 
-        if (response.IsError is false)
-            return Ok(response.Value);
-        
-        return response.FirstError.Type == ErrorType.NotFound 
-            ? NotFound() 
-            : Problem();
+        var answerDto = await _answerService.UpdateAsync(dto, userRole, userId);
+
+        return !answerDto.IsError
+            ? Ok(answerDto.Value)
+            : answerDto.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("Answer was not found."),
+                ErrorType.Unauthorized => Unauthorized("You are not authorized to update this answer."),
+                _ => Problem("An unexpected error occurred.")
+            };
     }
 
     [Authorize]
@@ -84,17 +75,16 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
     public async Task<IActionResult> Delete(long answerId)
     {
         var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
         var userRole = User.FindFirst(ClaimTypes.Role)!.Value;
 
-        var response = await _answerService.DeleteAsync(answerId, userRole, userId);
+        var result = await _answerService.DeleteAsync(answerId, userRole, userId);
 
-        return response.IsError is false
+        return !result.IsError
             ? Ok()
-            : response.FirstError.Type switch {
-                ErrorType.NotFound => NotFound(),
-                ErrorType.Unauthorized => Unauthorized(),
-                _ => Problem()
+            : result.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("Answer was not found."),
+                ErrorType.Unauthorized => Unauthorized("You are not authorized to delete this answer."),
+                _ => Problem("An unexpected error occurred.")
             };
     }
 }

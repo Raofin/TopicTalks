@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using TopicTalks.Application.Dtos;
+using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
 using TopicTalks.Domain;
 using TopicTalks.Domain.Entities;
@@ -11,44 +12,39 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<AnswerResponseDto?> Create(AnswerDto dto)
+    public async Task<ErrorOr<AnswerResponseDto>> Create(AnswerCreateDto dto, long userId)
     {
+        var isQuestionOrParentExists = await _unitOfWork.Answer.IsQuestionOrParentExists(dto.QuestionId, dto.ParentAnswerId);
+
+        if (!isQuestionOrParentExists)
+        {
+            return Error.NotFound();
+        }
+
         var answer = new Answer {
             ParentAnswerId = dto.ParentAnswerId,
             QuestionId = dto.QuestionId,
             Explanation = dto.Explanation,
-            UserId = dto.UserId
+            UserId = userId
         };
 
         await _unitOfWork.Answer.AddAsync(answer);
         await _unitOfWork.CommitAsync();
+        await _unitOfWork.Entry(answer).Reference(a => a.User).LoadAsync();
 
-        var response = await GetWithUserAsync(answer.AnswerId);
-
-        return response.Value;
+        return answer.ToDto();
     }
 
     public async Task<ErrorOr<AnswerResponseDto>> GetWithUserAsync(long questionId)
     {
         var answer = await _unitOfWork.Answer.GetWithUserAsync(questionId);
 
-
-        return answer is null ? Error.NotFound()
-            : new AnswerResponseDto(
-                AnswerId: answer.AnswerId,
-                ParentAnswerId: answer.ParentAnswerId,
-                QuestionId: answer.QuestionId,
-                Explanation: answer.Explanation,
-                CreatedAt: answer.CreatedAt,
-                UserInfo: answer.User == null ? null
-                    : new UserBasicInfo(
-                        UserId: answer.User.UserId,
-                        Email: answer.User.Email
-                    )
-                );
+        return answer is null 
+            ? Error.NotFound()
+            : answer.ToDto();
     }
 
-    public async Task<ErrorOr<AnswerResponseDto>> UpdateAsync(AnswerUpdateRequestDto dto)
+    public async Task<ErrorOr<AnswerResponseDto>> UpdateAsync(AnswerUpdateDto dto, string role, long userId)
     {
         var answer = await _unitOfWork.Answer.GetAsync(dto.AnswerId);
 
@@ -57,20 +53,16 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
             return Error.NotFound();
         }
 
+        if (answer.UserId != userId || role is not nameof(RoleType.Moderator))
+        {
+            return Error.Unauthorized();
+        }
+
         answer.Explanation = dto.Explanation;
 
         await _unitOfWork.CommitAsync();
 
-        return new AnswerResponseDto(
-                AnswerId: answer.AnswerId,
-                ParentAnswerId: answer.ParentAnswerId,
-                QuestionId: answer.QuestionId,
-                Explanation: answer.Explanation,
-                CreatedAt: answer.CreatedAt,
-                UserInfo: answer.User is null
-                    ? null
-                    : new UserBasicInfo(answer.User.UserId, answer.User.Email)
-            );
+        return answer.ToDto();
     }
 
     public async Task<ErrorOr<Success>> DeleteAsync(long answerId, string role, long userId)
@@ -88,11 +80,9 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
         }
 
         _unitOfWork.Answer.Remove(answer);
-        var deletes = await _unitOfWork.CommitAsync();
+        await _unitOfWork.CommitAsync();
 
-        return deletes == 0
-            ? Error.Unexpected()
-            : Result.Success;
+        return Result.Success;
     }
 
     public async Task<bool> HasTeachersAnswer(int questionId)
@@ -104,23 +94,23 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
     {
         var answers = await _unitOfWork.Answer.GetParentAnswersAsync(questionId, parentAnswerId);
 
-        var dtos = answers.Select(ans => new AnswerWithRepliesDto {
+        var answerDtos = answers.Select(ans => new AnswerWithRepliesDto {
             AnswerId = ans.AnswerId,
             ParentAnswerId = ans.ParentAnswerId,
             Explanation = ans.Explanation,
             CreatedAt = ans.CreatedAt,
-            UserInfo = ans.User == null ? null : new UserBasicInfo(
+            UserInfo = ans.User == null ? null : new UserBasicInfoDto(
                 UserId: ans.User.UserId,
                 Email: ans.User.Email
             )
         }).ToList();
 
-        foreach (var item in dtos)
+        foreach (var item in answerDtos)
         {
             var replies = await GetAnswersWithRepliesAsync(questionId, item.AnswerId);
             item.Answers = replies;
         }
 
-        return dtos;
+        return answerDtos;
     }
 }

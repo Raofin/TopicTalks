@@ -1,20 +1,12 @@
 ﻿namespace TopicTalks.Application.Dtos;
 
-public record AnswerDto(
-    long AnswerId,
-    long? ParentAnswerId,
-    long QuestionId,
-    string Explanation,
-    long UserId
-);
-
-public record AnswerRequestDto(
+public record AnswerCreateDto(
     long? ParentAnswerId,
     long QuestionId,
     string Explanation
 );
 
-public record AnswerUpdateRequestDto(
+public record AnswerUpdateDto(
     long AnswerId,
     string Explanation
 );
@@ -25,7 +17,7 @@ public record AnswerResponseDto(
     long QuestionId,
     string Explanation,
     DateTime CreatedAt,
-    UserBasicInfo? UserInfo
+    UserBasicInfoDto? UserInfo
 );
 
 // for recursive calls
@@ -35,6 +27,6 @@ public class AnswerWithRepliesDto
     public long? ParentAnswerId { get; set; }
     public string Explanation { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
-    public UserBasicInfo? UserInfo { get; set; }
+    public UserBasicInfoDto? UserInfo { get; set; }
     public List<AnswerWithRepliesDto>? Answers { get; set; }
 }

@@ -16,7 +16,7 @@ public class User
 
     public ICollection<Question> Questions { get; set; } = new List<Question>();
 
-    public ICollection<UserDetail> UserDetails { get; set; } = new List<UserDetail>();
+    public UserDetail? UserDetails { get; set; }
 
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

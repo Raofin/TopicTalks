@@ -11,12 +11,39 @@ public static class EntityExtensions
             QuestionId: question.QuestionId,
             Topic: question.Topic,
             Explanation: question.Explanation,
-            UserInfo: question.User is null ? null : new UserBasicInfo(
+            UserInfo: question.User is null ? null : new UserBasicInfoDto(
                 UserId: question.User.UserId,
                 Email: question.User.Email
             ),
             CreatedAt: question.CreatedAt,
             UpdatedAt: question.UpdatedAt
         );
+    }
+
+    public static UserDetailDto? ToDto(this UserDetail? userDetail)
+    {
+        return userDetail == null
+            ? null
+            : new UserDetailDto(
+                Name: userDetail.Name,
+                InstituteName: userDetail.InstituteName,
+                IdCardNumber: userDetail.IdCardNumber
+            );
+    }
+
+    public static AnswerResponseDto ToDto(this Answer answer)
+    {
+        return new AnswerResponseDto(
+            AnswerId: answer.AnswerId,
+            ParentAnswerId: answer.ParentAnswerId,
+            QuestionId: answer.QuestionId,
+            Explanation: answer.Explanation,
+            CreatedAt: answer.CreatedAt,
+            UserInfo: answer.User == null ? null
+                : new UserBasicInfoDto(
+                    UserId: answer.User.UserId,
+                    Email: answer.User.Email
+                )
+            );
     }
 }

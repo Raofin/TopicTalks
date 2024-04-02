@@ -18,14 +18,26 @@ internal class UserRepository(AppDbContext dbContext) : Repository<User>(dbConte
         return await _dbContext.Users.AnyAsync(u => u.UserId == userId);
     }
 
-    public async Task<User?> GetAsync(string email, long roleId)
+    public async Task<User?> GetWithDetailsAsync(string email, long roleId)
     {
         var user = await _dbContext.Users
             .Include(u => u.UserDetails)
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
             .Where(u => u.Email == email && u.UserRoles.Any(ur => ur.RoleId == roleId))
-            .FirstOrDefaultAsync();
+            .SingleOrDefaultAsync();
+
+        return user;
+    }
+
+    public async Task<User?> GetWithDetailsAsync(long userId)
+    {
+        var user = await _dbContext.Users
+            .Include(u => u.UserDetails)
+            .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .Where(u => u.UserId == userId)
+            .SingleOrDefaultAsync();
 
         return user;
     }

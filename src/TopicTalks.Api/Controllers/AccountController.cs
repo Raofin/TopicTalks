@@ -1,4 +1,5 @@
-﻿using ErrorOr;
+﻿using Azure;
+using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -16,11 +17,15 @@ public class AccountController(IUserService userService) : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegistrationRequest request)
     {
-        var user = await _userService.Register(request);
+        var registration = await _userService.Register(request);
 
-        return user.Errors.Any(e => e.Type is ErrorType.Conflict)
-            ? Conflict("User with the provided email already exists.")
-            : Ok(user.Value);
+        return registration.IsError switch
+        {
+            false => Ok(registration.Value),
+            _ => registration.Errors.Any(e => e.Type is ErrorType.Conflict)
+                ? Conflict("User with the provided email already exists.")
+                : Problem("An unexpected error occurred.")
+        };
     }
 
     [HttpPost("login")]
@@ -28,9 +33,13 @@ public class AccountController(IUserService userService) : ControllerBase
     {
         var login = await _userService.Login(request);
 
-        return login.Errors.Any(e => e.Type is ErrorType.NotFound or ErrorType.Unauthorized)
-            ? Unauthorized("Invalid Credentials.")
-            : Ok(login.Value);
+        return login.IsError switch
+        {
+            false => Ok(login.Value),
+            _ => login.Errors.Any(e => e.Type is ErrorType.NotFound or ErrorType.Unauthorized)
+                ? Unauthorized("Invalid Credentials.")
+                : Problem("An unexpected error occurred.")
+        };
     }
 
     [Authorize]
@@ -39,10 +48,13 @@ public class AccountController(IUserService userService) : ControllerBase
     {
         var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        var user = await _userService.GetAsync(userId);
+        var user = await _userService.GetWithDetailsAsync(userId);
 
-        return user.Errors.Any(e => e.Type is ErrorType.NotFound)
-            ? NotFound("User not found.")
-            : Ok(user.Value);
+        return !user.IsError
+            ? Ok(user.Value)
+            : user.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("User was not found."),
+                _ => Problem("An unexpected error occurred.")
+            };
     }
 }

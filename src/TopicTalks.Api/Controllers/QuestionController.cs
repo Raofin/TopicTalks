@@ -10,82 +10,86 @@ namespace TopicTalks.Api.Controllers;
 
 [Route("api/question")]
 [ApiController]
-public class QuestionController(IQuestionService questionService, IHttpContextAccessor accessor) : ControllerBase
+public class QuestionController(IQuestionService questionService) : ControllerBase
 {
     private readonly IQuestionService _questionService = questionService;
 
     [HttpGet]
     public async Task<IActionResult> Get(string? searchQuery)
     {
-        var questions = await _questionService.SearchAsync(searchQuery);
+        var questionDtos = await _questionService.SearchAsync(searchQuery);
 
-        return Ok(questions);
+        return Ok(questionDtos);
     }
 
     [HttpGet("{questionId}")]
     public async Task<IActionResult> Get(long questionId)
     {
-        var response = await _questionService.GetAsync(questionId);
+        var questionDto = await _questionService.GetAsync(questionId);
 
-        return response.IsError
-            ? NotFound()
-            : Ok(response.Value);
+        return !questionDto.IsError
+            ? Ok(questionDto.Value)
+            : questionDto.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("Question was not found."),
+                _ => Problem("An unexpected error occurred.")
+            };
     }
 
     [Authorize]
     [HttpGet("withUserDetails/{questionId}")]
     public async Task<IActionResult> GetWithUserDetails(long questionId)
     {
-        var response = await _questionService.GetWithUserAsync(questionId);
+        var questionDto = await _questionService.GetWithUserAsync(questionId);
 
-        return response.IsError
-            ? NotFound()
-            : Ok(response.Value);
+        return !questionDto.IsError
+            ? Ok(questionDto.Value)
+            : questionDto.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("Question was not found."),
+                _ => Problem("An unexpected error occurred.")
+            };
     }
 
     [Authorize]
     [HttpGet("withAnswers/{questionId}")]
     public async Task<IActionResult> GetWithAnswers(int questionId)
     {
-        var question = await _questionService.GetWithAnswersAsync(questionId);
+        var questionDto = await _questionService.GetWithAnswersAsync(questionId);
 
-        return question.IsError
-            ? NotFound()
-            : Ok(question.Value);
+        return !questionDto.IsError
+            ? Ok(questionDto.Value)
+            : questionDto.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("Question was not found."),
+                _ => Problem("An unexpected error occurred.")
+            };
     }
 
     [AuthorizeStudent]
     [HttpPost]
-    public async Task<IActionResult> Create(QuestionRequestDto dto)
+    public async Task<IActionResult> Create(QuestionCreateDto dto)
     {
-        var question = new QuestionDto(
-                QuestionId: 0,
-                Topic: dto.Topic,
-                Explanation: dto.Explanation,
-                UserId: long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
-            );
+        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        var response = await _questionService.CreateAsync(question);
+        var questionDto = await _questionService.CreateAsync(dto, userId);
 
-        return Ok(response);
+        return Ok(questionDto);
     }
 
     [Authorize]
     [HttpPatch]
-    public async Task<IActionResult> Update(QuestionUpdateRequestDto dto)
+    public async Task<IActionResult> Update(QuestionUpdateDto dto)
     {
-        var question = new QuestionDto(
-                QuestionId: dto.QuestionId, 
-                Topic: dto.Topic, 
-                Explanation: dto.Explanation, 
-                UserId: long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
-            );
+        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var userRole = User.FindFirst(ClaimTypes.Role)!.Value;
 
-        var response = await _questionService.UpdateAsync(question);
+        var questionDto = await _questionService.UpdateAsync(dto, userId, userRole);
 
-        return response.IsError
-            ? NotFound()
-            : Ok(response.Value);
+        return !questionDto.IsError
+            ? Ok(questionDto.Value)
+            : questionDto.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("Question was not found."),
+                ErrorType.Unauthorized => Unauthorized("You are not authorized to update this question."),
+                _ => Problem("An unexpected error occurred.")
+            };
     }
 
     [Authorize]
@@ -93,17 +97,16 @@ public class QuestionController(IQuestionService questionService, IHttpContextAc
     public async Task<IActionResult> Delete(long questionId)
     {
         var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
         var userRole = User.FindFirst(ClaimTypes.Role)!.Value;
 
-        var response = await _questionService.DeleteAsync(questionId, userRole, userId);
+        var result = await _questionService.DeleteAsync(questionId, userRole, userId);
 
-        return response.IsError is false
+        return !result.IsError
             ? Ok()
-            : response.FirstError.Type switch {
-                ErrorType.NotFound => NotFound(),
-                ErrorType.Unauthorized => Unauthorized(),
-                _ => Problem()
+            : result.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("Question was not found."),
+                ErrorType.Unauthorized => Unauthorized("You are not authorized to delete this question."),
+                _ => Problem("An unexpected error occurred.")
             };
     }
 
@@ -113,9 +116,9 @@ public class QuestionController(IQuestionService questionService, IHttpContextAc
     {
         var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        var questions = await _questionService.GetByUserIdAsync(userId);
+        var questionDtos = await _questionService.GetByUserIdAsync(userId);
 
-        return Ok(questions);
+        return Ok(questionDtos);
     }
 
     [AuthorizeTeacher]
@@ -124,8 +127,8 @@ public class QuestionController(IQuestionService questionService, IHttpContextAc
     {
         var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        var questions = await _questionService.GetByUserResponsesAsync(userId);
+        var questionDtos = await _questionService.GetByUserResponsesAsync(userId);
 
-        return Ok(questions);
+        return Ok(questionDtos);
     }
 }

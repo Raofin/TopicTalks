@@ -1,5 +1,4 @@
 ﻿using ErrorOr;
-using Microsoft.IdentityModel.Tokens;
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
@@ -14,12 +13,12 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IAnswerService _answerService = answerService;
 
-    public async Task<QuestionResponseDto> CreateAsync(QuestionDto dto)
+    public async Task<QuestionResponseDto> CreateAsync(QuestionCreateDto dto, long userId)
     {
         var question = new Question {
             Topic = dto.Topic,
             Explanation = dto.Explanation,
-            UserId = dto.UserId
+            UserId = userId
         };
 
         await _unitOfWork.Question.AddAsync(question);
@@ -54,10 +53,9 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
                 QuestionId: question.QuestionId,
                 Topic: question.Topic,
                 Explanation: question.Explanation,
-                UserInfo: question.User is null ? null : new UserBasicInfo(
-                        UserId: question.User.UserId,
-                        Email: question.User.Email
-                    ),
+                UserInfo: question.User is null 
+                    ? null 
+                    : new UserBasicInfoDto(question.User.UserId, question.User.Email),
                 CreatedAt: question.CreatedAt,
                 UpdatedAt: question.UpdatedAt
             );
@@ -102,20 +100,25 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
                         .Any(ur => ur.Role.RoleName == nameof(RoleType.Teacher))),
                 UserInfo: question.User is null
                     ? null
-                    : new UserBasicInfo(question.User.UserId, question.User.Email),
+                    : new UserBasicInfoDto(question.User.UserId, question.User.Email),
                 Answers: answers,
                 CreatedAt: question.CreatedAt,
                 UpdatedAt: question.UpdatedAt
             );
     }
 
-    public async Task<ErrorOr<QuestionResponseDto>> UpdateAsync(QuestionDto dto)
+    public async Task<ErrorOr<QuestionResponseDto>> UpdateAsync(QuestionUpdateDto dto, long userId, string role)
     {
         var question = await _unitOfWork.Question.GetWithUser(dto.QuestionId);
 
         if (question is null)
         {
             return Error.NotFound();
+        }
+
+        if (question.UserId != userId || role is not nameof(RoleType.Moderator))
+        {
+            return Error.Unauthorized();
         }
 
         question.Topic = dto.Topic;

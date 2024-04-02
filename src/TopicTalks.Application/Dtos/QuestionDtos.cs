@@ -1,18 +1,11 @@
 ﻿namespace TopicTalks.Application.Dtos;
 
-public record QuestionDto(
-    long QuestionId,
-    string Topic,
-    string Explanation,
-    long UserId
-);
-
-public record QuestionRequestDto(
+public record QuestionCreateDto(
     string Topic,
     string Explanation
 );
 
-public record QuestionUpdateRequestDto(
+public record QuestionUpdateDto(
     long QuestionId,
     string Topic,
     string Explanation
@@ -22,7 +15,7 @@ public record QuestionResponseDto(
     long QuestionId,
     string Topic,
     string Explanation,
-    UserBasicInfo? UserInfo,
+    UserBasicInfoDto? UserInfo,
     DateTime CreatedAt,
     DateTime? UpdatedAt
 );
@@ -32,7 +25,7 @@ public record QuestionWithAnswersDto(
     string Topic,
     string Explanation,
     bool? HasTeachersResponse,
-    UserBasicInfo? UserInfo,
+    UserBasicInfoDto? UserInfo,
     List<AnswerWithRepliesDto>? Answers,
     DateTime CreatedAt,
     DateTime? UpdatedAt
