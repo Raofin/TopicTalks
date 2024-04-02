@@ -1,4 +1,5 @@
-﻿using TopicTalks.Domain;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using TopicTalks.Domain;
 using TopicTalks.Domain.Interfaces;
 
 namespace TopicTalks.Infrastructure.Persistence;
@@ -23,5 +24,10 @@ internal class UnitOfWork(
     public void Dispose()
     {
         _context.Dispose();
+    }
+
+    public EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class
+    {
+        return _context.Entry(entity);
     }
 }
