@@ -1,5 +1,4 @@
-﻿using Azure;
-using ErrorOr;
+﻿using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

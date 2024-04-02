@@ -63,7 +63,7 @@ public class HomeController(IHttpService httpService) : Controller
     }
 
     [HttpPost("post-question")]
-    public async Task<IActionResult> PostQuestion(QuestionRequestViewModel request)
+    public async Task<IActionResult> PostQuestion(QuestionCreateViewModel request)
     {
         var response = await _httpService.Client.PostAsync("api/question", request.ToStringContent());
 

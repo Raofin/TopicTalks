@@ -11,8 +11,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ErrorOr" Version="1.10.0" />
+		<PackageReference Include="ErrorOr" Version="2.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.34" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.0" />
 	</ItemGroup>
 
 </Project>

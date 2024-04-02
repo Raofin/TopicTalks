@@ -6,16 +6,16 @@ public record AnswerViewModel(
     long QuestionId,
     string Explanation,
     DateTime CreatedAt,
-    UserBasicInfo? UserInfo
+    UserBasicInfoViewModel? UserInfo
 );
 
-public record AnswerRequestViewModel(
+public record AnswerCreateViewModel(
     long? ParentAnswerId,
     long QuestionId,
     string Explanation
 );
 
-public record AnswerUpdateRequestViewModel(
+public record AnswerUpdateViewModel(
     long AnswerId,
     string Explanation
 );
@@ -26,6 +26,6 @@ public record AnswerWithRepliesViewModel(
     long QuestionId,
     string Explanation,
     DateTime CreatedAt,
-    UserBasicInfo? UserInfo,
+    UserBasicInfoViewModel? UserInfo,
     List<AnswerWithRepliesViewModel> Answers
 );

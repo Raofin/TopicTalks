@@ -5,7 +5,7 @@ using TopicTalks.Application.Services;
 
 namespace TopicTalks.Application;
 
-public static class DepedencyInjection
+public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {

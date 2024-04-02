@@ -21,11 +21,6 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginViewModel login)
     {
-        if (!ModelState.IsValid)
-        {
-            return UnprocessableEntity(ModelState);
-        }
-
         var response = await _httpService.Client.PostAsync("api/account/login", login.ToStringContent());
 
         if (response.StatusCode == HttpStatusCode.OK)
@@ -51,18 +46,19 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterViewModel register)
     {
-        if (!ModelState.IsValid)
-        {
-            return UnprocessableEntity(ModelState);
-        }
-
         var response = await _httpService.Client.PostAsync("api/account/register", register.ToStringContent());
 
         return response.StatusCode switch {
             HttpStatusCode.OK => Ok(),
-            HttpStatusCode.Conflict => Conflict(),
+            HttpStatusCode.BadRequest => BadRequest(),
             _ => Problem()
         };
+    }
+
+    [HttpGet("AdditionalFields")]
+    public IActionResult LoadAdditionalFields()
+    {
+        return PartialView("_AdditionalFields");
     }
 
     [HttpGet("logout")]

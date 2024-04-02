@@ -11,7 +11,7 @@ namespace TopicTalks.Web.Controllers
         private readonly IHttpService _httpService = httpService;
 
         [HttpPatch]
-        public async Task<IActionResult> UpdateQuestion(QuestionUpdateRequestViewModel request)
+        public async Task<IActionResult> UpdateQuestion(QuestionUpdateViewModel request)
         {
             var response = await _httpService.Client.PatchAsync("api/question", request.ToStringContent());
 

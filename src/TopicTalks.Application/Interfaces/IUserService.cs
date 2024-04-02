@@ -1,6 +1,5 @@
 ﻿using ErrorOr;
 using TopicTalks.Application.Dtos;
-using TopicTalks.Domain.Entities;
 
 namespace TopicTalks.Application.Interfaces;
 

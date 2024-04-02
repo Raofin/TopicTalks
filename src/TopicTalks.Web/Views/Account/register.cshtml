@@ -24,29 +24,7 @@
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
 
-            <!-- Additional input fields for Student role -->
-            <div class="card rounded-border mb-3 student-details" id="additionalFields" style="display: none;">
-                <div class="card-body">
-                    <h5 class="text-center">Student Details</h5>
-                    <div class="form-group">
-                        <label asp-for="UserDetail.Name">Name</label>
-                        <input asp-for="UserDetail.Name" class="form-control" placeholder="Enter your name" />
-                        <span asp-validation-for="UserDetail.Name" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="UserDetail.InstituteName">Institute Name</label>
-                        <input asp-for="UserDetail.InstituteName" class="form-control" placeholder="Enter your institute name" />
-                        <span asp-validation-for="UserDetail.InstituteName" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="UserDetail.IdCardNumber">ID Card Number</label>
-                        <input asp-for="UserDetail.IdCardNumber" class="form-control" placeholder="Enter your ID card number" />
-                        <span asp-validation-for="UserDetail.IdCardNumber" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
+            <div id="additional-fields"></div>
 
             <div class="form-group mb-2">
                 <label asp-for="Role">Role</label>
@@ -69,15 +47,14 @@
 @section Scripts
 {
     <script>
-        $("#additionalFields").hide();
 
         $("#Role").change(function () {
             var selectedRole = $(this).val();
 
             if (selectedRole === "Student") {
-                $("#additionalFields").show();
+                $("#additional-fields").load('/AdditionalFields');
             } else {
-                $("#additionalFields").hide();
+                $("#additional-fields").html("");
             }
         });
 
@@ -89,7 +66,8 @@
                 },
                 Password: {
                     required: true,
-                    minlength: 6
+                    minlength: 4,
+                    maxlength: 20
                 },
                 ConfirmPassword: {
                     required: true,
@@ -98,27 +76,34 @@
                 Role: {
                     required: true
                 },
-                "UserDetail.Name": {
+                "UserDetails.Name": {
                     required: {
                         depends: function (element) {
                             return $("#Role").val() === "Student";
                         }
-                    }
+                    },
+                    minlength: 3,
+                    maxlength: 50
                 },
-                "UserDetail.InstituteName": {
+                "UserDetails.InstituteName": {
                     required: {
                         depends: function (element) {
                             return $("#Role").val() === "Student";
                         }
-                    }
+                    },
+                    minlength: 3,
+                    maxlength: 50
                 },
-                "UserDetail.IdCardNumber": {
+                "UserDetails.IdCardNumber": {
                     required: {
                         depends: function (element) {
                             return $("#Role").val() === "Student";
                         }
-                    }
-                }
+                    },
+                    minlength: 6,
+                    maxlength: 20
+                },
+
             },
             messages: {
                 Email: {
@@ -127,19 +112,23 @@
                 },
                 Password: {
                     required: "Please enter a password",
-                    minlength: "Your password must be at least 6 characters long"
+                    minlength: "Your password must be at least 4 characters long",
+                    maxlength: "Your password must not exceed 20 characters"
                 },
                 ConfirmPassword: {
                     required: "Please confirm your password",
                     equalTo: "Passwords do not match"
                 },
-                "UserDetail.Name": {
+                Role: {
+                    required: "Please select a role"
+                },
+                "UserDetails.Name": {
                     required: "Please enter your name"
                 },
-                "UserDetail.InstituteName": {
+                "UserDetails.InstituteName": {
                     required: "Please enter your institute name"
                 },
-                "UserDetail.IdCardNumber": {
+                "UserDetails.IdCardNumber": {
                     required: "Please enter your ID card number"
                 }
             },
@@ -155,7 +144,7 @@
                     error: function (xhr) {
                         if (xhr.status == 409) {
                             toastMessage("User with the provided email already exists.");
-                        } else if (xhr.status === 422){
+                        } else if (xhr.status === 422) {
                             toastMessage("Please fill out all the fields properly.");
                         } else {
                             toastMessage("Internal server error. Please try again later.");

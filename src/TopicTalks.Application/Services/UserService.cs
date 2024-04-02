@@ -2,9 +2,9 @@
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
-using TopicTalks.Contracts.Common;
 using TopicTalks.Domain;
 using TopicTalks.Domain.Entities;
+using TopicTalks.Domain.Enums;
 
 namespace TopicTalks.Application.Services;
 
@@ -79,7 +79,7 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
             UserId: user.UserId,
             Email: user.Email,
             UserDetails: user.UserDetails.ToDto(),
-            Role: user.UserRoles.Select(ur => (RoleName?)ur.RoleId).ToList()
+            Role: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
         );
 
         return response;
@@ -106,7 +106,7 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
             Token: _tokenService.GenerateJwtToken(user),
             Email: user.Email,
             UserDetails: user.UserDetails.ToDto(),
-            Role: user.UserRoles.Select(ur => (RoleName?)ur.RoleId).ToList()
+            Role: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
         );
 
         return response;

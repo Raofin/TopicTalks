@@ -11,7 +11,7 @@ public class AnswerController(IHttpService httpService) : Controller
     private readonly IHttpService _httpService = httpService;
 
     [HttpPost]
-    public async Task<IActionResult> PostAnswer(AnswerRequestViewModel request)
+    public async Task<IActionResult> PostAnswer(AnswerCreateViewModel request)
     {
         var response = await _httpService.Client.PostAsync("api/answer", request.ToStringContent());
 
@@ -21,7 +21,7 @@ public class AnswerController(IHttpService httpService) : Controller
     }
 
     [HttpPatch]
-    public async Task<IActionResult> UpdateAnswer(AnswerUpdateRequestViewModel request)
+    public async Task<IActionResult> UpdateAnswer(AnswerUpdateViewModel request)
     {
         var response = await _httpService.Client.PatchAsync("api/answer", request.ToStringContent());
 

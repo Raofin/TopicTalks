@@ -4,17 +4,17 @@ public record QuestionViewModel(
     long QuestionId,
     string Topic,
     string Explanation,
-    UserBasicInfo? UserInfo,
+    UserBasicInfoViewModel? UserInfo,
     DateTime CreatedAt,
     DateTime? UpdatedAt
 );
 
-public record QuestionRequestViewModel(
+public record QuestionCreateViewModel(
     string Topic,
     string Explanation
 );
 
-public record QuestionUpdateRequestViewModel(
+public record QuestionUpdateViewModel(
     string QuestionId,
     string Topic,
     string Explanation
@@ -25,7 +25,7 @@ public record QuestionWithAnswersViewModel(
     string Topic,
     string Explanation,
     bool HasTeachersResponse,
-    UserBasicInfo? UserInfo,
+    UserBasicInfoViewModel? UserInfo,
     List<AnswerWithRepliesViewModel> Answers,
     DateTime CreatedAt,
     DateTime? UpdatedAt

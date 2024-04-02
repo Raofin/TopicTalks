@@ -1,11 +1,11 @@
-﻿using TopicTalks.Contracts.Common;
+﻿using TopicTalks.Domain.Enums;
 
 namespace TopicTalks.Application.Dtos;
 
 public record LoginRequest(
     string Email,
     string Password,
-    RoleName Role
+    RoleType Role
 );
 
 public record LoginResponse(
@@ -13,5 +13,5 @@ public record LoginResponse(
     string Token,
     string Email,
     UserDetailDto? UserDetails,
-    List<RoleName?> Role
+    List<RoleType> Role
 );

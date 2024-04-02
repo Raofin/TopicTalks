@@ -1,5 +1,8 @@
-﻿namespace TopicTalks.Domain.Enums;
+﻿using System.Text.Json.Serialization;
 
+namespace TopicTalks.Domain.Enums;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum RoleType
 {
     Student = 1,
