@@ -40,6 +40,13 @@
                     <a class="nav-link text-dark nav-text" href="/my-responses">My Responses</a>
                 </li>
             }
+            
+            @if (Context.UserRole() == nameof(RoleType.Moderator))
+            {
+                <li class="nav-item">
+                    <a asp-controller="Account" asp-action="GetExcel" class="nav-link text-dark nav-text">Export User Data</a>
+                </li>
+            }
         </ul>
 
         <ul class="navbar-nav">

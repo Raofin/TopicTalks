@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using TopicTalks.Web.ViewModels;
 
 namespace TopicTalks.Web.Extensions;
 
@@ -40,5 +41,11 @@ public static class HttpExtensions
     public static string? UserRole(this HttpContext http)
     {
         return http.User.FindFirst(ClaimTypes.Role)?.Value;
+    }
+
+    public static async Task<ExcelFile> ToExcelFile(this HttpResponseMessage response)
+    {
+        var bytes = await response.Content.ReadAsByteArrayAsync();
+        return new ExcelFile(bytes);
     }
 }

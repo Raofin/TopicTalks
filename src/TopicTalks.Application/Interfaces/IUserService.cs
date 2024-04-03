@@ -10,4 +10,5 @@ public interface IUserService
     Task<ErrorOr<RegistrationResponse>> Register(RegistrationRequest request);
     Task<ErrorOr<LoginResponse>> Login(LoginRequest request);
     Task<ErrorOr<UserDto>> GetWithDetailsAsync(long userId);
+    Task<ExcelFile> UserListExcelFile();
 }

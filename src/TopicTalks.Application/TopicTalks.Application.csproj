@@ -19,6 +19,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.0" />
+		<PackageReference Include="ClosedXML" Version="0.102.2" />
 	</ItemGroup>
 
 </Project>

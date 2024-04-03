@@ -2,17 +2,23 @@
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
+using TopicTalks.Application.Interfaces.Excel;
 using TopicTalks.Domain;
 using TopicTalks.Domain.Entities;
 using TopicTalks.Domain.Enums;
 
 namespace TopicTalks.Application.Services;
 
-internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordService, IAuthService tokenService) : IUserService
+internal class UserService(
+    IUnitOfWork unitOfWork, 
+    IPasswordService passwordService, 
+    IAuthService tokenService, 
+    IExcelExportService excelExportService) : IUserService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IPasswordService _passwordService = passwordService;
     private readonly IAuthService _tokenService = tokenService;
+    private readonly IExcelExportService _excelExportService = excelExportService;
 
     public async Task<bool> IsEmailExists(string email)
     {
@@ -110,5 +116,21 @@ internal class UserService(IUnitOfWork unitOfWork, IPasswordService passwordServ
         );
 
         return response;
+    }
+
+    public async Task<ExcelFile> UserListExcelFile()
+    {
+        var users = await _unitOfWork.User.GetWithDetailsAsync();
+
+        var usersDto = users.Select(u => new UserDto(
+                UserId: u.UserId,
+                Email: u.Email,
+                CreatedAt: u.CreatedAt,
+                UserDetails: u.UserDetails.ToDto(),
+                Roles: u.UserRoles.Select(ur => ur.Role.RoleName).ToList()
+            )
+        ).ToList();
+
+        return _excelExportService.UserListExcel(usersDto);
     }
 }

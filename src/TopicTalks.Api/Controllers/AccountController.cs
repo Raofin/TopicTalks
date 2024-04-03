@@ -56,4 +56,13 @@ public class AccountController(IUserService userService) : ControllerBase
                 _ => Problem("An unexpected error occurred.")
             };
     }
+
+    [Authorize]
+    [HttpGet("excel/users")]
+    public async Task<IActionResult> GetExcel()
+    {
+        var excelFile = await _userService.UserListExcelFile();
+
+        return File(excelFile.Bytes, excelFile.ContentType, excelFile.Name);
+    }
 }

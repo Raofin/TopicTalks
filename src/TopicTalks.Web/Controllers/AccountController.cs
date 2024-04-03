@@ -67,4 +67,18 @@ public class AccountController(IAuthService authService, IHttpService httpServic
         await _authService.SignOutAsync();
         return RedirectToAction("Dashboard", "Home");
     }
+
+    [HttpGet("excel/users")]
+    public async Task<IActionResult> GetExcel()
+    {
+        var response = await _httpService.Client.GetAsync("api/account/excel/users");
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var excelFile = await response.ToExcelFile();
+            return File(excelFile.Bytes, excelFile.ContentType, excelFile.Name);
+        }
+
+        return new StatusCodeResult((int)response.StatusCode);
+    }
 }

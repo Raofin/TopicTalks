@@ -6,6 +6,8 @@ using TopicTalks.Application.Interfaces;
 using TopicTalks.Application.Services;
 using TopicTalks.Application.Services.Pdf;
 using TopicTalks.Application.Interfaces.Pdf;
+using TopicTalks.Application.Interfaces.Excel;
+using TopicTalks.Application.Services.Excel;
 
 namespace TopicTalks.Application;
 
@@ -15,6 +17,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<IPasswordHasher<IdentityUser>, PasswordHasher<IdentityUser>>();
         services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+        services.AddSingleton<IExcelExportService, ExcelExportService>();
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
