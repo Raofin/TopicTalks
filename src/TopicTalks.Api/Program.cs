@@ -32,6 +32,8 @@ builder.Services.AddCors(options => {
         policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
+DinkToPdfAll.LibraryLoader.Load();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
