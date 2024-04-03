@@ -22,8 +22,8 @@ public static class DependencyInjection
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<IAnswerService, AnswerService>();
 
+        services.AddTransient<IPdfGeneratorService, PdfGeneratorService>();
         services.AddTransient<IPdfService, PdfService>();
-        services.AddTransient<IHtmlService, HtmlService>();
 
         return services;
     }

@@ -131,4 +131,18 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
 
         return Ok(questionDtos);
     }
+
+    [Authorize]
+    [HttpGet("pdf/{questionId}")]
+    public async Task<IActionResult> GetPdf(long questionId)
+    {
+        var pdf = await _questionService.GeneratePdfAsync(questionId);
+
+        return !pdf.IsError
+            ? File(pdf.Value, "application/pdf")
+            : pdf.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("Question was not found."),
+                _ => Problem("An unexpected error occurred.")
+            };
+    }
 }

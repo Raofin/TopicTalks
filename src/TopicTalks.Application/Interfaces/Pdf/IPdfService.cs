@@ -1,10 +1,8 @@
-﻿using DinkToPdf;
+﻿using TopicTalks.Application.Dtos;
 
 namespace TopicTalks.Application.Interfaces.Pdf;
 
 public interface IPdfService
 {
-    HtmlToPdfDocument CreatePdfObject(string htmlContent);
-    byte[] GeneratePdf(string htmlContent);
-    byte[] GeneratePdf(HtmlToPdfDocument pdf);
+    byte[] GenerateQuestionPdf(QuestionWithAnswersDto dto);
 }

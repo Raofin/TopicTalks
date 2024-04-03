@@ -2,16 +2,18 @@
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
+using TopicTalks.Application.Interfaces.Pdf;
 using TopicTalks.Domain;
 using TopicTalks.Domain.Entities;
 using TopicTalks.Domain.Enums;
 
 namespace TopicTalks.Application.Services;
 
-internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerService) : IQuestionService
+internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerService, IPdfService pdfService) : IQuestionService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IAnswerService _answerService = answerService;
+    private readonly IPdfService _pdfService = pdfService;
 
     public async Task<QuestionResponseDto> CreateAsync(QuestionCreateDto dto, long userId)
     {
@@ -151,5 +153,14 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
         return deletes == 0
             ? Error.Unexpected()
             : Result.Success;
+    }
+
+    public async Task<ErrorOr<byte[]>> GeneratePdfAsync(long questionId)
+    {
+        var question = await GetWithAnswersAsync(questionId);
+
+        return question.IsError 
+            ? question.Errors 
+            : _pdfService.GenerateQuestionPdf(question.Value);
     }
 }

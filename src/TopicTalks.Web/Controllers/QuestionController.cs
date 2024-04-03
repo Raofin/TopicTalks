@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TopicTalks.Web.Extensions;
 using TopicTalks.Web.Services;
 using TopicTalks.Web.ViewModels;
 
 namespace TopicTalks.Web.Controllers
 {
+    [Authorize]
     [Route("question")]
     public class QuestionController(IHttpService httpService) : Controller
     {
@@ -27,6 +29,16 @@ namespace TopicTalks.Web.Controllers
 
             return response.IsSuccessStatusCode
                 ? Ok()
+                : new StatusCodeResult((int)response.StatusCode);
+        }
+
+        [HttpGet("pdf/{questionId}")]
+        public async Task<IActionResult> GetPdf(long questionId)
+        {
+            var response = await _httpService.Client.GetAsync($"api/question/pdf/{questionId}");
+
+            return response.IsSuccessStatusCode
+                ? File(await response.Content.ReadAsByteArrayAsync(), "application/pdf")
                 : new StatusCodeResult((int)response.StatusCode);
         }
     }

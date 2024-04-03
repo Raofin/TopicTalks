@@ -9,10 +9,12 @@ using TopicTalks.Web.ViewModels;
 
 namespace TopicTalks.Web.Controllers;
 
+[Authorize]
 public class HomeController(IHttpService httpService) : Controller
 {
     private readonly IHttpService _httpService = httpService;
 
+    [AllowAnonymous]
     [HttpGet("")]
     public async Task<IActionResult> Dashboard()
     {
@@ -45,7 +47,6 @@ public class HomeController(IHttpService httpService) : Controller
         return View(answers);
     }
 
-    [Authorize]
     [HttpGet("question/{questionId}")]
     public async Task<IActionResult> QuestionDetails(long questionId)
     {

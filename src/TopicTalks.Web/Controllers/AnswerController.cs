@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TopicTalks.Web.Extensions;
 using TopicTalks.Web.Services;
 using TopicTalks.Web.ViewModels;
 
 namespace TopicTalks.Web.Controllers;
 
+[Authorize]
 [Route("answer")]
 public class AnswerController(IHttpService httpService) : Controller
 {

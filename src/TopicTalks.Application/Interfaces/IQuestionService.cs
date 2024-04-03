@@ -15,4 +15,5 @@ public interface IQuestionService
     Task<ErrorOr<QuestionWithAnswersDto>> GetWithAnswersAsync(long questionId);
     Task<ErrorOr<QuestionResponseDto>> UpdateAsync(QuestionUpdateDto dto, long userId, string role);
     Task<ErrorOr<Success>> DeleteAsync(long questionId, string role, long userId);
+    Task<ErrorOr<byte[]>> GeneratePdfAsync(long questionId);
 }
