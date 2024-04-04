@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using Microsoft.AspNetCore.Mvc;
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
@@ -44,7 +45,7 @@ internal class UserService(
                 Email: user.Email,
                 CreatedAt: user.CreatedAt,
                 UserDetails: user.UserDetails.ToDto(),
-                Roles: user.UserRoles.Select(ur => ur.Role.RoleName).ToList()
+                Roles: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
             );
 
         return userDto;
@@ -108,11 +109,14 @@ internal class UserService(
         }
 
         var response = new LoginResponse(
-            UserId: user.UserId,
             Token: _tokenService.GenerateJwtToken(user),
-            Email: user.Email,
-            UserDetails: user.UserDetails.ToDto(),
-            Role: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
+            User: new UserDto(
+                UserId: user.UserId,
+                Email: user.Email,
+                UserDetails: user.UserDetails.ToDto(),
+                Roles: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList(),
+                CreatedAt: user.CreatedAt
+            )
         );
 
         return response;
@@ -127,7 +131,7 @@ internal class UserService(
                 Email: u.Email,
                 CreatedAt: u.CreatedAt,
                 UserDetails: u.UserDetails.ToDto(),
-                Roles: u.UserRoles.Select(ur => ur.Role.RoleName).ToList()
+                Roles: u.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
             )
         ).ToList();
 

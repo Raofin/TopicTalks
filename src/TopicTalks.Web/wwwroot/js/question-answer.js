@@ -1,15 +1,17 @@
 ﻿let selectedId = null;
+let inputAppeded = false;
 
 function appendInput(questionId, answerId, edit) {
     if (selectedId != answerId) {
         selectedId = answerId;
         closeReplyInput();
+        inputAppeded = false;
     }
-
-    if ($("#reply-input").length) {
+    if (inputAppeded) {
         closeReplyInput();
+        inputAppeded = false;
     } else {
-        $(`[id*='answer-${answerId}']`).append(`
+        $(`[id*='answer-${answerId}']:first`).append(`
             <div id="reply-input">
                 <form id="reply-form" class="col-sm-9 w-100 d-flex">
                     <input type="hidden" name="answerId" value="${answerId}" />
@@ -55,8 +57,8 @@ function appendInput(questionId, answerId, edit) {
                             toastMessage("Edit Successful!", ToastType.Success);
                             closeReplyInput();
                         },
-                        error: (xhr) => {
-                            toastMessage(xhr.responseText);
+                        error: () => {
+                            toastMessage('Internal server error. Please try again later.', ToastType.Error);
                         }
                     });
 
@@ -71,13 +73,20 @@ function appendInput(questionId, answerId, edit) {
                         appendReply(response);
                         toastMessage("Reply Submitted!", ToastType.Success);
                         closeReplyInput();
+                        document.getElementById("answer-" + response.answerId).scrollIntoView({
+                            behavior: "smooth",
+                            block: "center",
+                            inline: "nearest"
+                        });
                     },
-                    error: (xhr) => {
-                        toastMessage(xhr.responseText);
+                    error: () => {
+                        toastMessage('Internal server error. Please try again later.', ToastType.Error);
                     }
                 });
             }
         });
+
+        inputAppeded = true;
     }
 }
 
@@ -117,8 +126,8 @@ $('#answer-form').validate({
                 toastMessage("Answer Submitted!", ToastType.Success);
                 $("#answer-form")[0].reset();
             },
-            error: (xhr) => {
-                toastMessage(xhr.responseText);
+            error: () => {
+                toastMessage('Internal server error. Please try again later.', ToastType.Error);
             }
         });
     }
@@ -174,14 +183,12 @@ function deleteQuestion(questionId) {
     $.ajax({
         url: `/question/${questionId}`,
         method: 'DELETE',
-        dataType: 'json',
         success: () => {
             toastMessageNext("Question Deleted!", ToastType.Success);
             window.location.href = '/';
         },
-        error: (xhr) => {
-            errorMessage = xhr.responseText || "Internal server error. Please try again later.";
-            toastMessage(errorMessage);
+        error: () => {
+            toastMessage('Internal server error. Please try again later.', ToastType.Error);
         }
     });
 }
@@ -196,9 +203,8 @@ function deleteAnswer(answerId) {
             $(`[id*='answer-${answerId}']`).remove();
             $(`[id*='parent-${answerId}']`).remove();
         },
-        error: (xhr) => {
-            errorMessage = xhr.responseText || "Internal server error. Please try again later.";
-            toastMessage(errorMessage);
+        error: () => {
+            toastMessage('Internal server error. Please try again later.', ToastType.Error);
         }
     });
 }

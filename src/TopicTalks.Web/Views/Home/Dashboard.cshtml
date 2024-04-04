@@ -23,7 +23,7 @@
                     <div class="d-flex gap-2 topic">
                         @foreach (var topic in item.Topic.SplitAndTrim())
                         {
-                            <p>@topic</p>
+                            <p onclick="searchTag('@topic')">@topic</p>
                         }
                     </div>
                     <div>
@@ -42,6 +42,12 @@
             var searchText = $(this).val();
             fetchQuestions(searchText);
         });
+
+        function searchTag(searchText) {
+            $('#questionContainer').empty();
+            fetchQuestions(searchText);
+            $('#searchInput').val(searchText).focus();
+        }
 
         function fetchQuestions(searchText) {
             $.ajax({
@@ -88,6 +94,22 @@
                     console.error('Error fetching questions:', error);
                 }
             });
+        }
+
+        function getURLParameter(name) {
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        var searchQuery = getURLParameter('searchQuery');
+
+        if (searchQuery) {
+            $('#searchInput').val(searchQuery);
+
+            // Remove the searchQuery parameter from the URL
+            var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+            $('#searchInput').focus();
         }
     </script>
 }

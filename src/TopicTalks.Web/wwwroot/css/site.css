@@ -154,3 +154,13 @@ a {
   border-radius: var(--bs-border-radius);
 }
 
+.topic p {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+  .topic p:hover {
+    background: #ededed;
+  }

@@ -16,9 +16,9 @@ public class HomeController(IHttpService httpService) : Controller
 
     [AllowAnonymous]
     [HttpGet("")]
-    public async Task<IActionResult> Dashboard()
+    public async Task<IActionResult> Dashboard(string? searchQuery)
     {
-        var response = await _httpService.Client.GetAsync("api/question");
+        var response = await _httpService.Client.GetAsync($"api/question?searchQuery={searchQuery}");
 
         var questions = JsonConvert.DeserializeObject<List<QuestionViewModel>>(response.ToJson())!;
 
@@ -61,18 +61,5 @@ public class HomeController(IHttpService httpService) : Controller
     public IActionResult PostQuestion()
     {
         return View();
-    }
-
-    [HttpPost("post-question")]
-    public async Task<IActionResult> PostQuestion(QuestionCreateViewModel request)
-    {
-        var response = await _httpService.Client.PostAsync("api/question", request.ToStringContent());
-
-        return response.IsSuccessStatusCode
-            ? Ok(response.DeserializeTo<QuestionWithAnswersViewModel>())
-            : response.StatusCode switch {
-                HttpStatusCode.Unauthorized => Unauthorized(),
-                _ => Problem()
-            };
     }
 }

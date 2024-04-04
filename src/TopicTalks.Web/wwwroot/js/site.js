@@ -19,11 +19,11 @@ function formatDate(dateString) {
 // Function to handle string or array of topics
 function formatTopics(topics) {
     if (Array.isArray(topics)) {
-        return topics.map(topic => `<p>${topic}</p>`).join('');
+        return topics.map(topic => `<p onclick="searchTag('${topic}')">${topic}</p>`).join('');
     } else {
         // Assuming topics is a string, split and trim it
         const topicArray = topics.split(',').map(topic => topic.trim());
-        return topicArray.map(topic => `<p>${topic}</p>`).join('');
+        return topicArray.map(topic => `<p onclick="searchTag('${topic}')">${topic}</p>`).join('');
     }
 }
 

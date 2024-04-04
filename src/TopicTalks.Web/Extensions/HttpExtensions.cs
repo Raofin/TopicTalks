@@ -35,7 +35,7 @@ public static class HttpExtensions
 
     public static string? UserEmail(this HttpContext http)
     {
-        return http.User.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
+        return http.User.FindFirst(ClaimTypes.Email)?.Value;
     }
 
     public static string? UserRole(this HttpContext http)

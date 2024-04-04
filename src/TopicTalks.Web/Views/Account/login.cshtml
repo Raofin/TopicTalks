@@ -27,8 +27,6 @@
                         <option value="@role">@role</option>
                     }
                 </select>
-                <span id="error-response" class="text-danger d-block text-center"></span>
-
             </div>
 
             <div class="text-center pt-2">
@@ -85,7 +83,7 @@
                     },
                     error: function (xhr) {
                         if (xhr.status === 401) {
-                            $('#error-response').html("Login failed. Please check your credentials and role selection.");
+                            toastMessage("Login failed. Please check your credentials and role selection.");
                         } else {
                             toastMessage("Internal server error. Please try again later.");
                         }

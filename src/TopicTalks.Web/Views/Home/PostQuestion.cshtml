@@ -51,18 +51,17 @@
                     required: "Please write your question"
                 }
             },
-            submitHandler: function (form) {
+            submitHandler: (form) => {
                 $.ajax({
-                    url: '/post-question',
+                    url: '/question',
                     type: 'POST',
                     data: $(form).serialize(),
-                    success: function (response) {
+                    success: (response) => {
                         toastMessageNext("Question Posted!", ToastType.Success);
-                        window.location.href = `/#question-${response.questionId}`;
+                        window.location.href = '/';
                     },
-                    error: function (xhr) {
-                        errorMessage = xhr.responseText || "Internal server error. Please try again later.";
-                        toastMessage(errorMessage);
+                    error: (xhr) => {
+                        toastMessage('Internal server error. Please try again later.', ToastType.Error);
                     }
                 });
             }

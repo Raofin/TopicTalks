@@ -57,7 +57,7 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
     {
         var isQuestionOrParentExists = await _dbContext.Answers
             .AnyAsync(a => a.QuestionId == questionId 
-                           && (!parentAnswerId.HasValue || parentAnswerId == 0 || a.AnswerId == parentAnswerId));
+                           || (!parentAnswerId.HasValue || parentAnswerId == 0 || a.AnswerId == parentAnswerId));
 
         return isQuestionOrParentExists;
     }

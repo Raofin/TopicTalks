@@ -118,7 +118,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
             return Error.NotFound();
         }
 
-        if (question.UserId != userId || role is not nameof(RoleType.Moderator))
+        if (question.UserId != userId && role is not nameof(RoleType.Moderator))
         {
             return Error.Unauthorized();
         }

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
+using TopicTalks.Web.Attributes;
 using TopicTalks.Web.Extensions;
 using TopicTalks.Web.Services;
 using TopicTalks.Web.ViewModels;
@@ -12,6 +13,7 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     private readonly IAuthService _authService = authService;
     private readonly IHttpService _httpService = httpService;
 
+    [RedirectIfAuthenticated]
     [HttpGet("login")]
     public IActionResult Login()
     {
@@ -29,14 +31,13 @@ public class AccountController(IAuthService authService, IHttpService httpServic
 
             await _authService.SignInWithTokenAsync(loginResponse.Token);
 
-            return Ok();
+            return Ok(loginResponse.User);
         }
 
-        return response.StatusCode == HttpStatusCode.Unauthorized
-            ? Unauthorized()
-            : BadRequest();
+        return new StatusCodeResult((int)response.StatusCode);
     }
 
+    [RedirectIfAuthenticated]
     [HttpGet("register")]
     public IActionResult Register()
     {
@@ -48,11 +49,9 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     {
         var response = await _httpService.Client.PostAsync("api/account/register", register.ToStringContent());
 
-        return response.StatusCode switch {
-            HttpStatusCode.OK => Ok(),
-            HttpStatusCode.BadRequest => BadRequest(),
-            _ => Problem()
-        };
+        return response.IsSuccessStatusCode
+            ? Ok()
+            : new StatusCodeResult((int)response.StatusCode);
     }
 
     [HttpGet("AdditionalFields")]
@@ -68,6 +67,7 @@ public class AccountController(IAuthService authService, IHttpService httpServic
         return RedirectToAction("Dashboard", "Home");
     }
 
+    [AuthorizeModerator]
     [HttpGet("excel/users")]
     public async Task<IActionResult> GetExcel()
     {

@@ -27,8 +27,18 @@ namespace TopicTalks.Web.Controllers
         {
             var response = await _httpService.Client.DeleteAsync($"api/question/{questionId}");
 
+            return response.IsSuccessStatusCode 
+                ? Ok() 
+                : new StatusCodeResult((int)response.StatusCode);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostQuestion(QuestionCreateViewModel request)
+        {
+            var response = await _httpService.Client.PostAsync("api/question", request.ToStringContent());
+
             return response.IsSuccessStatusCode
-                ? Ok()
+                ? Ok(response.DeserializeTo<QuestionWithAnswersViewModel>())
                 : new StatusCodeResult((int)response.StatusCode);
         }
 

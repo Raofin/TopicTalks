@@ -144,7 +144,7 @@
                     error: function (xhr) {
                         if (xhr.status == 409) {
                             toastMessage("User with the provided email already exists.");
-                        } else if (xhr.status === 422) {
+                        } else if (xhr.status === 400) {
                             toastMessage("Please fill out all the fields properly.");
                         } else {
                             toastMessage("Internal server error. Please try again later.");

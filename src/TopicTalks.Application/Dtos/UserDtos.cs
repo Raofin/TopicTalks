@@ -1,4 +1,6 @@
-﻿namespace TopicTalks.Application.Dtos;
+﻿using TopicTalks.Domain.Enums;
+
+namespace TopicTalks.Application.Dtos;
 
 public record UserBasicInfoDto(
     long UserId,
@@ -10,7 +12,7 @@ public record UserDto(
     string Email,
     DateTime CreatedAt,
     UserDetailDto? UserDetails,
-    List<string> Roles
+    List<RoleType> Roles
 );
 
 public record UserDetailDto(

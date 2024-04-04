@@ -68,11 +68,10 @@
                 <div id="topics" class="d-flex gap-2 topic">
                     @foreach (var topic in Model.Topic.SplitAndTrim())
                     {
-                        <p>@topic</p>
+                        <p onclick="searchTag('@topic')">@topic</p>
                     }
                 </div>
                 <div class="d-flex gap-2">
-                    <a class="link-text text-info" asp-controller="Question" asp-action="GetPdf" asp-route-questionId="@Model.QuestionId" target="_blank">Print</a>
                     @if (!Model.HasTeachersResponse && (Context.UserRole() == nameof(RoleType.Moderator) || authorId == Context.UserId()))
                     {
                         <span class="link-text text-danger" onclick="deleteQuestion(@Model.QuestionId)">Delete</span>
@@ -81,6 +80,7 @@
                     {
                         <span id="edit-question" class="link-text text-success">Edit</span>
                     }
+                    <a class="link-text text-dark" asp-controller="Question" asp-action="GetPdf" asp-route-questionId="@Model.QuestionId" target="_blank"><i class='bx bxs-printer bx-sm'></i></a>
                 </div>
             </div>
         </div>
@@ -160,20 +160,20 @@
                             minlength: "Question must be at least 10 characters"
                         }
                     },
-                    submitHandler: function (form) {
+                    submitHandler: (form) => {
                         $.ajax({
                             url: '/question',
                             type: 'PATCH',
                             data: $(form).serialize(),
-                            success: function (response) {
+                            success: (response) => {
                                 $("#explanation").text(response.explanation)
                                 $("#topics").html(formatTopics(response.topic))
                                 $("#edited-at").text("Edited at " + formatDate(new Date()))
                                 toastMessage("Edit Successful!", ToastType.Success)
                                 closeReplyInput()
                             },
-                            error: function (xhr) {
-                                toastMessage(xhr.responseText)
+                            error: (xhr) => {
+                                toastMessage('Internal server error. Please try again later.', ToastType.Error);
                             }
                         })
                     }
@@ -186,6 +186,11 @@
         function focusReplyTextArea() {
             closeReplyInput()
             $('#reply-text').focus()
+        }
+
+        function searchTag(searchText) {
+            $('#questionContainer').empty();
+            window.location.href = '/?searchQuery=' + searchText;
         }
     </script>
 }

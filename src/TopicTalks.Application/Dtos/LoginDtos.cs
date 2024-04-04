@@ -9,9 +9,6 @@ public record LoginRequest(
 );
 
 public record LoginResponse(
-    long UserId,
     string Token,
-    string Email,
-    UserDetailDto? UserDetails,
-    List<RoleType> Role
+    UserDto User
 );

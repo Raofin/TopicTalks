@@ -30,7 +30,7 @@ public class AccountController(IUserService userService) : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
-        var login = await _userService.Login(request);
+        ErrorOr<LoginResponse> login = await _userService.Login(request);
 
         return login.IsError switch
         {

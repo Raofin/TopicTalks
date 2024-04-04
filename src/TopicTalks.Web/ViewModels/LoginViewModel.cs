@@ -9,9 +9,6 @@ public record LoginViewModel(
 );
 
 public record LoginResponse(
-    long UserId,
     string Token,
-    string Email,
-    UserDetailsViewModel? UserDetails,
-    List<RoleType> Role
+    UserViewModel User
 );

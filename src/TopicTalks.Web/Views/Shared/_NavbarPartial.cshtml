@@ -4,40 +4,31 @@
 
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="padding: 20px 100px;">
     <div class="container-fluid">
-        <a class="navbar-brand logo-container" asp-area="" asp-controller="Default" asp-action="Index">
-            <img src="~/img/logo.svg" class="logo" />
+        <a asp-controller="Home" asp-action="Dashboard" class="navbar-brand logo-container">
+            <img src="~/img/logo.svg" class="logo" alt="TopicTalks Logo"/>
             <span class="logo-text">TopicTalks</span>
         </a>
-
-        <ul class="navbar-nav">
-            @if (Context.UserRole() != null)
-            {
-                <li class="nav-item">
-                    <span class="nav-link text-dark role">@Context.UserRole()</span>
-                </li>
-            }
-        </ul>
 
         <ul class="navbar-nav mx-auto d-flex">
             @if (Context.UserId() != null)
             {
                 <li class="nav-item">
-                    <a class="nav-link text-dark nav-text" href="/">Dashboard</a>
+                    <a asp-controller="Home" asp-action="Dashboard" class="nav-link text-dark nav-text">Dashboard</a>
                 </li>
             }
-            @if (Context.UserRole() == RoleType.Student.ToString())
+            @if (Context.UserRole() == nameof(RoleType.Student))
             {
                 <li class="nav-item">
-                    <a class="nav-link text-dark nav-text" href="/post-question">Post Questions</a>
+                    <a asp-controller="Home" asp-action="PostQuestion" class="nav-link text-dark nav-text">Post Questions</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark nav-text" href="/my-questions">My Questions</a>
+                    <a asp-controller="Home" asp-action="MyQuestions" class="nav-link text-dark nav-text">My Questions</a>
                 </li>
             }
-            @if (Context.UserRole() == RoleType.Teacher.ToString())
+            @if (Context.UserRole() == nameof(RoleType.Teacher))
             {
                 <li class="nav-item">
-                    <a class="nav-link text-dark nav-text" href="/my-responses">My Responses</a>
+                    <a asp-controller="Home" asp-action="MyResponses" class="nav-link text-dark nav-text">My Responses</a>
                 </li>
             }
             
@@ -53,20 +44,22 @@
             @if (Context.UserId() is null)
             {
                 <li class="nav-item">
-                    <a class="nav-link text-dark nav-text" href="/login">Login</a>
+                    <a asp-controller="Account" asp-action="Login" class="nav-link text-dark nav-text">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark nav-text" href="/register">Register</a>
+                    <a asp-controller="Account" asp-action="Register" class="nav-link text-dark nav-text">Register</a>
                 </li>
             }
             else
             {
-                var email = Context.UserEmail();
                 <li class="nav-item">
-                    <p class="nav-link text-dark nav-text mb-0"><strong>@email</strong></p>
+                    <p class="nav-link text-dark nav-text mb-0"><strong></strong></p>
                 </li>
-                <li class="nav-item">
-                    <span class="nav-link link-text text-danger fw-bold nav-text" onclick="logout()">Logout</span>
+                <li class="nav-item d-flex justify-content-center align-items-center">
+                    <span class="nav-link text-dark fw-bold nav-text" >
+                        @Context.UserEmail() 
+                    </span>
+                    <i class='bx bx-log-out-circle bx-sm bx-rotate-90 text-danger link-text' onclick="logout()"></i>
                 </li>
             }
         </ul>
