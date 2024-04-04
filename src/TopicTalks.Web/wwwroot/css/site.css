@@ -1,4 +1,5 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
 
 body {
   position: relative;
@@ -62,23 +63,31 @@ main {
 }
 
 .logo {
-  margin-bottom: 5px;
   padding-right: 5px;
   max-width: 40px;
-  max-height: 35px
+  max-height: 35px;
 }
 
 .logo-container {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+
   filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
   margin-right: 20px;
   font-weight: bold;
 }
 
 .logo-text {
-  font-size: 25px;
-  color: #464edf;
-  font-weight: 800;
+  font-family: "Tilt Warp", sans-serif;
+  font-size: 30px;
+  color: #ff4653;
+  margin-bottom: 2px;
 }
+
+  .logo-text span {
+    color: #30325e;
+  }
 
 .role {
   filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.2));
@@ -91,6 +100,10 @@ main {
 
 #login label {
   padding-left: 3px;
+}
+
+.title {
+  font-family: "Tilt Warp", sans-serif;
 }
 
 .reg-table td {
@@ -164,3 +177,8 @@ a {
   .topic p:hover {
     background: #ededed;
   }
+
+/*#password-form input {
+  width: 170px;
+}
+*/

@@ -11,4 +11,5 @@ public interface IUserService
     Task<ErrorOr<LoginResponse>> Login(LoginRequest request);
     Task<ErrorOr<UserDto>> GetWithDetailsAsync(long userId);
     Task<ExcelFile> UserListExcelFile();
+    Task<ErrorOr<Success>> ChangePassword(long userId, PasswordChangeRequest request);
 }

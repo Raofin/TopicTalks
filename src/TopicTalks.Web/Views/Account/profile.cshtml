@@ -1,0 +1,39 @@
+﻿@using TopicTalks.Web.Extensions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model TopicTalks.Web.ViewModels.UserViewModel
+
+<div class="container mt-5">
+    <div class="container-div" style="max-width: 430px;">
+        <h2 class="mb-4 text-center title">User Profile</h2>
+        <table class="table">
+            <tbody>
+            <tr>
+                <td><label><b>Email</b></label></td>
+                <td>@Model.Email</td>
+            </tr>
+            @if (Model.UserDetails != null)
+            {
+                <tr>
+                    <td><label><b>Full Name</b></label></td>
+                    <td>@Model.UserDetails.Name</td>
+                </tr>
+                <tr>
+                    <td><label><b>Institute</b></label></td>
+                    <td>@Model.UserDetails.InstituteName</td>
+                </tr>
+                <tr>
+                    <td><label><b>Student ID</b></label></td>
+                    <td>@Model.UserDetails.IdCardNumber</td>
+                </tr>
+            }
+            <tr>
+                <td><label><b>Joined On</b></label></td>
+                    <td>@Model.CreatedAt.ToString("dd/MM/yy") (@Model.CreatedAt.TimeAgo())</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="text-center pt-2">
+            <a asp-controller="Account" asp-action="ChangePassword" class="btn btn-primary">Change Password</a>
+        </div>
+    </div>
+</div>

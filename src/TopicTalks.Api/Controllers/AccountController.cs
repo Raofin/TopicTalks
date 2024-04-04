@@ -30,7 +30,7 @@ public class AccountController(IUserService userService) : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
-        ErrorOr<LoginResponse> login = await _userService.Login(request);
+        var login = await _userService.Login(request);
 
         return login.IsError switch
         {
@@ -42,7 +42,23 @@ public class AccountController(IUserService userService) : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("details")]
+    [HttpPatch("password")]
+    public async Task<IActionResult> ChangePassword(PasswordChangeRequest request)
+    {
+        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var passwordChange = await _userService.ChangePassword(userId, request);
+
+        return passwordChange.IsError switch {
+            false => Ok("Password was successfully updated."),
+            _ => passwordChange.Errors.Any(e => e.Type is ErrorType.Unauthorized)
+                ? Unauthorized("Invalid old password.")
+                : Problem("An unexpected error occurred.")
+        };
+    }
+
+    [Authorize]
+    [HttpGet("profile")]
     public async Task<IActionResult> GetUser()
     {
         var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);

@@ -54,6 +54,32 @@ public class AccountController(IAuthService authService, IHttpService httpServic
             : new StatusCodeResult((int)response.StatusCode);
     }
 
+    [HttpGet("profile")]
+    public async Task<IActionResult> Profile()
+    {
+        var response = await _httpService.Client.GetAsync("api/account/profile");
+
+        return response.IsSuccessStatusCode
+            ? View(response.DeserializeTo<UserViewModel>())
+            : new StatusCodeResult((int)response.StatusCode);
+    }
+
+    [HttpGet("change-password")]
+    public IActionResult ChangePassword()
+    {
+        return View();
+    }
+
+    [HttpPatch("password")]
+    public async Task<IActionResult> ChangePassword(PasswordChangeViewModel passwordChange)
+    {
+        var response = await _httpService.Client.PatchAsync("api/account/password", passwordChange.ToStringContent());
+
+        return response.IsSuccessStatusCode
+            ? Ok()
+            : new StatusCodeResult((int)response.StatusCode);
+    }
+
     [HttpGet("AdditionalFields")]
     public IActionResult LoadAdditionalFields()
     {

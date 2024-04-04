@@ -20,3 +20,20 @@ public class UserDetailsValidator : AbstractValidator<UserDetailDto>
             .Length(6).WithMessage("Id Card Number must be 6 characters.");
     }
 }
+
+public class PasswordChangeValidator : AbstractValidator<PasswordChangeRequest>
+{
+    public PasswordChangeValidator()
+    {
+        RuleFor(x => x.OldPassword)
+            .NotEmpty().WithMessage("Old Password is required.");
+
+        RuleFor(x => x.NewPassword)
+            .NotEmpty().WithMessage("New Password is required.")
+            .Length(4, 20).WithMessage("New Password must be between 4 and 20 characters.");
+
+        RuleFor(x => x.ConfirmPassword)
+            .NotEmpty().WithMessage("Confirm Password is required.")
+            .Equal(x => x.NewPassword).WithMessage("The new password and confirmation password do not match.");
+    }
+}

@@ -1,5 +1,4 @@
 ﻿using ErrorOr;
-using Microsoft.AspNetCore.Mvc;
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
@@ -83,11 +82,11 @@ internal class UserService(
         await _unitOfWork.CommitAsync();
 
         var response = new RegistrationResponse(
-            UserId: user.UserId,
-            Email: user.Email,
-            UserDetails: user.UserDetails.ToDto(),
-            Role: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
-        );
+                UserId: user.UserId,
+                Email: user.Email,
+                UserDetails: user.UserDetails.ToDto(),
+                Role: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
+            );
 
         return response;
     }
@@ -109,15 +108,15 @@ internal class UserService(
         }
 
         var response = new LoginResponse(
-            Token: _tokenService.GenerateJwtToken(user),
-            User: new UserDto(
-                UserId: user.UserId,
-                Email: user.Email,
-                UserDetails: user.UserDetails.ToDto(),
-                Roles: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList(),
-                CreatedAt: user.CreatedAt
-            )
-        );
+                Token: _tokenService.GenerateJwtToken(user),
+                User: new UserDto(
+                    UserId: user.UserId,
+                    Email: user.Email,
+                    UserDetails: user.UserDetails.ToDto(),
+                    Roles: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList(),
+                    CreatedAt: user.CreatedAt
+                )
+            );
 
         return response;
     }
@@ -127,14 +126,40 @@ internal class UserService(
         var users = await _unitOfWork.User.GetWithDetailsAsync();
 
         var usersDto = users.Select(u => new UserDto(
-                UserId: u.UserId,
-                Email: u.Email,
-                CreatedAt: u.CreatedAt,
-                UserDetails: u.UserDetails.ToDto(),
-                Roles: u.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
-            )
-        ).ToList();
+                    UserId: u.UserId,
+                    Email: u.Email,
+                    CreatedAt: u.CreatedAt,
+                    UserDetails: u.UserDetails.ToDto(),
+                    Roles: u.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
+                )
+            ).ToList();
 
         return _excelExportService.UserListExcel(usersDto);
+    }
+
+    public async Task<ErrorOr<Success>> ChangePassword(long userId, PasswordChangeRequest request)
+    {
+        var user = await _unitOfWork.User.GetAsync(userId);
+
+        if (user is null)
+        {
+            return Error.Unexpected();
+        }
+
+        var isUserVerified = _passwordService.VerifyPassword(user.PasswordHash, user.Salt, request.OldPassword);
+
+        if (!isUserVerified)
+        {
+            return Error.Unauthorized();
+        }
+
+        var (hashedPassword, salt) = _passwordService.HashPasswordWithSalt(request.NewPassword);
+
+        user.PasswordHash = hashedPassword;
+        user.Salt = salt;
+
+        await _unitOfWork.CommitAsync();
+
+        return Result.Success;
     }
 }
