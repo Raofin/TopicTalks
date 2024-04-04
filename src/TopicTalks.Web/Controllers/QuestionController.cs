@@ -35,7 +35,7 @@ namespace TopicTalks.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> PostQuestion(QuestionCreateViewModel request)
         {
-            var response = await _httpService.Client.PostAsync("api/question", request.ToStringContent());
+            var response = await _httpService.Client.PostAsync("api/question/currentUser/questions", request.ToStringContent());
 
             return response.IsSuccessStatusCode
                 ? Ok(response.DeserializeTo<QuestionWithAnswersViewModel>())

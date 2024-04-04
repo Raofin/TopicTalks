@@ -28,14 +28,18 @@
             @if (Context.UserRole() == nameof(RoleType.Teacher))
             {
                 <li class="nav-item">
-                    <a asp-controller="Home" asp-action="MyResponses" class="nav-link text-dark nav-text">My Responses</a>
+                    <a asp-controller="Home" asp-action="MyResponses" class="nav-link text-dark nav-text">My Responded Questions</a>
                 </li>
             }
             
             @if (Context.UserRole() == nameof(RoleType.Moderator))
             {
-                <li class="nav-item">
-                    <a asp-controller="Account" asp-action="GetExcel" class="nav-link text-dark nav-text">Export User Data</a>
+                <li class="nav-item ">
+                    <a asp-controller="Account" asp-action="GetExcel" class="nav-link text-dark nav-text text-center">
+                        <span class="d-flex justify-content-center align-items-center text-center">
+                            <i class='bx bxs-data' style="margin-right: 3px; font-size: 20px;"></i> Export User Data
+                        </span>
+                    </a>
                 </li>
             }
         </ul>
@@ -63,6 +67,5 @@
                 </li>
             }
         </ul>
-
     </div>
 </nav>

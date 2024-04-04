@@ -5,8 +5,6 @@
 @model TopicTalks.Web.ViewModels.QuestionWithAnswersViewModel
 
 @{
-    var isCurrentUserTeacher = Context.UserRole() == nameof(RoleType.Teacher);
-    var isCurrentUserAuthor = Context.UserId() == Model.UserInfo?.UserId.ToString();
     var authorEmail = Model.UserInfo?.Email ?? "Delete User";
     var authorId = Model.UserInfo?.UserId.ToString() ?? "0";
 
@@ -26,7 +24,7 @@
                             <span class="link-text text-danger" onclick="deleteAnswer(@(answer.AnswerId))">Delete</span>
                             <span class="link-text text-success" onclick="appendInput(@(Model.QuestionId), @(answer.AnswerId), true)">Edit</span>
                         }
-                        @if (Context.UserRole() != nameof(RoleType.Moderator) || answerAuthorId == Context.UserId())
+                        @if (Context.UserRole() != nameof(RoleType.Moderator))
                         {
                             <span class="link-text" onclick="appendInput(@(Model.QuestionId), @(answer.AnswerId))">Reply</span>
                         }
@@ -92,9 +90,8 @@
                 RenderAnswers(Model.Answers);
             }
         </div>
+        @if (Context.UserRole() != nameof(RoleType.Moderator)){
 
-        @if (isCurrentUserTeacher || isCurrentUserAuthor)
-        {
             <div id="answer-input" class="col-sm-9 w-100">
                 <form id="answer-form" asp-action="PostAnswer" asp-controller="Answer" method="post">
                     <input type="hidden" name="questionId" value="@(Model.QuestionId)" />

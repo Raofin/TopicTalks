@@ -37,10 +37,10 @@ public class HomeController(IHttpService httpService) : Controller
     }
 
     [AuthorizeTeacher]
-    [HttpGet("my-responses")]
+    [HttpGet("my-responded-questions")]
     public async Task<IActionResult> MyResponses()
     {
-        var response = await _httpService.Client.GetAsync("api/answer/currentUser/answers");
+        var response = await _httpService.Client.GetAsync("api/question/currentUser/responses");
 
         var answers = JsonConvert.DeserializeObject<List<QuestionViewModel>>(response.ToJson())!;
 

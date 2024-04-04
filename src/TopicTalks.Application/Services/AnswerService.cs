@@ -76,7 +76,7 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
             return Error.NotFound();
         }
 
-        if (answer.UserId != userId || role is not nameof(RoleType.Student) and not nameof(RoleType.Teacher))
+        if (answer.UserId != userId && role is not nameof(RoleType.Moderator))
         {
             return Error.Unauthorized();
         }

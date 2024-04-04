@@ -150,7 +150,7 @@ function appendAnswer(response) {
                 </div>
             </div>
             <div class="form-group row">
-                <p>${response.explanation}</p>
+                <p id="explanation-${response.answerId}">${response.explanation}</p>
             </div>
         </div>`;
 
@@ -162,7 +162,7 @@ function appendReply(response) {
     let marginLeft = marginLeftParent + 50;
 
     let reply = `
-            <div id="answer-${response.answerId}" class="rounded border p-3 mb-3" style="margin-left: ${marginLeft}px;">
+            <div id="answer-${response.answerId} parent-${response.parentAnswerId}" class="rounded border p-3 mb-3" style="margin-left: ${marginLeft}px;">
                 <div class="d-flex justify-content-between">
                     <p><strong>${response.userInfo.email}</strong> on ${getFormattedDate()} (0 seconds ago)</p>
                     <div class="d-flex gap-2">
@@ -172,7 +172,7 @@ function appendReply(response) {
                     </div>
                 </div>
                 <div class="form-group row">
-                    <p>${response.explanation}</p>
+                    <p id="explanation-${response.answerId}">${response.explanation}</p>
                 </div>
             </div>`;
 
