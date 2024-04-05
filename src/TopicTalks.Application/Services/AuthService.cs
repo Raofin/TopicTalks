@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using TopicTalks.Domain.Entities;
 using TopicTalks.Domain.Enums;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,12 +9,8 @@ using TopicTalks.Application.Interfaces;
 
 namespace TopicTalks.Application.Services;
 
-internal class AuthService(IHttpContextAccessor http, IConfiguration configuration) : IAuthService
+internal class AuthService(IConfiguration configuration) : IAuthService
 {
-    public string UserId => http.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sub)!.Value;
-    public string UserEmail => http.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
-    public string UserRole => http.HttpContext.User.FindFirst(ClaimTypes.Role)!.Value;
-
     public string GenerateJwtToken(User user)
     {
         var utcNow = DateTime.UtcNow;

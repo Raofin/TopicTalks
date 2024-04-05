@@ -64,8 +64,8 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             AnswerId = 1L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6156),
-                            Explanation = "ASP.NET 8, with the introduction of C# 12's record types, pattern matching, and deconstruction, presents a nuanced landscape for developers. The advantages are evident, as records facilitate encapsulated immutability, promoting cleaner code and reducing potential errors. Deconstructing records enhances readability, while pattern matching introduces expressive conditionals. Performance gains are plausible, with optimized equality checks and accelerated property access. However, the learning curve associated with these features and the potential inflexibility for complex data modifications pose challenges. Moreover, records lack direct inheritance support, requiring adjustments to established design patterns. In conclusion, while records and pattern matching offer significant advantages in terms of immutability and readability, a thoughtful evaluation of trade-offs is imperative. The decision to adopt these features should align with the project's goals, team's expertise, and the potential learning curve, ensuring a judicious integration without compromising project success.",
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3284),
+                            Explanation = "In C# 12, using record types with pattern matching and deconstruction in ASP.NET 8 code enhances readability and maintainability by providing a concise syntax for defining immutable data types and simplifying comparisons and extraction of property values. This approach, inspired by functional programming, allows for more expressive and type-driven code, making it easier to add new rules or modify existing ones without extensive refactoring. However, the immutability of records may introduce overhead in scenarios where mutable objects are preferred, potentially affecting performance. Despite this, the benefits of using records, such as improved code clarity and built-in support for value-based equality, often outweigh the performance considerations, especially in projects that prioritize immutability and pattern matching.",
                             ParentAnswerId = 0L,
                             QuestionId = 1L,
                             UserId = 2L
@@ -73,7 +73,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             AnswerId = 2L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6158),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3286),
                             Explanation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit?",
                             ParentAnswerId = 1L,
                             QuestionId = 1L,
@@ -82,7 +82,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             AnswerId = 3L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6160),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3288),
                             Explanation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et.",
                             ParentAnswerId = 2L,
                             QuestionId = 1L,
@@ -91,7 +91,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             AnswerId = 4L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6162),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3289),
                             Explanation = "Lorem ipsum dolor sit amet, consectetur adipiscing.",
                             ParentAnswerId = 0L,
                             QuestionId = 1L,
@@ -100,7 +100,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             AnswerId = 5L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6164),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3291),
                             Explanation = "Lorem ipsum dolor sit amet.",
                             ParentAnswerId = 4L,
                             QuestionId = 1L,
@@ -146,7 +146,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             QuestionId = 1L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6057),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3166),
                             Explanation = "In C# 12, what are the advantages and trade-offs of using record types with pattern matching and deconstruction in ASP.NET 8 code, considering maintainability, readability, and potential performance implications?",
                             Topic = "C# 12, Code Syntax, Maintainability",
                             UserId = 1L
@@ -154,7 +154,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             QuestionId = 2L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6072),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3201),
                             Explanation = "With ASP.NET 8's improved request caching and HTTP caching strategies, in what scenarios could you effectively combine them to achieve optimal performance gains across different data access patterns (in-memory, database, external APIs)?",
                             Topic = "ASP.NET 8, HTTP Caching, Request Caching",
                             UserId = 1L
@@ -162,7 +162,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             QuestionId = 3L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6084),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3214),
                             Explanation = "What are the use cases for ASP.NET 8's hot reload capability, and how can it improve development workflow and reduce downtime in production environments?",
                             Topic = "ASP.NET 8, Development Workflow, Live Updates",
                             UserId = 1L
@@ -170,7 +170,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             QuestionId = 4L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6096),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3226),
                             Explanation = "As a C# developer comfortable with Microsoft ecosystem, is Spring Boot worth exploring even though it uses Java? When might switching make sense, if ever?",
                             Topic = "C#, Java, Developer Experience",
                             UserId = 1L
@@ -178,7 +178,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             QuestionId = 5L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6106),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3237),
                             Explanation = "When working with diverse data sources and integration needs, how do ASP.NET Core's Entity Framework Core and Spring Boot's Spring Data JPA compare in terms of ease of use, performance, and integration capabilities?",
                             Topic = "ASP.NET, Spring Boot, Data Persistence",
                             UserId = 1L
@@ -186,7 +186,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             QuestionId = 6L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6117),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3248),
                             Explanation = "How can you adapt React development for building mobile apps with React Native, desktop applications with Electron, or server-side rendering with Next.js?",
                             Topic = "React Ecosystem, Mobile Apps, Desktop Apps",
                             UserId = 1L
@@ -262,7 +262,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             UserId = 1L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(5704),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(2808),
                             Email = "hello@rawfin.net",
                             PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
                             Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM="
@@ -270,7 +270,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             UserId = 2L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(5716),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(2823),
                             Email = "doe@email.net",
                             PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
                             Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM="
@@ -278,7 +278,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             UserId = 3L,
-                            CreatedAt = new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(5718),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(2825),
                             Email = "bob@email.net",
                             PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
                             Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM="

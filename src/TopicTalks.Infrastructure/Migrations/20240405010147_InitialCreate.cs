@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TopicTalks.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -178,9 +178,9 @@ namespace TopicTalks.Infrastructure.Migrations
                 columns: new[] { "UserId", "CreatedAt", "Email", "PasswordHash", "Salt" },
                 values: new object[,]
                 {
-                    { 1L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(5704), "hello@rawfin.net", "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=" },
-                    { 2L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(5716), "doe@email.net", "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=" },
-                    { 3L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(5718), "bob@email.net", "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=" }
+                    { 1L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(2808), "hello@rawfin.net", "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=" },
+                    { 2L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(2823), "doe@email.net", "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=" },
+                    { 3L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(2825), "bob@email.net", "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=" }
                 });
 
             migrationBuilder.InsertData(
@@ -189,12 +189,12 @@ namespace TopicTalks.Infrastructure.Migrations
                 columns: new[] { "QuestionId", "CreatedAt", "Explanation", "Topic", "UpdatedAt", "UserId" },
                 values: new object[,]
                 {
-                    { 1L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6057), "In C# 12, what are the advantages and trade-offs of using record types with pattern matching and deconstruction in ASP.NET 8 code, considering maintainability, readability, and potential performance implications?", "C# 12, Code Syntax, Maintainability", null, 1L },
-                    { 2L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6072), "With ASP.NET 8's improved request caching and HTTP caching strategies, in what scenarios could you effectively combine them to achieve optimal performance gains across different data access patterns (in-memory, database, external APIs)?", "ASP.NET 8, HTTP Caching, Request Caching", null, 1L },
-                    { 3L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6084), "What are the use cases for ASP.NET 8's hot reload capability, and how can it improve development workflow and reduce downtime in production environments?", "ASP.NET 8, Development Workflow, Live Updates", null, 1L },
-                    { 4L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6096), "As a C# developer comfortable with Microsoft ecosystem, is Spring Boot worth exploring even though it uses Java? When might switching make sense, if ever?", "C#, Java, Developer Experience", null, 1L },
-                    { 5L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6106), "When working with diverse data sources and integration needs, how do ASP.NET Core's Entity Framework Core and Spring Boot's Spring Data JPA compare in terms of ease of use, performance, and integration capabilities?", "ASP.NET, Spring Boot, Data Persistence", null, 1L },
-                    { 6L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6117), "How can you adapt React development for building mobile apps with React Native, desktop applications with Electron, or server-side rendering with Next.js?", "React Ecosystem, Mobile Apps, Desktop Apps", null, 1L }
+                    { 1L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3166), "In C# 12, what are the advantages and trade-offs of using record types with pattern matching and deconstruction in ASP.NET 8 code, considering maintainability, readability, and potential performance implications?", "C# 12, Code Syntax, Maintainability", null, 1L },
+                    { 2L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3201), "With ASP.NET 8's improved request caching and HTTP caching strategies, in what scenarios could you effectively combine them to achieve optimal performance gains across different data access patterns (in-memory, database, external APIs)?", "ASP.NET 8, HTTP Caching, Request Caching", null, 1L },
+                    { 3L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3214), "What are the use cases for ASP.NET 8's hot reload capability, and how can it improve development workflow and reduce downtime in production environments?", "ASP.NET 8, Development Workflow, Live Updates", null, 1L },
+                    { 4L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3226), "As a C# developer comfortable with Microsoft ecosystem, is Spring Boot worth exploring even though it uses Java? When might switching make sense, if ever?", "C#, Java, Developer Experience", null, 1L },
+                    { 5L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3237), "When working with diverse data sources and integration needs, how do ASP.NET Core's Entity Framework Core and Spring Boot's Spring Data JPA compare in terms of ease of use, performance, and integration capabilities?", "ASP.NET, Spring Boot, Data Persistence", null, 1L },
+                    { 6L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3248), "How can you adapt React development for building mobile apps with React Native, desktop applications with Electron, or server-side rendering with Next.js?", "React Ecosystem, Mobile Apps, Desktop Apps", null, 1L }
                 });
 
             migrationBuilder.InsertData(
@@ -220,11 +220,11 @@ namespace TopicTalks.Infrastructure.Migrations
                 columns: new[] { "AnswerId", "CreatedAt", "Explanation", "ParentAnswerId", "QuestionId", "UserId" },
                 values: new object[,]
                 {
-                    { 1L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6156), "ASP.NET 8, with the introduction of C# 12's record types, pattern matching, and deconstruction, presents a nuanced landscape for developers. The advantages are evident, as records facilitate encapsulated immutability, promoting cleaner code and reducing potential errors. Deconstructing records enhances readability, while pattern matching introduces expressive conditionals. Performance gains are plausible, with optimized equality checks and accelerated property access. However, the learning curve associated with these features and the potential inflexibility for complex data modifications pose challenges. Moreover, records lack direct inheritance support, requiring adjustments to established design patterns. In conclusion, while records and pattern matching offer significant advantages in terms of immutability and readability, a thoughtful evaluation of trade-offs is imperative. The decision to adopt these features should align with the project's goals, team's expertise, and the potential learning curve, ensuring a judicious integration without compromising project success.", 0L, 1L, 2L },
-                    { 2L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6158), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit?", 1L, 1L, 1L },
-                    { 3L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6160), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et.", 2L, 1L, 1L },
-                    { 4L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6162), "Lorem ipsum dolor sit amet, consectetur adipiscing.", 0L, 1L, 2L },
-                    { 5L, new DateTime(2024, 4, 3, 1, 3, 50, 989, DateTimeKind.Local).AddTicks(6164), "Lorem ipsum dolor sit amet.", 4L, 1L, 1L }
+                    { 1L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3284), "In C# 12, using record types with pattern matching and deconstruction in ASP.NET 8 code enhances readability and maintainability by providing a concise syntax for defining immutable data types and simplifying comparisons and extraction of property values. This approach, inspired by functional programming, allows for more expressive and type-driven code, making it easier to add new rules or modify existing ones without extensive refactoring. However, the immutability of records may introduce overhead in scenarios where mutable objects are preferred, potentially affecting performance. Despite this, the benefits of using records, such as improved code clarity and built-in support for value-based equality, often outweigh the performance considerations, especially in projects that prioritize immutability and pattern matching.", 0L, 1L, 2L },
+                    { 2L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3286), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit?", 1L, 1L, 1L },
+                    { 3L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3288), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et.", 2L, 1L, 1L },
+                    { 4L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3289), "Lorem ipsum dolor sit amet, consectetur adipiscing.", 0L, 1L, 2L },
+                    { 5L, new DateTime(2024, 4, 5, 7, 1, 47, 303, DateTimeKind.Local).AddTicks(3291), "Lorem ipsum dolor sit amet.", 4L, 1L, 1L }
                 });
 
             migrationBuilder.CreateIndex(

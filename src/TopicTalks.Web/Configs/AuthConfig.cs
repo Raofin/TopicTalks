@@ -7,14 +7,12 @@ public static class AuthConfig
 {
     public static void AddAuthConfig(this IServiceCollection services)
     {
-        // Configure authorization policies for different roles
         services.AddAuthorization(options => {
             options.AddPolicy(RoleType.Student.ToString(), policy => policy.RequireRole(RoleType.Student.ToString()));
             options.AddPolicy(RoleType.Teacher.ToString(), policy => policy.RequireRole(RoleType.Teacher.ToString()));
             options.AddPolicy(RoleType.Moderator.ToString(), policy => policy.RequireRole(RoleType.Moderator.ToString()));
         });
 
-        // Configure cookie authentication
         services
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options => {

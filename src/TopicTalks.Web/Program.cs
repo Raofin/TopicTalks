@@ -35,6 +35,7 @@ else
     app.UseHsts();
 }
 
+app.MapHealthChecks("health");
 app.UseStaticFiles();
 app.UseWebOptimizer();
 app.UseWebMarkupMin();

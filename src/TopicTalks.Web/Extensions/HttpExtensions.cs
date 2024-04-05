@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TopicTalks.Web.ViewModels;

@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS8602 // Dereference of a possibly null reference
+﻿#pragma warning disable CS8602 // Nullable reference types warning
 #pragma warning disable CS8604 // Possible null reference argument
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 

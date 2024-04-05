@@ -13,22 +13,22 @@ main {
   margin-bottom: 85px;
 }
 
-  body::before {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    background-image: url('../img/background.jpg');
-    background-size: cover;
-    background-repeat: unset;
-    width: 100%;
-    height: 100%;
-    content: '';
-  }
+body::before {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  background-image: url('../img/background.jpg');
+  background-size: cover;
+  background-repeat: unset;
+  width: 100%;
+  height: 100%;
+  content: '';
+}
 
-  label {
-    margin-left: 4px;
-  }
+label {
+  margin-left: 4px;
+}
 
 .footer {
   position: absolute;
@@ -71,18 +71,17 @@ main {
 .logo-container {
   display: flex;
   align-items: center;
-  text-decoration: none;
-
   filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
   margin-right: 20px;
   font-weight: bold;
+  text-decoration: none;
 }
 
 .logo-text {
-  font-family: "Tilt Warp", sans-serif;
-  font-size: 30px;
-  color: #ff4653;
   margin-bottom: 2px;
+  color: #ff4653;
+  font-size: 30px;
+  font-family: "Tilt Warp", sans-serif;
 }
 
   .logo-text span {
@@ -122,10 +121,10 @@ a {
 .topic > p {
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
+  border-radius: 6px;
   background: #ddd;
   padding: 2px 9px;
-  border-radius: 6px;
   font-size: 15px;
 }
 
@@ -140,26 +139,26 @@ a {
   max-width: 800px;
 }
 
-.q-list-container p {
-  margin-bottom: 5px;
-}
+  .q-list-container p {
+    margin-bottom: 5px;
+  }
 
 .link-text {
-  color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
   cursor: pointer;
+  color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
 }
 
 .error {
-  color: #DC3545;
   border-color: #DC3545;
+  color: #DC3545;
 }
 
   .error:focus {
-    color: var(--bs-body-color);
-    background-color: var(--bs-body-bg);
-    border-color: darkred;
     outline: 0;
     box-shadow: 0 0 0 0.25rem rgba(255, 76, 50, 0.30);
+    border-color: darkred;
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
   }
 
 .student-details {
@@ -168,17 +167,12 @@ a {
 }
 
 .topic p {
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
   transition: background 0.3s ease;
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
 }
 
   .topic p:hover {
     background: #ededed;
   }
-
-/*#password-form input {
-  width: 170px;
-}
-*/
