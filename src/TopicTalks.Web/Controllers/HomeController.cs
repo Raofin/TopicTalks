@@ -1,4 +1,3 @@
-using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -59,6 +58,13 @@ public class HomeController(IHttpService httpService) : Controller
 
     [HttpGet("post-question")]
     public IActionResult PostQuestion()
+    {
+        return View();
+    }
+
+    [AllowAnonymous]
+    [HttpGet("error")]
+    public IActionResult Error()
     {
         return View();
     }

@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS8618
+﻿#pragma warning disable CS8618 // Non-nullable field is uninitialized
 
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
@@ -16,7 +16,6 @@ public class Question
             // Replace multiple consecutive commas with a single comma
             value = Regex.Replace(value, ",+", ",");
 
-            // Remove leading and trailing commas
             if (value.StartsWith(","))
             {
                 value = value[1..];

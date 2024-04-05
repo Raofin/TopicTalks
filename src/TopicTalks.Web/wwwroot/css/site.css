@@ -62,6 +62,14 @@ label {
   font-weight: 600;
 }
 
+.nav-link {
+  transition: .4s ease;
+}
+
+  .nav-link:hover {
+    color: #ff4653 !important;
+  }
+
 .logo {
   padding-right: 5px;
   max-width: 40px;

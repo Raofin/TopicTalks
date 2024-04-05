@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using TopicTalks.Web.Attributes;
@@ -54,6 +55,7 @@ public class AccountController(IAuthService authService, IHttpService httpServic
             : new StatusCodeResult((int)response.StatusCode);
     }
 
+    [Authorize]
     [HttpGet("profile")]
     public async Task<IActionResult> Profile()
     {
@@ -64,12 +66,14 @@ public class AccountController(IAuthService authService, IHttpService httpServic
             : new StatusCodeResult((int)response.StatusCode);
     }
 
+    [Authorize]
     [HttpGet("change-password")]
     public IActionResult ChangePassword()
     {
         return View();
     }
 
+    [Authorize]
     [HttpPatch("password")]
     public async Task<IActionResult> ChangePassword(PasswordChangeViewModel passwordChange)
     {

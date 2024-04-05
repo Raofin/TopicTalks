@@ -7,19 +7,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\TopicTalks.Domain\TopicTalks.Domain.csproj" />
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.34" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+		<PackageReference Include="ErrorOr" Version="2.0.1" />
+		<PackageReference Include="DinkToPdf" Version="1.0.8" />
+		<PackageReference Include="DinkToPdfAll" Version="1.0.5" />
+		<PackageReference Include="ClosedXML" Version="0.102.2" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-		<PackageReference Include="DinkToPdf" Version="1.0.8" />
-		<PackageReference Include="DinkToPdfAll" Version="1.0.5" />
-		<PackageReference Include="ErrorOr" Version="2.0.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.34" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.0" />
-		<PackageReference Include="ClosedXML" Version="0.102.2" />
+		<ProjectReference Include="..\TopicTalks.Domain\TopicTalks.Domain.csproj" />
 	</ItemGroup>
 
 </Project>

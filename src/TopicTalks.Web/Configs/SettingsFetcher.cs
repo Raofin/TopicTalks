@@ -1,13 +1,13 @@
-﻿#pragma warning disable CS8618
-#pragma warning disable CS8603
+﻿#pragma warning disable CS8618 // Non-nullable field is uninitialized
+#pragma warning disable CS8603 // Possible null reference return
 
 namespace TopicTalks.Web.Configs;
 
-internal static class AppSettingsFetcher
+internal static class SettingsFetcher
 {
     private static IConfiguration _configuration;
 
-    public static void AddAppSettingFetcher(this WebApplicationBuilder builder)
+    public static void AddSettingFetcher(this WebApplicationBuilder builder)
     {
         _configuration = builder.Configuration;
     }

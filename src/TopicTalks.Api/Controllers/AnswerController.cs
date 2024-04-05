@@ -9,8 +9,9 @@ using TopicTalks.Domain.Enums;
 
 namespace TopicTalks.Api.Controllers;
 
-[Route("api/answer")]
+[Authorize]
 [ApiController]
+[Route("api/answer")]
 public class AnswerController(IAnswerService answerService) : ControllerBase
 {
     private readonly IAnswerService _answerService = answerService;
@@ -41,7 +42,7 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
     public async Task<IActionResult> Create(AnswerCreateDto dto)
     {
         var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        
+
         var answerDto = await _answerService.Create(dto, userId);
 
         return !answerDto.IsError
@@ -52,7 +53,6 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
             };
     }
 
-    [Authorize]
     [HttpPatch]
     public async Task<IActionResult> Update(AnswerUpdateDto dto)
     {
@@ -70,7 +70,6 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
             };
     }
 
-    [Authorize]
     [HttpDelete("{answerId}")]
     public async Task<IActionResult> Delete(long answerId)
     {

@@ -59,7 +59,7 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor) : IAuthServ
             // Define token validation parameters
             var validationParameters = new TokenValidationParameters {
                 ValidateIssuerSigningKey = true, // Validate the security key when validating the token
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(AppSettingsFetcher.JwtKey)), // Set the security key
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SettingsFetcher.JwtKey)), // Set the security key
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidIssuer = "https://rawfin.net",
@@ -104,7 +104,7 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor) : IAuthServ
                 new(ClaimTypes.Role, _principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? RoleType.Student.ToString())
             };
 
-            var key = Encoding.ASCII.GetBytes(AppSettingsFetcher.JwtKey);
+            var key = Encoding.ASCII.GetBytes(SettingsFetcher.JwtKey);
             var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
 
             var token = new JwtSecurityToken(

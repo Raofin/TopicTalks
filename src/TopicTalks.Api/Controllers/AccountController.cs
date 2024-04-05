@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using TopicTalks.Api.Attributes;
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Interfaces;
 
@@ -73,7 +74,7 @@ public class AccountController(IUserService userService) : ControllerBase
             };
     }
 
-    [Authorize]
+    [AuthorizeModerator]
     [HttpGet("excel/users")]
     public async Task<IActionResult> GetExcel()
     {

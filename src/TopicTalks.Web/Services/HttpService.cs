@@ -13,7 +13,7 @@ internal class HttpService(IHttpContextAccessor httpContextAccessor, IHttpClient
         get {
 
             var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(AppSettingsFetcher.ApiBaseUrl);
+            client.BaseAddress = new Uri(SettingsFetcher.ApiBaseUrl);
 
             if (_httpContextAccessor.HttpContext!.User.Identity!.IsAuthenticated)
             {
