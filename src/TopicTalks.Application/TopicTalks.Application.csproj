@@ -14,7 +14,7 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
 		<PackageReference Include="ErrorOr" Version="2.0.1" />
 		<PackageReference Include="DinkToPdf" Version="1.0.8" />
-		<PackageReference Include="DinkToPdfAll" Version="1.0.5" />
+		<PackageReference Include="DinkToPdfAllOs" Version="1.0.4" />
 		<PackageReference Include="ClosedXML" Version="0.102.2" />
 	</ItemGroup>
 

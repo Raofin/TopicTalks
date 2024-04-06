@@ -79,7 +79,12 @@
                     data: $(form).serialize(),
                     success: function (response) {
                         toastMessageNext("Login Successful!", ToastType.Success);
-                        window.location.href = '/';
+                        var returnUrl = new URLSearchParams(window.location.search).get('ReturnUrl');
+                        if (returnUrl && returnUrl.startsWith('/')) {
+                            window.location.href = returnUrl;
+                        } else {
+                            window.location.href = '/';
+                        }
                     },
                     error: function (xhr) {
                         if (xhr.status === 401) {

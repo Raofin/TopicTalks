@@ -132,7 +132,6 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
         return Ok(questionDtos);
     }
 
-    [Authorize]
     [HttpGet("pdf/{questionId}")]
     public async Task<IActionResult> GetPdf(long questionId)
     {

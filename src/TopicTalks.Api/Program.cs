@@ -25,7 +25,7 @@ builder.AddDatabase();
 builder.AddCorsConfig();
 builder.AddSettingFetcher();
 
-DinkToPdfAll.LibraryLoader.Load();
+DinkToPdfAllOs.LibraryLoader.Load();
 
 var app = builder.Build();
 
