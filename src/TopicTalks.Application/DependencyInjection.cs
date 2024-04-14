@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordService, PasswordService>();
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<IAnswerService, AnswerService>();
+        services.AddScoped<IEmailService, EmailService>();
 
         services.AddTransient<IPdfGeneratorService, PdfGeneratorService>();
         services.AddTransient<IPdfService, PdfService>();

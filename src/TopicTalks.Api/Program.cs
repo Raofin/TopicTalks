@@ -23,6 +23,7 @@ builder.Services.AddInfrastructure();
 
 builder.AddDatabase();
 builder.AddCorsConfig();
+builder.AddEmailConfig();
 builder.AddSettingFetcher();
 
 DinkToPdfAllOs.LibraryLoader.Load();
