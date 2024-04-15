@@ -19,7 +19,7 @@ public class AccountController(IUserService userService) : ControllerBase
     {
         var registration = await _userService.Register(request);
 
-        return registration.IsError switch
+        return registration.IsError switch 
         {
             false => Ok(registration.Value),
             _ => registration.Errors.Any(e => e.Type is ErrorType.Conflict)
@@ -33,7 +33,7 @@ public class AccountController(IUserService userService) : ControllerBase
     {
         var login = await _userService.Login(request);
 
-        return login.IsError switch
+        return login.IsError switch 
         {
             false => Ok(login.Value),
             _ => login.Errors.Any(e => e.Type is ErrorType.NotFound or ErrorType.Unauthorized)
@@ -84,25 +84,22 @@ public class AccountController(IUserService userService) : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("otp")]
-    public async Task<IActionResult> SendOtp()
+    [HttpPost("verify")]
+    public async Task<IActionResult> VerifyOtp(VerifyRequest? verify)
     {
         var email = User.FindFirstValue(ClaimTypes.Email)!;
+        
+        if (verify is null)
+        {
+            await _userService.SendOtp(email);
 
-        await _userService.SendOtp(email);
+            return Ok("Otp was sent successfully.");
+        }
 
-        return Ok("Otp was sent successfully.");
-    }
+        var verification = await _userService.VerifyOtp(email, verify.Code);
 
-    [Authorize]
-    [HttpPost("otp/verify")]
-    public async Task<IActionResult> VerifyOtp(string code)
-    {
-        var email = User.FindFirstValue(ClaimTypes.Email)!;
-        var isVerified = await _userService.VerifyOtp(email, code);
-
-        return isVerified
-            ? Ok("Otp was verified successfully.")
-            : BadRequest("Invalid Otp.");
+        return verification.IsError 
+            ? BadRequest("Invalid Otp.") 
+            : Ok(verification.Value);
     }
 }

@@ -26,13 +26,13 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     {
         var response = await _httpService.Client.PostAsync("api/account/login", login.ToStringContent());
 
-        if (response.StatusCode == HttpStatusCode.OK)
+        if (response.IsSuccessStatusCode)
         {
-            var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(response.ToJson())!;
+            var authResponse = JsonConvert.DeserializeObject<AuthenticationResponse>(response.ToJson())!;
 
-            await _authService.SignInWithTokenAsync(loginResponse.Token);
+            await _authService.SignInWithTokenAsync(authResponse.Token);
 
-            return Ok(loginResponse.User);
+            return Ok(authResponse.User);
         }
 
         return new StatusCodeResult((int)response.StatusCode);
@@ -50,9 +50,16 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     {
         var response = await _httpService.Client.PostAsync("api/account/register", register.ToStringContent());
 
-        return response.IsSuccessStatusCode
-            ? Ok()
-            : new StatusCodeResult((int)response.StatusCode);
+        if (response.IsSuccessStatusCode)
+        {
+            var authResponse = JsonConvert.DeserializeObject<AuthenticationResponse>(response.ToJson())!;
+
+            await _authService.SignInWithTokenAsync(authResponse.Token);
+
+            return Ok(authResponse.User);
+        }
+
+        return new StatusCodeResult((int)response.StatusCode);
     }
 
     [Authorize]
@@ -95,6 +102,35 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     {
         await _authService.SignOutAsync();
         return RedirectToAction("Dashboard", "Home");
+    }
+
+    [Authorize]
+    [HttpPost("verify")]
+    public async Task<IActionResult> Verify(VerifyViewModel? verify)
+    {
+        var payload = verify?.Code == null ? null : verify?.ToStringContent();
+        var response = await _httpService.Client.PostAsync("api/account/verify", payload);
+
+        if (response.IsSuccessStatusCode)
+        {
+            if (payload != null)
+            {
+                var token = JsonConvert.DeserializeObject<AuthenticationResponse>(response.ToJson())!.Token;
+
+                await _authService.SignInWithTokenAsync(token);
+            }
+
+            return Ok();
+        }
+
+        return new StatusCodeResult((int)response.StatusCode);
+    }
+
+    [Authorize]
+    [HttpGet("verify")]
+    public IActionResult Verify()
+    {
+        return View();
     }
 
     [AuthorizeModerator]

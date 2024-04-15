@@ -24,7 +24,8 @@ internal class AuthService(IConfiguration configuration) : IAuthService
             new(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(utcNow).ToUnixTimeSeconds().ToString()), // Not Before
             new(JwtRegisteredClaimNames.Iat, new DateTimeOffset(utcNow).ToUnixTimeSeconds().ToString()), // Issued At
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT ID
-            new(ClaimTypes.Role, user.UserRoles.FirstOrDefault()?.Role?.RoleName ?? RoleType.Student.ToString())
+            new(ClaimTypes.Role, user.UserRoles.FirstOrDefault()?.Role?.RoleName ?? RoleType.Student.ToString()),
+            new("IsVerified", user.IsVerified.ToString(), ClaimValueTypes.Boolean),
         };
 
         var key = Encoding.ASCII.GetBytes(configuration.GetSection("Jwt:Key").Value ?? string.Empty);

@@ -42,6 +42,11 @@ public static class HttpExtensions
         return http.User.FindFirst(ClaimTypes.Role)?.Value;
     }
 
+    public static bool IsUserVerified(this HttpContext http)
+    {
+        return bool.Parse(http.User.FindFirst("IsVerified")?.Value ?? "false");
+    }
+
     public static async Task<ExcelFile> ToExcelFile(this HttpResponseMessage response)
     {
         var bytes = await response.Content.ReadAsByteArrayAsync();

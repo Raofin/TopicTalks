@@ -5,7 +5,7 @@
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="padding: 20px 100px;">
     <div class="container-fluid">
         <a asp-controller="Home" asp-action="Dashboard" class="navbar-brand logo-container">
-            <img src="~/img/logo-icon.svg" class="logo" alt="TopicTalks Logo"/>
+            <img src="~/img/logo-icon.svg" class="logo" alt="TopicTalks Logo" />
             <span class="logo-text">Topic<span>Talks</span></span>
         </a>
 
@@ -31,7 +31,7 @@
                     <a asp-controller="Home" asp-action="MyResponses" class="nav-link text-dark nav-text">My Responded Questions</a>
                 </li>
             }
-            
+
             @if (Context.UserRole() == nameof(RoleType.Moderator))
             {
                 <li class="nav-item ">
@@ -60,9 +60,16 @@
                     <p class="nav-link text-dark nav-text mb-0"><strong></strong></p>
                 </li>
                 <li class="nav-item d-flex justify-content-center align-items-center">
+                    @if (!Context.IsUserVerified()) {
+                        <a class="d-inline-block link-text" asp-controller="Account" asp-action="Verify" 
+                           tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" 
+                           data-bs-placement="bottom" data-bs-content="Please verify your account.">
+                            ⚠️
+                        </a>
+                    }
                     <a asp-controller="Account" asp-action="Profile">
-                        <span class="nav-link text-dark fw-bold nav-text" >
-                            @Context.UserEmail() 
+                        <span class="nav-link text-dark fw-bold nav-text">
+                            @Context.UserEmail()
                         </span>
                     </a>
                     <i class='bx bx-log-out-circle bx-sm bx-rotate-90 text-danger link-text' onclick="logout()"></i>

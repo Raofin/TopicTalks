@@ -77,7 +77,7 @@ internal class UserService(
         await _unitOfWork.CommitAsync();
         await _emailService.SendWelcomeAsync(user.Email);
 
-        return CreateLogin(user);
+        return Authenticate(user);
     }
 
     public async Task<ErrorOr<AuthenticationResponse>> Login(LoginRequest request)
@@ -96,10 +96,10 @@ internal class UserService(
             return Error.Unauthorized();
         }
 
-        return CreateLogin(user);
+        return Authenticate(user);
     }
 
-    private AuthenticationResponse CreateLogin(User user)
+    private AuthenticationResponse Authenticate(User user)
     {
         return new AuthenticationResponse(
             Token: _tokenService.GenerateJwtToken(user),
@@ -163,7 +163,12 @@ internal class UserService(
     {
         var code = new Random().Next(1000, 9999).ToString();
 
-        await _emailService.SendOtpAsync(email, code);
+        var otp = await _unitOfWork.Otp.GetOtpAsync(email);
+
+        if (otp is not null)
+        {
+            _unitOfWork.Otp.Remove(otp);
+        }
 
         await _unitOfWork.Otp.AddAsync(new Otp {
             Email = email,
@@ -172,15 +177,16 @@ internal class UserService(
         });
 
         await _unitOfWork.CommitAsync();
+        await _emailService.SendOtpAsync(email, code);
     }
 
-    public async Task<bool> VerifyOtp(string email, string code)
+    public async Task<ErrorOr<AuthenticationResponse>> VerifyOtp(string email, string code)
     {
-        var otp = await _unitOfWork.Otp.GetOtpAsync(email, code);
+        var otp = await _unitOfWork.Otp.GetValidOtpAsync(email, code);
 
         if (otp is null)
         {
-            return false;
+            return Error.Unauthorized();
         }
 
         _unitOfWork.Otp.Remove(otp);
@@ -191,7 +197,7 @@ internal class UserService(
         await _unitOfWork.CommitAsync();
         await _emailService.SendVerifiedAsync(email);
 
-        return true;
+        return Authenticate(user);
     }
 
     #endregion ### OTP ###

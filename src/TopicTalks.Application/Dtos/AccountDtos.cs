@@ -26,3 +26,5 @@ public record PasswordChangeRequest(
     string NewPassword,
     string ConfirmPassword
 );
+
+public record VerifyRequest(string Code);

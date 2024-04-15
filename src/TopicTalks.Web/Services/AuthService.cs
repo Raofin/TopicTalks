@@ -101,19 +101,20 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor) : IAuthServ
                 new(JwtRegisteredClaimNames.Sub, _principal.FindFirstValue(ClaimTypes.NameIdentifier)),
                 new(JwtRegisteredClaimNames.Email, _principal.FindFirstValue(ClaimTypes.Email)),
                 new(JwtRegisteredClaimNames.Jti, _principal.FindFirstValue("jti")),
-                new(ClaimTypes.Role, _principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? RoleType.Student.ToString())
+                new(ClaimTypes.Role, _principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? RoleType.Student.ToString()),
+                new("IsVerified", _principal.Claims.FirstOrDefault(c => c.Type == "IsVerified")?.Value ?? "false", ClaimValueTypes.Boolean)
             };
 
             var key = Encoding.ASCII.GetBytes(SettingsFetcher.JwtKey);
             var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
 
             var token = new JwtSecurityToken(
-                issuer: "https://rawfin.net",
-                audience: "https://rawfin.net",
-                expires: DateTime.UtcNow.AddDays(1),
-                signingCredentials: credentials,
-                claims: claims
-            );
+                    issuer: "https://rawfin.net",
+                    audience: "https://rawfin.net",
+                    expires: DateTime.UtcNow.AddDays(1),
+                    signingCredentials: credentials,
+                    claims: claims
+                );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

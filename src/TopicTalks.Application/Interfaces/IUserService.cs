@@ -10,6 +10,6 @@ public interface IUserService
     Task<ErrorOr<UserDto>> GetWithDetailsAsync(long userId);
     Task<ExcelFile> UserListExcelFile();
     Task SendOtp(string email);
-    Task<bool> VerifyOtp(string email, string code);
+    Task<ErrorOr<AuthenticationResponse>> VerifyOtp(string email, string code);
     Task<ErrorOr<Success>> ChangePassword(long userId, PasswordChangeRequest request);
 }

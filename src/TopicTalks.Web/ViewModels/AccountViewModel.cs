@@ -8,7 +8,7 @@ public record LoginViewModel(
     RoleType Role
 );
 
-public record LoginResponse(
+public record AuthenticationResponse(
     string Token,
     UserViewModel User
 );
@@ -26,3 +26,5 @@ public record PasswordChangeViewModel(
     string NewPassword,
     string ConfirmPassword
 );
+
+public record VerifyViewModel(string Code);

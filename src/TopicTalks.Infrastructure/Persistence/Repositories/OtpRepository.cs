@@ -8,10 +8,17 @@ internal class OtpRepository(AppDbContext dbContext) : Repository<Otp>(dbContext
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task<Otp?> GetOtpAsync(string email, string otp)
+    public async Task<Otp?> GetOtpAsync(string email)
+    {
+        return await _dbContext.Otps
+            .Where(o => o.Email == email)
+            .SingleOrDefaultAsync();
+    }
+
+    public async Task<Otp?> GetValidOtpAsync(string email, string otp)
     {
         return await _dbContext.Otps
             .Where(o => o.Email == email && o.Code == otp && o.ExpiresAt > DateTime.Now)
-            .FirstOrDefaultAsync();
+            .SingleOrDefaultAsync();
     }
 }

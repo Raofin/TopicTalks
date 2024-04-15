@@ -39,6 +39,9 @@
 
             <div class="text-center pt-2">
                 <button type="submit" class="btn btn-primary">Register</button>
+                <div class="mt-3">
+                    Already have an account? <a asp-action="Login" class="link-text">Login</a>
+                </div>
             </div>
         </form>
     </div>
@@ -138,8 +141,10 @@
                     type: 'POST',
                     data: $(form).serialize(),
                     success: function (response) {
+                        $.post('/verify');
                         toastMessageNext("Registration Successful!", ToastType.Success);
-                        window.location.href = '/login';
+                        toastMessageNext("Verification code has been sent to your email address.", ToastType.Primary);
+                        window.location.href = '/verify';
                     },
                     error: function (xhr) {
                         if (xhr.status == 409) {
