@@ -10,6 +10,8 @@ public class User
 
     public string Salt { get; set; } = null!;
 
+    public bool IsVerified { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public ICollection<Answer> Answers { get; set; } = new List<Answer>();

@@ -5,11 +5,11 @@ namespace TopicTalks.Application.Interfaces;
 
 public interface IUserService
 {
-    Task<bool> IsEmailExists(string email);
-    Task<bool> IsUserExists(long userId);
-    Task<ErrorOr<RegistrationResponse>> Register(RegistrationRequest request);
-    Task<ErrorOr<LoginResponse>> Login(LoginRequest request);
+    Task<ErrorOr<AuthenticationResponse>> Register(RegistrationRequest request);
+    Task<ErrorOr<AuthenticationResponse>> Login(LoginRequest request);
     Task<ErrorOr<UserDto>> GetWithDetailsAsync(long userId);
     Task<ExcelFile> UserListExcelFile();
+    Task SendOtp(string email);
+    Task<bool> VerifyOtp(string email, string code);
     Task<ErrorOr<Success>> ChangePassword(long userId, PasswordChangeRequest request);
 }

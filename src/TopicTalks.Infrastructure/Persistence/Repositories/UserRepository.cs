@@ -13,9 +13,13 @@ internal class UserRepository(AppDbContext dbContext) : Repository<User>(dbConte
         return await _dbContext.Users.AnyAsync(u => u.Email == email);
     }
 
-    public async Task<bool> IsUserExists(long? userId)
+    public Task<User> GetByEmailAsync(string email)
     {
-        return await _dbContext.Users.AnyAsync(u => u.UserId == userId);
+        var user = _dbContext.Users
+            .Where(u => u.Email == email)
+            .SingleAsync();
+
+        return user;
     }
 
     public async Task<List<User>> GetWithDetailsAsync()

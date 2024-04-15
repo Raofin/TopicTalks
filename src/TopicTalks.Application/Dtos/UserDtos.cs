@@ -10,6 +10,7 @@ public record UserBasicInfoDto(
 public record UserDto(
     long UserId,
     string Email,
+    bool IsVerified,
     DateTime CreatedAt,
     UserDetailDto? UserDetails,
     List<RoleType> Roles

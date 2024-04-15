@@ -8,7 +8,7 @@ public record LoginRequest(
     RoleType Role
 );
 
-public record LoginResponse(
+public record AuthenticationResponse(
     string Token,
     UserDto User
 );
@@ -19,13 +19,6 @@ public record RegistrationRequest(
     string ConfirmPassword,
     RoleType Role,
     UserDetailDto? UserDetails
-);
-
-public record RegistrationResponse(
-    long UserId,
-    string Email,
-    UserDetailDto? UserDetails,
-    List<RoleType> Role
 );
 
 public record PasswordChangeRequest(

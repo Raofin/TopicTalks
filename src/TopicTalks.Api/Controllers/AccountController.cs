@@ -82,4 +82,27 @@ public class AccountController(IUserService userService) : ControllerBase
 
         return File(excelFile.Bytes, excelFile.ContentType, excelFile.Name);
     }
+
+    [Authorize]
+    [HttpPost("otp")]
+    public async Task<IActionResult> SendOtp()
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email)!;
+
+        await _userService.SendOtp(email);
+
+        return Ok("Otp was sent successfully.");
+    }
+
+    [Authorize]
+    [HttpPost("otp/verify")]
+    public async Task<IActionResult> VerifyOtp(string code)
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email)!;
+        var isVerified = await _userService.VerifyOtp(email, code);
+
+        return isVerified
+            ? Ok("Otp was verified successfully.")
+            : BadRequest("Invalid Otp.");
+    }
 }

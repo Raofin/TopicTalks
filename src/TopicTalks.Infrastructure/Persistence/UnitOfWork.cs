@@ -8,13 +8,15 @@ internal class UnitOfWork(
     AppDbContext dbContext,
     IUserRepository userRepository,
     IAnswerRepository answerRepository,
-    IQuestionRepository questionRepository) : IUnitOfWork
+    IQuestionRepository questionRepository,
+    IOtpRepository otpRepository) : IUnitOfWork
 {
     private readonly AppDbContext _context = dbContext;
 
     public IUserRepository User { get; } = userRepository;
     public IAnswerRepository Answer { get; } = answerRepository;
     public IQuestionRepository Question { get; } = questionRepository;
+    public IOtpRepository Otp { get; } = otpRepository;
 
     public async Task<int> CommitAsync()
     {

@@ -8,6 +8,7 @@ public record UserBasicInfoViewModel(
 public record UserViewModel(
     long UserId,
     string Email,
+    bool IsVerified,
     DateTime CreatedAt,
     UserDetailsViewModel? UserDetails,
     List<string> Roles

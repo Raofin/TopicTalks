@@ -25,5 +25,8 @@ public class UserConfig : IEntityTypeConfiguration<User>
 
         entity.Property(e => e.Salt)
             .IsRequired();
+
+        entity.Property(e => e.IsVerified)
+            .HasDefaultValue(false);
     }
 }

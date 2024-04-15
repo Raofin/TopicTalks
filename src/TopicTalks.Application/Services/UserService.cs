@@ -13,22 +13,14 @@ internal class UserService(
     IUnitOfWork unitOfWork, 
     IPasswordService passwordService, 
     IAuthService tokenService, 
-    IExcelExportService excelExportService) : IUserService
+    IExcelExportService excelExportService,
+    IEmailService emailService) : IUserService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IPasswordService _passwordService = passwordService;
     private readonly IAuthService _tokenService = tokenService;
     private readonly IExcelExportService _excelExportService = excelExportService;
-
-    public async Task<bool> IsEmailExists(string email)
-    {
-        return await _unitOfWork.User.IsEmailExists(email);
-    }
-
-    public async Task<bool> IsUserExists(long userId)
-    {
-        return await _unitOfWork.User.IsUserExists(userId);
-    }
+    private readonly IEmailService _emailService = emailService;
 
     public async Task<ErrorOr<UserDto>> GetWithDetailsAsync(long userId)
     {
@@ -42,6 +34,7 @@ internal class UserService(
         var userDto = new UserDto(
                 UserId: user.UserId,
                 Email: user.Email,
+                IsVerified: user.IsVerified,
                 CreatedAt: user.CreatedAt,
                 UserDetails: user.UserDetails.ToDto(),
                 Roles: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
@@ -50,9 +43,11 @@ internal class UserService(
         return userDto;
     }
 
-    public async Task<ErrorOr<RegistrationResponse>> Register(RegistrationRequest request)
+    public async Task<ErrorOr<AuthenticationResponse>> Register(RegistrationRequest request)
     {
-        if (await IsEmailExists(request.Email))
+        var isEmailExists = await _unitOfWork.User.IsEmailExists(request.Email);
+
+        if (isEmailExists)
         {
             return Error.Conflict();
         }
@@ -80,18 +75,12 @@ internal class UserService(
 
         await _unitOfWork.User.AddAsync(user);
         await _unitOfWork.CommitAsync();
+        await _emailService.SendWelcomeAsync(user.Email);
 
-        var response = new RegistrationResponse(
-                UserId: user.UserId,
-                Email: user.Email,
-                UserDetails: user.UserDetails.ToDto(),
-                Role: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
-            );
-
-        return response;
+        return CreateLogin(user);
     }
 
-    public async Task<ErrorOr<LoginResponse>> Login(LoginRequest request)
+    public async Task<ErrorOr<AuthenticationResponse>> Login(LoginRequest request)
     {
         var user = await _unitOfWork.User.GetWithDetailsAsync(request.Email, (long)request.Role);
 
@@ -107,18 +96,22 @@ internal class UserService(
             return Error.Unauthorized();
         }
 
-        var response = new LoginResponse(
-                Token: _tokenService.GenerateJwtToken(user),
-                User: new UserDto(
-                    UserId: user.UserId,
-                    Email: user.Email,
-                    UserDetails: user.UserDetails.ToDto(),
-                    Roles: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList(),
-                    CreatedAt: user.CreatedAt
-                )
-            );
+        return CreateLogin(user);
+    }
 
-        return response;
+    private AuthenticationResponse CreateLogin(User user)
+    {
+        return new AuthenticationResponse(
+            Token: _tokenService.GenerateJwtToken(user),
+            User: new UserDto(
+                UserId: user.UserId,
+                Email: user.Email,
+                IsVerified: user.IsVerified,
+                UserDetails: user.UserDetails.ToDto(),
+                Roles: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList(),
+                CreatedAt: user.CreatedAt
+            )
+        );
     }
 
     public async Task<ExcelFile> UserListExcelFile()
@@ -126,13 +119,14 @@ internal class UserService(
         var users = await _unitOfWork.User.GetWithDetailsAsync();
 
         var usersDto = users.Select(u => new UserDto(
-                    UserId: u.UserId,
-                    Email: u.Email,
-                    CreatedAt: u.CreatedAt,
-                    UserDetails: u.UserDetails.ToDto(),
-                    Roles: u.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
-                )
-            ).ToList();
+                UserId: u.UserId,
+                Email: u.Email,
+                CreatedAt: u.CreatedAt,
+                IsVerified: u.IsVerified,
+                UserDetails: u.UserDetails.ToDto(),
+                Roles: u.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
+            )
+        ).ToList();
 
         return _excelExportService.UserListExcel(usersDto);
     }
@@ -146,9 +140,9 @@ internal class UserService(
             return Error.Unexpected();
         }
 
-        var isUserVerified = _passwordService.VerifyPassword(user.PasswordHash, user.Salt, request.OldPassword);
+        var isPasswordVerified = _passwordService.VerifyPassword(user.PasswordHash, user.Salt, request.OldPassword);
 
-        if (!isUserVerified)
+        if (!isPasswordVerified)
         {
             return Error.Unauthorized();
         }
@@ -162,4 +156,43 @@ internal class UserService(
 
         return Result.Success;
     }
+
+    #region ### OTP ###
+
+    public async Task SendOtp(string email)
+    {
+        var code = new Random().Next(1000, 9999).ToString();
+
+        await _emailService.SendOtpAsync(email, code);
+
+        await _unitOfWork.Otp.AddAsync(new Otp {
+            Email = email,
+            Code = code,
+            ExpiresAt = DateTime.Now.AddMinutes(5),
+        });
+
+        await _unitOfWork.CommitAsync();
+    }
+
+    public async Task<bool> VerifyOtp(string email, string code)
+    {
+        var otp = await _unitOfWork.Otp.GetOtpAsync(email, code);
+
+        if (otp is null)
+        {
+            return false;
+        }
+
+        _unitOfWork.Otp.Remove(otp);
+
+        var user = await _unitOfWork.User.GetByEmailAsync(email);
+        user.IsVerified = true;
+
+        await _unitOfWork.CommitAsync();
+        await _emailService.SendVerifiedAsync(email);
+
+        return true;
+    }
+
+    #endregion ### OTP ###
 }
