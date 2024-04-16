@@ -14,7 +14,7 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
         var answer = await _dbContext.Answers
                 .Include(a => a.User)
                 .Where(a => a.AnswerId == answerId)
-                .FirstOrDefaultAsync();
+                .SingleOrDefaultAsync();
 
         return answer;
     }
@@ -29,6 +29,16 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
         return answers;
     }
 
+    public async Task<List<Answer>> GetByQuestionAsync(long questionId)
+    {
+        var answers = await _dbContext.Answers
+            .Include(a => a.User)
+            .Where(a => a.QuestionId == questionId)
+            .ToListAsync();
+
+        return answers;
+    }
+
     public async Task<Answer?> GetRepliesAsync(long questionId, long answerId, long parentAnswerId)
     {
         var answer = await _dbContext.Answers
@@ -36,7 +46,7 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
                 .Where(a => a.QuestionId == questionId
                     && a.AnswerId == answerId
                     && a.ParentAnswerId == parentAnswerId)
-                .FirstOrDefaultAsync();
+                .SingleOrDefaultAsync();
 
         return answer;
     }

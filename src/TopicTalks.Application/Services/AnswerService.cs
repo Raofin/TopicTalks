@@ -87,32 +87,23 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
         return Result.Success;
     }
 
-    public async Task<bool> HasTeachersAnswer(int questionId)
+    public async Task<List<AnswerWithRepliesDto>> GetAnswersWithRepliesAsync(long questionId)
     {
-        return await _unitOfWork.Answer.HasTeachersAnswerAsync(questionId);
+        var answers = await _unitOfWork.Answer.GetByQuestionAsync(questionId);
+        return CreateReplyDtos(answers);
     }
 
-    public async Task<List<AnswerWithRepliesDto>> GetAnswersWithRepliesAsync(long questionId, long parentAnswerId = 0)
+    private List<AnswerWithRepliesDto> CreateReplyDtos(List<Answer> answers, long parentAnswerId = 0)
     {
-        var answers = await _unitOfWork.Answer.GetParentAnswersAsync(questionId, parentAnswerId);
-
-        var answerDtos = answers.Select(ans => new AnswerWithRepliesDto {
-            AnswerId = ans.AnswerId,
-            ParentAnswerId = ans.ParentAnswerId,
-            Explanation = ans.Explanation,
-            CreatedAt = ans.CreatedAt,
-            UserInfo = ans.User == null ? null : new UserBasicInfoDto(
-                UserId: ans.User.UserId,
-                Email: ans.User.Email
-            )
-        }).ToList();
-
-        foreach (var item in answerDtos)
-        {
-            var replies = await GetAnswersWithRepliesAsync(questionId, item.AnswerId);
-            item.Answers = replies;
-        }
-
-        return answerDtos;
+        return answers
+            .Where(a => a.ParentAnswerId == parentAnswerId)
+            .Select(ans => new AnswerWithRepliesDto {
+                AnswerId = ans.AnswerId,
+                ParentAnswerId = ans.ParentAnswerId,
+                Explanation = ans.Explanation,
+                CreatedAt = ans.CreatedAt,
+                UserInfo = ans.User == null ? null : new UserBasicInfoDto(ans.User.UserId, ans.User.Email),
+                Answers = CreateReplyDtos(answers, ans.AnswerId)
+            }).ToList();
     }
 }
