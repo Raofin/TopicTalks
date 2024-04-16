@@ -7,7 +7,7 @@ internal class EmailService(IFluentEmail fluentEmail) : IEmailService
 {
     private readonly IFluentEmail _fluentEmail = fluentEmail;
 
-    public async Task SendWelcomeAsync(string emailAddress)
+    public void SendWelcome(string emailAddress)
     {
         var email = _fluentEmail
             .To(emailAddress)
@@ -27,10 +27,10 @@ internal class EmailService(IFluentEmail fluentEmail) : IEmailService
                   """,
                 isHtml: true);
 
-        await SendAsync(email);
+        Send(email);
     }
 
-    public async Task SendOtpAsync(string emailAddress, string code)
+    public void SendOtp(string emailAddress, string code)
     {
         var email = _fluentEmail
             .To(emailAddress)
@@ -54,10 +54,10 @@ internal class EmailService(IFluentEmail fluentEmail) : IEmailService
                   """,
                 isHtml: true);
 
-        await SendAsync(email);
+        Send(email);
     }
 
-    public async Task SendVerifiedAsync(string emailAddress)
+    public void SendVerified(string emailAddress)
     {
         var email = _fluentEmail
             .To(emailAddress)
@@ -77,14 +77,14 @@ internal class EmailService(IFluentEmail fluentEmail) : IEmailService
                   """,
                 isHtml: true);
 
-        await SendAsync(email);
+        Send(email);
     }
 
-    private async Task SendAsync(IFluentEmail email)
+    private void Send(IFluentEmail email)
     {
         try
         {
-            await email.SendAsync();
+            email.SendAsync();
         }
         catch (Exception e)
         {

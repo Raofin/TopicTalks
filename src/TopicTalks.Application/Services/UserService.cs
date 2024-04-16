@@ -75,7 +75,7 @@ internal class UserService(
 
         await _unitOfWork.User.AddAsync(user);
         await _unitOfWork.CommitAsync();
-        await _emailService.SendWelcomeAsync(user.Email);
+        _emailService.SendWelcome(user.Email);
 
         return Authenticate(user);
     }
@@ -177,7 +177,7 @@ internal class UserService(
         });
 
         await _unitOfWork.CommitAsync();
-        await _emailService.SendOtpAsync(email, code);
+        _emailService.SendOtp(email, code);
     }
 
     public async Task<ErrorOr<AuthenticationResponse>> VerifyOtp(string email, string code)
@@ -195,7 +195,7 @@ internal class UserService(
         user.IsVerified = true;
 
         await _unitOfWork.CommitAsync();
-        await _emailService.SendVerifiedAsync(email);
+        _emailService.SendVerified(email);
 
         return Authenticate(user);
     }

@@ -142,8 +142,7 @@
                     data: $(form).serialize(),
                     success: function (response) {
                         $.post('/verify');
-                        toastMessageNext("Registration Successful!", ToastType.Success);
-                        toastMessageNext("Verification code has been sent to your email address.", ToastType.Primary);
+                        toastMessageNext("Registration Successful! Verification code has been sent to your email address.", ToastType.Success);
                         window.location.href = '/verify';
                     },
                     error: function (xhr) {

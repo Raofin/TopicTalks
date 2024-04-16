@@ -2,7 +2,7 @@
 
 public interface IEmailService
 {
-    Task SendWelcomeAsync(string email);
-    Task SendOtpAsync(string email, string code);
-    Task SendVerifiedAsync(string emailAddress);
+    void SendWelcome(string email);
+    void SendOtp(string email, string code);
+    void SendVerified(string emailAddress);
 }
