@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DocumentFormat.OpenXml.InkML;
+using Microsoft.EntityFrameworkCore;
 using TopicTalks.Domain.Entities;
 using TopicTalks.Domain.Interfaces;
 
@@ -20,5 +21,12 @@ internal class OtpRepository(AppDbContext dbContext) : Repository<Otp>(dbContext
         return await _dbContext.Otps
             .Where(o => o.Email == email && o.Code == otp && o.ExpiresAt > DateTime.Now)
             .SingleOrDefaultAsync();
+    }
+
+    public async Task<List<Otp>> GetExpiredOtpsAsync()
+    {
+        return await _dbContext.Otps
+            .Where(o => o.ExpiresAt < DateTime.Now)
+            .ToListAsync();
     }
 }

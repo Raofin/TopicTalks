@@ -6,4 +6,5 @@ public interface IOtpRepository : IRepository<Otp>
 {
     Task<Otp?> GetOtpAsync(string email);
     Task<Otp?> GetValidOtpAsync(string email, string otp);
+    Task<List<Otp>> GetExpiredOtpsAsync();
 }

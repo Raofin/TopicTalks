@@ -2,6 +2,7 @@
 using DinkToPdf;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using TopicTalks.Application.BackgroundServices;
 using TopicTalks.Application.Interfaces;
 using TopicTalks.Application.Services;
 using TopicTalks.Application.Services.Pdf;
@@ -28,6 +29,8 @@ public static class DependencyInjection
 
         services.AddTransient<IPdfGeneratorService, PdfGeneratorService>();
         services.AddTransient<IPdfService, PdfService>();
+
+        services.AddHostedService<OtpCleanupService>();
 
         return services;
     }
