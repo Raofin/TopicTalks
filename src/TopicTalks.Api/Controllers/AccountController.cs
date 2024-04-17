@@ -8,12 +8,11 @@ using TopicTalks.Application.Interfaces;
 
 namespace TopicTalks.Api.Controllers;
 
-[Route("api/account")]
-[ApiController]
-public class AccountController(IUserService userService) : ControllerBase
+public class AccountController(IUserService userService) : ApiController
 {
     private readonly IUserService _userService = userService;
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegistrationRequest request)
     {
@@ -28,6 +27,7 @@ public class AccountController(IUserService userService) : ControllerBase
         };
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
@@ -42,7 +42,6 @@ public class AccountController(IUserService userService) : ControllerBase
         };
     }
 
-    [Authorize]
     [HttpPatch("password")]
     public async Task<IActionResult> ChangePassword(PasswordChangeRequest request)
     {
@@ -56,7 +55,6 @@ public class AccountController(IUserService userService) : ControllerBase
         };
     }
 
-    [Authorize]
     [HttpGet("profile")]
     public async Task<IActionResult> GetUser()
     {
@@ -79,7 +77,6 @@ public class AccountController(IUserService userService) : ControllerBase
         return File(excelFile.Bytes, excelFile.ContentType, excelFile.Name);
     }
 
-    [Authorize]
     [HttpPost("verify")]
     public async Task<IActionResult> VerifyOtp(VerifyRequest? verify)
     {

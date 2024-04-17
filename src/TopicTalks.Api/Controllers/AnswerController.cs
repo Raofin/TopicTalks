@@ -1,5 +1,4 @@
 ﻿using ErrorOr;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TopicTalks.Api.Attributes;
 using TopicTalks.Application.Dtos;
@@ -9,10 +8,7 @@ using TopicTalks.Domain.Enums;
 
 namespace TopicTalks.Api.Controllers;
 
-[Authorize]
-[ApiController]
-[Route("api/answer")]
-public class AnswerController(IAnswerService answerService) : ControllerBase
+public class AnswerController(IAnswerService answerService) : ApiController
 {
     private readonly IAnswerService _answerService = answerService;
 

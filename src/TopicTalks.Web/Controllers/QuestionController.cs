@@ -4,72 +4,71 @@ using TopicTalks.Web.Extensions;
 using TopicTalks.Web.Services;
 using TopicTalks.Web.ViewModels;
 
-namespace TopicTalks.Web.Controllers
+namespace TopicTalks.Web.Controllers;
+
+[Authorize]
+[Route("question")]
+public class QuestionController(IHttpService httpService) : Controller
 {
-    [Authorize]
-    [Route("question")]
-    public class QuestionController(IHttpService httpService) : Controller
+    private readonly IHttpService _httpService = httpService;
+
+    [HttpGet("data")]
+    public async Task<IActionResult> Get(string? searchQuery)
     {
-        private readonly IHttpService _httpService = httpService;
+        var response = await _httpService.Client.GetAsync($"api/question?searchQuery={searchQuery}");
 
-        [HttpGet("data")]
-        public async Task<IActionResult> Get(string? searchQuery)
-        {
-            var response = await _httpService.Client.GetAsync($"api/question?searchQuery={searchQuery}");
+        return response.IsSuccessStatusCode
+            ? Ok(response.DeserializeTo<List<QuestionViewModel>>())
+            : new StatusCodeResult((int)response.StatusCode);
+    }
 
-            return response.IsSuccessStatusCode
-                ? Ok(response.DeserializeTo<List<QuestionViewModel>>())
-                : new StatusCodeResult((int)response.StatusCode);
-        }
+    [HttpGet("data/{questionId}")]
+    public async Task<IActionResult> Get(long questionId)
+    {
+        var response = await _httpService.Client.GetAsync($"api/question/{questionId}");
 
-        [HttpGet("data/{questionId}")]
-        public async Task<IActionResult> Get(long questionId)
-        {
-            var response = await _httpService.Client.GetAsync($"api/question/{questionId}");
+        return response.IsSuccessStatusCode
+            ? Ok(response.DeserializeTo<QuestionWithAnswersViewModel>())
+            : new StatusCodeResult((int)response.StatusCode);
+    }
 
-            return response.IsSuccessStatusCode
-                ? Ok(response.DeserializeTo<QuestionWithAnswersViewModel>())
-                : new StatusCodeResult((int)response.StatusCode);
-        }
+    [HttpPatch]
+    public async Task<IActionResult> UpdateQuestion(QuestionUpdateViewModel request)
+    {
+        var response = await _httpService.Client.PatchAsync("api/question", request.ToStringContent());
 
-        [HttpPatch]
-        public async Task<IActionResult> UpdateQuestion(QuestionUpdateViewModel request)
-        {
-            var response = await _httpService.Client.PatchAsync("api/question", request.ToStringContent());
+        return response.IsSuccessStatusCode
+            ? Ok(response.DeserializeTo<QuestionWithAnswersViewModel>())
+            : new StatusCodeResult((int)response.StatusCode);
+    }
 
-            return response.IsSuccessStatusCode
-                ? Ok(response.DeserializeTo<QuestionWithAnswersViewModel>())
-                : new StatusCodeResult((int)response.StatusCode);
-        }
+    [HttpDelete("{questionId}")]
+    public async Task<IActionResult> Delete(long questionId)
+    {
+        var response = await _httpService.Client.DeleteAsync($"api/question/{questionId}");
 
-        [HttpDelete("{questionId}")]
-        public async Task<IActionResult> Delete(long questionId)
-        {
-            var response = await _httpService.Client.DeleteAsync($"api/question/{questionId}");
+        return response.IsSuccessStatusCode 
+            ? Ok() 
+            : new StatusCodeResult((int)response.StatusCode);
+    }
 
-            return response.IsSuccessStatusCode 
-                ? Ok() 
-                : new StatusCodeResult((int)response.StatusCode);
-        }
+    [HttpPost]
+    public async Task<IActionResult> PostQuestion(QuestionCreateViewModel request)
+    {
+        var response = await _httpService.Client.PostAsync("api/question", request.ToStringContent());
 
-        [HttpPost]
-        public async Task<IActionResult> PostQuestion(QuestionCreateViewModel request)
-        {
-            var response = await _httpService.Client.PostAsync("api/question", request.ToStringContent());
+        return response.IsSuccessStatusCode
+            ? Ok(response.DeserializeTo<QuestionWithAnswersViewModel>())
+            : new StatusCodeResult((int)response.StatusCode);
+    }
 
-            return response.IsSuccessStatusCode
-                ? Ok(response.DeserializeTo<QuestionWithAnswersViewModel>())
-                : new StatusCodeResult((int)response.StatusCode);
-        }
+    [HttpGet("pdf/{questionId}")]
+    public async Task<IActionResult> GetPdf(long questionId)
+    {
+        var response = await _httpService.Client.GetAsync($"api/question/pdf/{questionId}");
 
-        [HttpGet("pdf/{questionId}")]
-        public async Task<IActionResult> GetPdf(long questionId)
-        {
-            var response = await _httpService.Client.GetAsync($"api/question/pdf/{questionId}");
-
-            return response.IsSuccessStatusCode
-                ? File(await response.Content.ReadAsByteArrayAsync(), "application/pdf")
-                : new StatusCodeResult((int)response.StatusCode);
-        }
+        return response.IsSuccessStatusCode
+            ? File(await response.Content.ReadAsByteArrayAsync(), "application/pdf")
+            : new StatusCodeResult((int)response.StatusCode);
     }
 }

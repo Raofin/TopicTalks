@@ -8,12 +8,11 @@ using TopicTalks.Application.Interfaces;
 
 namespace TopicTalks.Api.Controllers;
 
-[Route("api/question")]
-[ApiController]
-public class QuestionController(IQuestionService questionService) : ControllerBase
+public class QuestionController(IQuestionService questionService) : ApiController
 {
     private readonly IQuestionService _questionService = questionService;
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Get(string? searchQuery)
     {
@@ -22,6 +21,7 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
         return Ok(questionDtos);
     }
 
+    [AllowAnonymous]
     [HttpGet("{questionId}")]
     public async Task<IActionResult> Get(long questionId)
     {
@@ -35,7 +35,6 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
             };
     }
 
-    [Authorize]
     [HttpGet("withUserDetails/{questionId}")]
     public async Task<IActionResult> GetWithUserDetails(long questionId)
     {
@@ -49,7 +48,6 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
             };
     }
 
-    [Authorize]
     [HttpGet("withAnswers/{questionId}")]
     public async Task<IActionResult> GetWithAnswers(int questionId)
     {
@@ -72,7 +70,6 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
         return Ok(questionDto);
     }
 
-    [Authorize]
     [HttpPatch]
     public async Task<IActionResult> Update(QuestionUpdateDto dto)
     {
@@ -87,7 +84,6 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
             };
     }
 
-    [Authorize]
     [HttpDelete("{questionId}")]
     public async Task<IActionResult> Delete(long questionId)
     {

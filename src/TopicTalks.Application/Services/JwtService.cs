@@ -10,9 +10,9 @@ using TopicTalks.Domain.Enums;
 
 namespace TopicTalks.Application.Services;
 
-internal class JwtService(IOptions<JwtSettings> jwtSettings) : IJwtService
+internal class JwtService(IOptions<AppSettings> appSettings) : IJwtService
 {
-    private readonly JwtSettings _jwtSettings = jwtSettings.Value;
+    private readonly JwtSettings _jwtSettings = appSettings.Value.JwtSettings;
 
     public string GenerateJwtToken(User user)
     {

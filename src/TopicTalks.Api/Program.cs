@@ -1,6 +1,7 @@
 using FluentValidation;
 using TopicTalks.Application;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using TopicTalks.Api.Configs;
 using TopicTalks.Infrastructure;
 using TopicTalks.Api;
@@ -8,7 +9,7 @@ using TopicTalks.Application.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new LowercaseControllerTransformer())));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerConfig();
@@ -39,7 +40,7 @@ app.UseCustomCors();
 app.UseHttpsRedirection();
 app.UseHostFiltering();
 
-app.MapControllers();
+app.MapControllers().RequireAuthorization();
 app.MapHealthChecks("health");
 
 app.UseAuthentication();
