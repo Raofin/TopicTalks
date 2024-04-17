@@ -1,9 +1,9 @@
-﻿using System.Security.Claims;
-using ErrorOr;
+﻿using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TopicTalks.Api.Attributes;
 using TopicTalks.Application.Dtos;
+using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
 
 namespace TopicTalks.Api.Controllers;
@@ -67,9 +67,7 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
     [HttpPost]
     public async Task<IActionResult> Create(QuestionCreateDto dto)
     {
-        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        var questionDto = await _questionService.CreateAsync(dto, userId);
+        var questionDto = await _questionService.CreateAsync(dto, User.GetUserId());
 
         return Ok(questionDto);
     }
@@ -78,10 +76,7 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
     [HttpPatch]
     public async Task<IActionResult> Update(QuestionUpdateDto dto)
     {
-        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var userRole = User.FindFirst(ClaimTypes.Role)!.Value;
-
-        var questionDto = await _questionService.UpdateAsync(dto, userId, userRole);
+        var questionDto = await _questionService.UpdateAsync(dto, User.GetUserId(), User.GetRoles());
 
         return !questionDto.IsError
             ? Ok(questionDto.Value)
@@ -96,10 +91,7 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
     [HttpDelete("{questionId}")]
     public async Task<IActionResult> Delete(long questionId)
     {
-        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var userRole = User.FindFirst(ClaimTypes.Role)!.Value;
-
-        var result = await _questionService.DeleteAsync(questionId, userRole, userId);
+        var result = await _questionService.DeleteAsync(questionId, User.GetUserId(), User.GetRoles());
 
         return !result.IsError
             ? Ok()
@@ -114,9 +106,7 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
     [HttpGet("currentUser/questions")]
     public async Task<IActionResult> GetCurrentUserQuestions()
     {
-        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        var questionDtos = await _questionService.GetByUserIdAsync(userId);
+        var questionDtos = await _questionService.GetByUserIdAsync(User.GetUserId());
 
         return Ok(questionDtos);
     }
@@ -125,9 +115,7 @@ public class QuestionController(IQuestionService questionService) : ControllerBa
     [HttpGet("currentUser/responses")]
     public async Task<IActionResult> GetCurrentUserResponses()
     {
-        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        var questionDtos = await _questionService.GetByUserResponsesAsync(userId);
+        var questionDtos = await _questionService.GetByUserResponsesAsync(User.GetUserId());
 
         return Ok(questionDtos);
     }

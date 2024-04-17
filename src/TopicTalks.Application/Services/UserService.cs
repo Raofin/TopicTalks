@@ -12,13 +12,13 @@ namespace TopicTalks.Application.Services;
 internal class UserService(
     IUnitOfWork unitOfWork, 
     IPasswordService passwordService, 
-    IAuthService tokenService, 
+    IJwtService tokenService, 
     IExcelExportService excelExportService,
     IEmailService emailService) : IUserService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IPasswordService _passwordService = passwordService;
-    private readonly IAuthService _tokenService = tokenService;
+    private readonly IJwtService _tokenService = tokenService;
     private readonly IExcelExportService _excelExportService = excelExportService;
     private readonly IEmailService _emailService = emailService;
 

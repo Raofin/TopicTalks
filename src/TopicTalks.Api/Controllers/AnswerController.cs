@@ -1,9 +1,9 @@
 ﻿using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using TopicTalks.Api.Attributes;
 using TopicTalks.Application.Dtos;
+using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
 using TopicTalks.Domain.Enums;
 
@@ -41,9 +41,7 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(AnswerCreateDto dto)
     {
-        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        var answerDto = await _answerService.Create(dto, userId);
+        var answerDto = await _answerService.Create(dto, User.GetUserId());
 
         return !answerDto.IsError
             ? Ok(answerDto.Value)
@@ -56,10 +54,7 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
     [HttpPatch]
     public async Task<IActionResult> Update(AnswerUpdateDto dto)
     {
-        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var userRole = User.FindFirst(ClaimTypes.Role)!.Value;
-
-        var answerDto = await _answerService.UpdateAsync(dto, userRole, userId);
+        var answerDto = await _answerService.UpdateAsync(dto, User.GetRoles(), User.GetUserId());
 
         return !answerDto.IsError
             ? Ok(answerDto.Value)
@@ -73,10 +68,7 @@ public class AnswerController(IAnswerService answerService) : ControllerBase
     [HttpDelete("{answerId}")]
     public async Task<IActionResult> Delete(long answerId)
     {
-        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var userRole = User.FindFirst(ClaimTypes.Role)!.Value;
-
-        var result = await _answerService.DeleteAsync(answerId, userRole, userId);
+        var result = await _answerService.DeleteAsync(answerId, User.GetRoles(), User.GetUserId());
 
         return !result.IsError
             ? Ok()

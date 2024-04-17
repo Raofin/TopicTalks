@@ -109,7 +109,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
             );
     }
 
-    public async Task<ErrorOr<QuestionResponseDto>> UpdateAsync(QuestionUpdateDto dto, long userId, string role)
+    public async Task<ErrorOr<QuestionResponseDto>> UpdateAsync(QuestionUpdateDto dto, long userId, List<RoleType> roles)
     {
         var question = await _unitOfWork.Question.GetWithUser(dto.QuestionId);
 
@@ -118,7 +118,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
             return Error.NotFound();
         }
 
-        if (question.UserId != userId && role is not nameof(RoleType.Moderator))
+        if (question.UserId != userId && !roles.Contains(RoleType.Moderator))
         {
             return Error.Unauthorized();
         }
@@ -132,7 +132,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
         return question.ToDto();
     }
 
-    public async Task<ErrorOr<Success>> DeleteAsync(long questionId, string role, long userId)
+    public async Task<ErrorOr<Success>> DeleteAsync(long questionId, long userId, List<RoleType> roles)
     {
         var question = await _unitOfWork.Question.GetAsync(questionId);
 
@@ -141,7 +141,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
             return Error.NotFound();
         }
 
-        if (question.UserId != userId && role is not nameof(RoleType.Moderator))
+        if (question.UserId != userId && !roles.Contains(RoleType.Moderator))
         {
             return Error.Unauthorized();
         }

@@ -1,9 +1,9 @@
 ﻿using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using TopicTalks.Api.Attributes;
 using TopicTalks.Application.Dtos;
+using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
 
 namespace TopicTalks.Api.Controllers;
@@ -46,9 +46,7 @@ public class AccountController(IUserService userService) : ControllerBase
     [HttpPatch("password")]
     public async Task<IActionResult> ChangePassword(PasswordChangeRequest request)
     {
-        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        var passwordChange = await _userService.ChangePassword(userId, request);
+        var passwordChange = await _userService.ChangePassword(User.GetUserId(), request);
 
         return passwordChange.IsError switch {
             false => Ok("Password was successfully updated."),
@@ -62,9 +60,7 @@ public class AccountController(IUserService userService) : ControllerBase
     [HttpGet("profile")]
     public async Task<IActionResult> GetUser()
     {
-        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        var user = await _userService.GetWithDetailsAsync(userId);
+        var user = await _userService.GetWithDetailsAsync(User.GetUserId());
 
         return !user.IsError
             ? Ok(user.Value)
@@ -87,16 +83,14 @@ public class AccountController(IUserService userService) : ControllerBase
     [HttpPost("verify")]
     public async Task<IActionResult> VerifyOtp(VerifyRequest? verify)
     {
-        var email = User.FindFirstValue(ClaimTypes.Email)!;
-        
         if (verify is null)
         {
-            await _userService.SendOtp(email);
+            await _userService.SendOtp(User.GetEmail());
 
             return Ok("Otp was sent successfully.");
         }
 
-        var verification = await _userService.VerifyOtp(email, verify.Code);
+        var verification = await _userService.VerifyOtp(User.GetEmail(), verify.Code);
 
         return verification.IsError 
             ? BadRequest("Invalid Otp.") 

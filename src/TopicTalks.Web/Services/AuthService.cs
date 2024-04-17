@@ -1,41 +1,66 @@
-﻿#pragma warning disable CS8602 // Nullable reference types warning
-#pragma warning disable CS8604 // Possible null reference argument
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using TopicTalks.Web.Configs;
-using TopicTalks.Web.Enums;
+using TopicTalks.Web.Common;
 
 namespace TopicTalks.Web.Services;
 
-internal class AuthService(IHttpContextAccessor httpContextAccessor) : IAuthService
+internal class AuthService(IHttpContextAccessor httpContextAccessor, IOptions<AppSettings> appSettings) : IAuthService
 {
-    private readonly IHttpContextAccessor _contextAccessor = httpContextAccessor;
-    private readonly ClaimsPrincipal _principal = httpContextAccessor.HttpContext.User;
+    private readonly ClaimsPrincipal _principal = httpContextAccessor.HttpContext!.User;
+    private readonly HttpContext _httpContext = httpContextAccessor.HttpContext!;
+    private readonly JwtSettings _jwtSettings = appSettings.Value.JwtSettings;
 
-    public async Task<bool> SignInWithTokenAsync(string token)
+    public string GenerateJwtToken()
     {
         try
         {
-            var principal = await GetPrincipalFromToken(token);
-
-            if (principal == null) return false; // Invalid token
-
-            var properties = new AuthenticationProperties {
-                AllowRefresh = true, // Allow cookie refresh
-                IsPersistent = true, // Persist cookie across sessions
-                ExpiresUtc = DateTimeOffset.Now.AddDays(7) // Set cookie expiration to 7 days
+            var claims = new List<Claim>
+            {
+                new(JwtRegisteredClaimNames.Email, _principal.FindFirstValue(ClaimTypes.Email)!),
+                new("UserId", _principal.Claims.Single(c => c.Type == "UserId").Value),
+                new("IsVerified", _principal.Claims.Single(c => c.Type == "IsVerified").Value, ClaimValueTypes.Boolean)
             };
 
-            await _contextAccessor.HttpContext.SignOutAsync();
-            await _contextAccessor.HttpContext.SignInAsync(principal, properties);
+            _principal.Claims.Where(c => c.Type == ClaimTypes.Role).ToList().ForEach(claims.Add);
 
-            return true; // Sign in successful
+            var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
+
+            var token = new JwtSecurityToken(
+                    issuer: "https://rawfin.net",
+                    audience: "https://rawfin.net",
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddDays(1),
+                    signingCredentials: credentials
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task SignInWithTokenAsync(string token)
+    {
+        try
+        {
+            var principal = GetPrincipalFromToken(token);
+
+            var properties = new AuthenticationProperties {
+                AllowRefresh = true,
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.Now.AddDays(7)
+            };
+
+            await SignOutAsync();
+            await _httpContext.SignInAsync(principal, properties);
         }
         catch (Exception e)
         {
@@ -46,11 +71,11 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor) : IAuthServ
 
     public async Task SignOutAsync()
     {
-        await _contextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await _httpContext.SignOutAsync();
     }
 
 
-    private async Task<ClaimsPrincipal?> GetPrincipalFromToken(string token)
+    private ClaimsPrincipal GetPrincipalFromToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -58,30 +83,28 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor) : IAuthServ
         {
             // Define token validation parameters
             var validationParameters = new TokenValidationParameters {
-                ValidateIssuerSigningKey = true, // Validate the security key when validating the token
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SettingsFetcher.JwtKey)), // Set the security key
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret)),
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidIssuer = "https://rawfin.net",
                 ValidAudience = "https://rawfin.net",
-                RequireExpirationTime = true, // Require to have an expiration time
+                RequireExpirationTime = true,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
 
             var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
 
-            if (IsJwtWithValidSecurityAlgorithm(validatedToken))
-            {
-                return principal;
-            }
+            return IsJwtWithValidSecurityAlgorithm(validatedToken) 
+                ? principal 
+                : throw new Exception("Invalid JWT.");
         }
-        catch (SecurityTokenValidationException)
+        catch (Exception e)
         {
-            return null;
+            Console.WriteLine(e);
+            throw;
         }
-
-        return null; // Token validation failed
     }
 
     private bool IsJwtWithValidSecurityAlgorithm(SecurityToken validatedToken)
@@ -90,39 +113,5 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor) : IAuthServ
         return validatedToken is JwtSecurityToken jwtSecurityToken &&
                jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature,
                    StringComparison.InvariantCultureIgnoreCase);
-    }
-
-    public string GenerateJwtToken()
-    {
-        try
-        {
-            var claims = new List<Claim>
-            {
-                new(JwtRegisteredClaimNames.Sub, _principal.FindFirstValue(ClaimTypes.NameIdentifier)),
-                new(JwtRegisteredClaimNames.Email, _principal.FindFirstValue(ClaimTypes.Email)),
-                new(JwtRegisteredClaimNames.Jti, _principal.FindFirstValue("jti")),
-                new(ClaimTypes.Role, _principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? RoleType.Student.ToString()),
-                new("IsVerified", _principal.Claims.FirstOrDefault(c => c.Type == "IsVerified")?.Value ?? "false", ClaimValueTypes.Boolean)
-            };
-
-            var key = Encoding.ASCII.GetBytes(SettingsFetcher.JwtKey);
-            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
-
-            var token = new JwtSecurityToken(
-                    issuer: "https://rawfin.net",
-                    audience: "https://rawfin.net",
-                    expires: DateTime.UtcNow.AddDays(1),
-                    signingCredentials: credentials,
-                    claims: claims
-                );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-
     }
 }

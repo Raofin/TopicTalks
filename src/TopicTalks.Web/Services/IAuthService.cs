@@ -2,7 +2,7 @@
 
 public interface IAuthService
 {
-    Task<bool> SignInWithTokenAsync(string token);
-    Task SignOutAsync();
     string GenerateJwtToken();
+    Task SignInWithTokenAsync(string token);
+    Task SignOutAsync();
 }

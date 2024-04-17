@@ -3,7 +3,8 @@ using TopicTalks.Application;
 using FluentValidation.AspNetCore;
 using TopicTalks.Api.Configs;
 using TopicTalks.Infrastructure;
-using TopicTalks.Api.Common;
+using TopicTalks.Api;
+using TopicTalks.Application.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,18 +14,18 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerConfig();
 builder.Services.AddHealthChecks();
 
-builder.Services.AddAuthConfig();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
+builder.Services.Configure<AppSettings>(builder.Configuration);
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
 
 builder.AddDatabase();
+builder.AddAuthConfig();
 builder.AddCorsConfig();
 builder.AddEmailConfig();
-builder.AddSettingFetcher();
 
 DinkToPdfAllOs.LibraryLoader.Load();
 
@@ -36,6 +37,8 @@ app.UseSwaggerUI();
 app.ApplyMigration();
 app.UseCustomCors();
 app.UseHttpsRedirection();
+app.UseHostFiltering();
+
 app.MapControllers();
 app.MapHealthChecks("health");
 

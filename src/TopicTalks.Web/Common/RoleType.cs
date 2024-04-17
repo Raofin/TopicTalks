@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TopicTalks.Web.Enums;
+namespace TopicTalks.Web.Common;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum RoleType

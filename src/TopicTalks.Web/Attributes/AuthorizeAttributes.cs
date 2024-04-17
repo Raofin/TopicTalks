@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using TopicTalks.Web.Enums;
+using TopicTalks.Web.Common;
 
 namespace TopicTalks.Web.Attributes;
 

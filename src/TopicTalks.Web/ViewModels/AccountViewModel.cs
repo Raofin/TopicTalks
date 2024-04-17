@@ -1,4 +1,4 @@
-﻿using TopicTalks.Web.Enums;
+﻿using TopicTalks.Web.Common;
 
 namespace TopicTalks.Web.ViewModels;
 

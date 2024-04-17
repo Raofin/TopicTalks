@@ -2,7 +2,7 @@
 
 namespace TopicTalks.Application.Interfaces;
 
-public interface IAuthService
+public interface IJwtService
 {
     string GenerateJwtToken(User user);
 }

@@ -1,5 +1,4 @@
-﻿@using static TopicTalks.Web.Configs.SettingsFetcher
-@using TopicTalks.Web.Extensions
+﻿@using TopicTalks.Web.Extensions
 @model List<TopicTalks.Web.ViewModels.QuestionViewModel>
 
 <div class="container mt-5">
@@ -51,9 +50,8 @@
 
         function fetchQuestions(searchText) {
             $.ajax({
-                url: '@ApiBaseUrl/api/question?searchQuery=' + searchText,
+                url: '/question/data?searchQuery=' + searchText,
                 method: 'GET',
-                data: { searchText: searchText },
                 dataType: 'json',
                 success: function (questions) {
                     $('#questionContainer').empty();

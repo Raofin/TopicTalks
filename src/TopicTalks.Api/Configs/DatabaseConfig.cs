@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using TopicTalks.Application.Common;
 using TopicTalks.Infrastructure.Persistence;
 
 namespace TopicTalks.Api.Configs;
@@ -24,8 +25,10 @@ public static class DatabaseConfig
 
     public static void AddDatabase(this WebApplicationBuilder builder)
     {
-        builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnection"))
-        );
+        var connectionStrings = new ConnectionStrings();
+        builder.Configuration.Bind(nameof(ConnectionStrings), connectionStrings);
+
+        builder.Services.AddDbContext<AppDbContext>(options => 
+            options.UseSqlServer(connectionStrings.DefaultConnection));
     }
 }

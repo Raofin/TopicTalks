@@ -1,6 +1,6 @@
-﻿@using TopicTalks.Web.Extensions
-@using TopicTalks.Web.Enums
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using TopicTalks.Web.Common
+@using TopicTalks.Web.Extensions
 
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="padding: 20px 100px;">
     <div class="container-fluid">
@@ -16,7 +16,7 @@
                     <a asp-controller="Home" asp-action="Dashboard" class="nav-link text-dark nav-text">Dashboard</a>
                 </li>
             }
-            @if (Context.UserRole() == nameof(RoleType.Student))
+            @if (Context.UserRole().Contains(RoleType.Student))
             {
                 <li class="nav-item">
                     <a asp-controller="Home" asp-action="PostQuestion" class="nav-link text-dark nav-text">Post Questions</a>
@@ -25,14 +25,14 @@
                     <a asp-controller="Home" asp-action="MyQuestions" class="nav-link text-dark nav-text">My Questions</a>
                 </li>
             }
-            @if (Context.UserRole() == nameof(RoleType.Teacher))
+            @if (Context.UserRole().Contains(RoleType.Teacher))
             {
                 <li class="nav-item">
                     <a asp-controller="Home" asp-action="MyResponses" class="nav-link text-dark nav-text">My Responded Questions</a>
                 </li>
             }
 
-            @if (Context.UserRole() == nameof(RoleType.Moderator))
+            @if (Context.UserRole().Contains(RoleType.Moderator))
             {
                 <li class="nav-item ">
                     <a asp-controller="Account" asp-action="GetExcel" class="nav-link text-dark nav-text text-center">

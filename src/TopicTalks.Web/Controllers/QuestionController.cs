@@ -12,6 +12,26 @@ namespace TopicTalks.Web.Controllers
     {
         private readonly IHttpService _httpService = httpService;
 
+        [HttpGet("data")]
+        public async Task<IActionResult> Get(string? searchQuery)
+        {
+            var response = await _httpService.Client.GetAsync($"api/question?searchQuery={searchQuery}");
+
+            return response.IsSuccessStatusCode
+                ? Ok(response.DeserializeTo<List<QuestionViewModel>>())
+                : new StatusCodeResult((int)response.StatusCode);
+        }
+
+        [HttpGet("data/{questionId}")]
+        public async Task<IActionResult> Get(long questionId)
+        {
+            var response = await _httpService.Client.GetAsync($"api/question/{questionId}");
+
+            return response.IsSuccessStatusCode
+                ? Ok(response.DeserializeTo<QuestionWithAnswersViewModel>())
+                : new StatusCodeResult((int)response.StatusCode);
+        }
+
         [HttpPatch]
         public async Task<IActionResult> UpdateQuestion(QuestionUpdateViewModel request)
         {
@@ -35,7 +55,7 @@ namespace TopicTalks.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> PostQuestion(QuestionCreateViewModel request)
         {
-            var response = await _httpService.Client.PostAsync("api/question/currentUser/questions", request.ToStringContent());
+            var response = await _httpService.Client.PostAsync("api/question", request.ToStringContent());
 
             return response.IsSuccessStatusCode
                 ? Ok(response.DeserializeTo<QuestionWithAnswersViewModel>())

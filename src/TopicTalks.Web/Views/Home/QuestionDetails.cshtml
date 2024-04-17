@@ -1,5 +1,4 @@
-﻿@using static TopicTalks.Web.Configs.SettingsFetcher
-@using TopicTalks.Web.Enums
+﻿@using TopicTalks.Web.Common
 @using TopicTalks.Web.Extensions
 @using TopicTalks.Web.ViewModels
 @model TopicTalks.Web.ViewModels.QuestionWithAnswersViewModel
@@ -19,12 +18,12 @@
                 <div class="d-flex justify-content-between">
                     <p><strong>@(answerAuthorEmail)</strong> on @($"{answer.CreatedAt:MMM dd, yyyy} ({answer.CreatedAt.TimeAgo()})")</p>
                     <div class="d-flex gap-2">
-                        @if (Context.UserRole() == nameof(RoleType.Moderator) || answerAuthorId == Context.UserId())
+                        @if (Context.UserRole().Contains(RoleType.Moderator) || answerAuthorId == Context.UserId())
                         {
                             <span class="link-text text-danger" onclick="deleteAnswer(@(answer.AnswerId))">Delete</span>
                             <span class="link-text text-success" onclick="appendInput(@(Model.QuestionId), @(answer.AnswerId), true)">Edit</span>
                         }
-                        @if (Context.UserRole() != nameof(RoleType.Moderator))
+                        @if (!Context.UserRole().Contains(RoleType.Moderator))
                         {
                             <span class="link-text" onclick="appendInput(@(Model.QuestionId), @(answer.AnswerId))">Reply</span>
                         }
@@ -70,11 +69,11 @@
                     }
                 </div>
                 <div class="d-flex gap-2">
-                    @if (!Model.HasTeachersResponse && (Context.UserRole() == nameof(RoleType.Moderator) || authorId == Context.UserId()))
+                    @if (!Model.HasTeachersResponse && Context.UserRole().Contains(RoleType.Moderator) || authorId == Context.UserId())
                     {
                         <span class="link-text text-danger" onclick="deleteQuestion(@Model.QuestionId)">Delete</span>
                     }
-                    @if (Context.UserRole() == nameof(RoleType.Moderator) || authorId == Context.UserId())
+                    @if (Context.UserRole().Contains(RoleType.Moderator) || authorId == Context.UserId())
                     {
                         <span id="edit-question" class="link-text text-success">Edit</span>
                     }
@@ -90,8 +89,8 @@
                 RenderAnswers(Model.Answers);
             }
         </div>
-        @if (Context.UserRole() != nameof(RoleType.Moderator)){
-
+        @if (!Context.UserRole().Contains(RoleType.Moderator))
+        {
             <div id="answer-input" class="col-sm-9 w-100">
                 <form id="answer-form" asp-action="PostAnswer" asp-controller="Answer" method="post">
                     <input type="hidden" name="questionId" value="@(Model.QuestionId)" />
@@ -119,25 +118,25 @@
             closeReplyInput();
 
             if (!$("#reply-input").length) {
-                    $("#question-container").append(`
-                            <div id="reply-input">
-                                <form id="reply-form" class="col-sm-9 w-100 d-flex">
-                                    <input type="hidden" name="questionId" value="${questionId}" />
-                                    <div class="text-center w-100">
-                                        <input type="text" id="question-topics" class="form-control mb-1" placeholder="Write your question topics here" name="topic" />
-                                        <textarea id="explanation-input" class="form-control mb-1" rows="3" placeholder="Write your reply here" name="explanation"></textarea>
-                                    </div>
-                                    <div class="text-center d-flex justify-content-between align-items-end" style ="width: 150px;">
-                                        <div>
-                                            <button type="button" class="btn btn-primary mb-1 mt-1" style="width: 90px;" onclick="focusReplyTextArea()">Reply</button>
-                                            <button type="button" class="btn btn-danger mb-1 mt-1" style="width: 90px;" onclick="closeReplyInput()">Close</button>
-                                            <button type="submit" class="btn btn-success" style="width: 90px;">Confirm</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>`)
+                $("#question-container").append(`
+                    <div id="reply-input">
+                        <form id="reply-form" class="col-sm-9 w-100 d-flex">
+                            <input type="hidden" name="questionId" value="${questionId}" />
+                            <div class="text-center w-100">
+                                <input type="text" id="question-topics" class="form-control mb-1" placeholder="Write your question topics here" name="topic" />
+                                <textarea id="explanation-input" class="form-control mb-1" rows="3" placeholder="Write your reply here" name="explanation"></textarea>
+                            </div>
+                            <div class="text-center d-flex justify-content-between align-items-end" style ="width: 150px;">
+                                <div>
+                                    <button type="button" class="btn btn-primary mb-1 mt-1" style="width: 90px;" onclick="focusReplyTextArea()">Reply</button>
+                                    <button type="button" class="btn btn-danger mb-1 mt-1" style="width: 90px;" onclick="closeReplyInput()">Close</button>
+                                    <button type="submit" class="btn btn-success" style="width: 90px;">Confirm</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>`)
 
-                $.get(`@ApiBaseUrl/api/question/${questionId}`)
+                $.get(`/question/data/${questionId}`)
                     .done(function (data) {
                         $("#explanation-input").val(data.explanation)
                         $("#question-topics").val(data.topic)

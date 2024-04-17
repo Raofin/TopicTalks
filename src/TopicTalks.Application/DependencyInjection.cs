@@ -20,7 +20,7 @@ public static class DependencyInjection
         services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         services.AddSingleton<IExcelExportService, ExcelExportService>();
 
-        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPasswordService, PasswordService>();
         services.AddScoped<IQuestionService, QuestionService>();
