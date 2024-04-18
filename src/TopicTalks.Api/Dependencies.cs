@@ -1,11 +1,17 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.OpenApi.Models;
+using TopicTalks.Application.Common;
 
-namespace TopicTalks.Api.Configs;
+namespace TopicTalks.Api;
 
-public static class SwaggerConfig
+public static class Dependencies
 {
-    public static void AddSwaggerConfig(this IServiceCollection services)
+    public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
+        services.AddEndpointsApiExplorer();
+        services.AddProblemDetails();
+        services.AddControllers(options => options.Conventions.Add(
+            new RouteTokenTransformerConvention(new LowercaseControllerTransformer())));
         services.AddSwaggerGen(options => {
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "TopicTalks", Version = "v1" });
 
@@ -33,5 +39,7 @@ public static class SwaggerConfig
                 }
             });
         });
+
+        return services;
     }
 }

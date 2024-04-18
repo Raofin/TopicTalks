@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using TopicTalks.Web.Common;
 
-namespace TopicTalks.Web.Attributes;
+namespace TopicTalks.Web.Common;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class AuthorizeStudentAttribute : AuthorizeAttribute

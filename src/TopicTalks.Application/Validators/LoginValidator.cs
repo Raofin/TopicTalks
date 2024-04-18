@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using TopicTalks.Application.Dtos;
 
-namespace TopicTalks.Api.Validators;
+namespace TopicTalks.Application.Validators;
 
 public class LoginValidator : AbstractValidator<LoginRequest>
 {

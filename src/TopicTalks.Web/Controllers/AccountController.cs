@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
-using TopicTalks.Web.Attributes;
+using TopicTalks.Web.Common;
 using TopicTalks.Web.Extensions;
 using TopicTalks.Web.Services;
 using TopicTalks.Web.ViewModels;

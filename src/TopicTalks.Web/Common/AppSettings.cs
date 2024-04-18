@@ -2,8 +2,13 @@
 
 public class AppSettings
 {
-    public string ApiBaseUrl { get; set; } = null!;
+    public Api Api { get; set; } = null!;
     public JwtSettings JwtSettings { get; set; } = null!;
+}
+
+public class Api
+{
+    public string BaseUrl { get; set; } = null!;
 }
 
 public class JwtSettings

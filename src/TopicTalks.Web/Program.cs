@@ -1,23 +1,18 @@
+using TopicTalks.Web;
 using TopicTalks.Web.Common;
-using TopicTalks.Web.Configs;
 using TopicTalks.Web.Services;
-using WebMarkupMin.AspNetCore8;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<AppSettings>(builder.Configuration);
+builder.Services.AddAppConfigurations(builder.Environment);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddHttpClient();
-builder.Services.AddAuthConfig();
+builder.Services.AddHttpClient(builder.Configuration);
+builder.Services.AddMvc();
 
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IHttpService, HttpService>();
-
-builder.Services.Configure<AppSettings>(builder.Configuration);
-builder.Services.AddMvc();
-builder.Services.InitializeWebMarkupMin();
-builder.InitializeWebOptimizer();
-builder.AddCorsConfig();
 
 var app = builder.Build();
 
@@ -33,7 +28,6 @@ else
 
 app.UseStaticFiles();
 app.UseWebOptimizer();
-app.UseWebMarkupMin();
 
 app.UseHttpsRedirection();
 app.UseRouting();

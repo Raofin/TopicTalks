@@ -12,7 +12,7 @@ using TopicTalks.Application.Services.Excel;
 
 namespace TopicTalks.Application;
 
-public static class DependencyInjection
+public static class Dependencies
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
