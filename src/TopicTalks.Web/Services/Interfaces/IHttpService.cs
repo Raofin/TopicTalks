@@ -1,4 +1,4 @@
-﻿namespace TopicTalks.Web.Services;
+﻿namespace TopicTalks.Web.Services.Interfaces;
 
 public interface IHttpService
 {

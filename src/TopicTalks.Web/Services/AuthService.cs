@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TopicTalks.Web.Common;
+using TopicTalks.Web.Services.Interfaces;
 
 namespace TopicTalks.Web.Services;
 
@@ -34,7 +35,7 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor, IOptions<Ap
                     issuer: "https://rawfin.net",
                     audience: "https://rawfin.net",
                     claims: claims,
-                    expires: DateTime.UtcNow.AddDays(1),
+                    expires: DateTime.Now.AddMinutes(30),
                     signingCredentials: credentials
                 );
 

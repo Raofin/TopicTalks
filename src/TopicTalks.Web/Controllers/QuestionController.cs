@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TopicTalks.Web.Extensions;
-using TopicTalks.Web.Services;
+using TopicTalks.Web.Services.Interfaces;
 using TopicTalks.Web.ViewModels;
 
 namespace TopicTalks.Web.Controllers;

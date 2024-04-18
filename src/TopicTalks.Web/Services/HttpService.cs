@@ -1,24 +1,28 @@
 ﻿using System.Net.Http.Headers;
+using System.Security.Claims;
+using TopicTalks.Web.Services.Interfaces;
 
 namespace TopicTalks.Web.Services;
 
 internal class HttpService(
-    IHttpContextAccessor httpContextAccessor, 
     IHttpClientFactory httpClientFactory,
+    IHttpContextAccessor httpContextAccessor,
+    ITokenCacheService tokenCacheService,
     IAuthService authService) : IHttpService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly ITokenCacheService _tokenCacheService = tokenCacheService;
     private readonly IAuthService _authService = authService;
 
     public HttpClient Client {
         get {
-
             var client = _httpClientFactory.CreateClient("TT_Api");
 
             if (_httpContextAccessor.HttpContext!.User.Identity!.IsAuthenticated)
             {
-                var token = GetToken();
+                var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("UserId")!;
+                var token = GetToken(userId);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
@@ -26,13 +30,17 @@ internal class HttpService(
         }
     }
 
-    private string GetToken()
+    private string GetToken(string userId)
     {
-        var authHeader = _httpContextAccessor.HttpContext?.Request.Headers.Authorization.ToString();
+        var cachedToken = _tokenCacheService.GetToken(userId);
 
-        // Retrieve token if it exists, otherwise generate a new one
-        return authHeader is not null && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
-            ? authHeader["Bearer ".Length..].Trim()
-            : _authService.GenerateJwtToken();
+        if (string.IsNullOrEmpty(cachedToken))
+        {
+            var newToken = _authService.GenerateJwtToken();
+            _tokenCacheService.SetToken(userId, newToken);
+            return newToken;
+        }
+
+        return cachedToken;
     }
 }
