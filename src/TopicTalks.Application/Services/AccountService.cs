@@ -20,9 +20,9 @@ internal class AccountService(
     private readonly IJwtGenerator _tokenService = tokenService;
     private readonly IEmailSender _emailService = emailService;
 
-    public async Task<ErrorOr<AuthenticationResponse>> Register(RegistrationRequest request)
+    public async Task<ErrorOr<AuthenticationResponse>> RegisterAsync(RegistrationRequest request)
     {
-        var isEmailExists = await _unitOfWork.User.IsEmailExists(request.Email);
+        var isEmailExists = await _unitOfWork.User.IsEmailExistsAsync(request.Email);
 
         if (isEmailExists)
         {
@@ -50,16 +50,16 @@ internal class AccountService(
             };
         }
 
-        await _unitOfWork.User.AddAsync(user);
+        _unitOfWork.User.Add(user);
         await _unitOfWork.CommitAsync();
+
         _emailService.SendWelcome(user.Email);
-        
-        await SendOtp(user.Email);
+        await SendOtpAsync(user.Email);
 
         return Authenticate(user);
     }
 
-    public async Task<ErrorOr<AuthenticationResponse>> Login(LoginRequest request)
+    public async Task<ErrorOr<AuthenticationResponse>> LoginAsync(LoginRequest request)
     {
         var user = await _unitOfWork.User.GetWithDetailsAsync(request.Email);
 
@@ -114,7 +114,7 @@ internal class AccountService(
         return userDto;
     }
 
-    public async Task<ErrorOr<Success>> ChangePassword(long userId, PasswordChangeRequest request)
+    public async Task<ErrorOr<Success>> ChangePasswordAsync(long userId, PasswordChangeRequest request)
     {
         var user = await _unitOfWork.User.GetAsync(userId);
 
@@ -142,7 +142,7 @@ internal class AccountService(
 
     #region ### OTP ###
 
-    public async Task SendOtp(string email)
+    public async Task SendOtpAsync(string email)
     {
         var code = new Random().Next(1000, 9999).ToString();
 
@@ -153,7 +153,7 @@ internal class AccountService(
             _unitOfWork.Otp.Remove(otp);
         }
 
-        await _unitOfWork.Otp.AddAsync(new Otp {
+        _unitOfWork.Otp.Add(new Otp {
             Email = email,
             Code = code,
             ExpiresAt = DateTime.Now.AddMinutes(5),
@@ -163,7 +163,7 @@ internal class AccountService(
         _emailService.SendOtp(email, code);
     }
 
-    public async Task<ErrorOr<AuthenticationResponse>> VerifyOtp(string email, string code)
+    public async Task<ErrorOr<AuthenticationResponse>> VerifyOtpAsync(string email, string code)
     {
         var otp = await _unitOfWork.Otp.GetValidOtpAsync(email, code);
 

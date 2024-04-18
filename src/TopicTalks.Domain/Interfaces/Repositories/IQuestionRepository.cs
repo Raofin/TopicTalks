@@ -5,9 +5,9 @@ namespace TopicTalks.Domain.Interfaces.Repositories;
 public interface IQuestionRepository : IRepository<Question>
 {
     Task<List<Question>> SearchAsync(string? searchText);
-    Task<List<Question>> GetWithUser();
-    Task<Question?> GetWithUser(long questionId);
-    Task<List<Question>> GetByUserId(long userId);
-    Task<List<Question>> GetByUserResponses(long userId);
-    Task<Question?> GetWithAnswers(long questionId);
+    Task<List<Question>> GetWithUserAsync();
+    Task<Question?> GetWithUserAsync(long questionId);
+    Task<List<Question>> GetByUserIdAsync(long userId);
+    Task<List<Question>> GetByUserResponsesAsync(long userId);
+    Task<Question?> GetWithAnswersAsync(long questionId);
 }

@@ -12,9 +12,9 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<ErrorOr<AnswerResponseDto>> Create(AnswerCreateDto dto, long userId)
+    public async Task<ErrorOr<AnswerResponseDto>> CreateAsync(AnswerCreateDto dto, long userId)
     {
-        var isQuestionOrParentExists = await _unitOfWork.Answer.IsQuestionOrParentExists(dto.QuestionId, dto.ParentAnswerId);
+        var isQuestionOrParentExists = await _unitOfWork.Answer.IsQuestionOrParentExistsAsync(dto.QuestionId, dto.ParentAnswerId);
 
         if (!isQuestionOrParentExists)
         {
@@ -28,7 +28,7 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
             UserId = userId
         };
 
-        await _unitOfWork.Answer.AddAsync(answer);
+        _unitOfWork.Answer.Add(answer);
         await _unitOfWork.CommitAsync();
         await _unitOfWork.Entry(answer).Reference(a => a.User).LoadAsync();
 

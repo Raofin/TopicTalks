@@ -4,5 +4,5 @@ namespace TopicTalks.Application.Services;
 
 public interface IExcelService
 {
-    Task<ExcelFile> UserListExcelFile();
+    Task<ExcelFile> GenerateUserListExcelAsync();
 }

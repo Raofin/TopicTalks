@@ -39,7 +39,7 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
         return questions;
     }
 
-    public async Task<List<Question>> GetWithUser()
+    public async Task<List<Question>> GetWithUserAsync()
     {
         var questions = await _dbContext.Questions
             .Include(q => q.User)
@@ -48,7 +48,7 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
         return questions;
     }
 
-    public async Task<Question?> GetWithUser(long questionId)
+    public async Task<Question?> GetWithUserAsync(long questionId)
     {
         var question = await _dbContext.Questions
             .Include(q => q.User)
@@ -57,7 +57,7 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
         return question;
     }
 
-    public async Task<List<Question>> GetByUserId(long userId)
+    public async Task<List<Question>> GetByUserIdAsync(long userId)
     {
         var questions = await _dbContext.Questions
             .Include(q => q.User)
@@ -67,7 +67,7 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
         return questions;
     }
 
-    public async Task<List<Question>> GetByUserResponses(long userId)
+    public async Task<List<Question>> GetByUserResponsesAsync(long userId)
     {
         var questions = await (
             from answer in _dbContext.Answers
@@ -80,7 +80,7 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
         return questions;
     }
 
-    public async Task<Question?> GetWithAnswers(long questionId)
+    public async Task<Question?> GetWithAnswersAsync(long questionId)
     {
         var question = await _dbContext.Questions
             .Include(a => a.User)

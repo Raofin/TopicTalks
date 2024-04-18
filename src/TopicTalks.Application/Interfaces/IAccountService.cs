@@ -5,10 +5,10 @@ namespace TopicTalks.Application.Interfaces;
 
 public interface IAccountService
 {
-    Task<ErrorOr<AuthenticationResponse>> Register(RegistrationRequest request);
-    Task<ErrorOr<AuthenticationResponse>> Login(LoginRequest request);
+    Task<ErrorOr<AuthenticationResponse>> RegisterAsync(RegistrationRequest request);
+    Task<ErrorOr<AuthenticationResponse>> LoginAsync(LoginRequest request);
     Task<ErrorOr<UserDto>> GetWithDetailsAsync(long userId);
-    Task<ErrorOr<Success>> ChangePassword(long userId, PasswordChangeRequest request);
-    Task SendOtp(string email);
-    Task<ErrorOr<AuthenticationResponse>> VerifyOtp(string email, string code);
+    Task<ErrorOr<Success>> ChangePasswordAsync(long userId, PasswordChangeRequest request);
+    Task SendOtpAsync(string email);
+    Task<ErrorOr<AuthenticationResponse>> VerifyOtpAsync(string email, string code);
 }

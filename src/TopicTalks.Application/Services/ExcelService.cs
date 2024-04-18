@@ -9,7 +9,7 @@ internal class ExcelService(IUnitOfWork unitOfWork, IExcelGenerator excelGenerat
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IExcelGenerator _excelGenerator = excelGenerator;
 
-    public async Task<ExcelFile> UserListExcelFile()
+    public async Task<ExcelFile> GenerateUserListExcelAsync()
     {
         var users = await _unitOfWork.User.GetWithDetailsAsync();
         var file = _excelGenerator.UserListExcel(users);

@@ -22,7 +22,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
             UserId = userId
         };
 
-        await _unitOfWork.Question.AddAsync(question);
+        _unitOfWork.Question.Add(question);
         await _unitOfWork.CommitAsync();
 
         var response = await GetWithUserAsync(question.QuestionId);
@@ -32,7 +32,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
 
     public async Task<List<QuestionResponseDto>> GetAsync()
     {
-        var questions = await _unitOfWork.Question.GetWithUser();
+        var questions = await _unitOfWork.Question.GetWithUserAsync();
 
         return questions.Select(q => q.ToDto()).ToList();
     }
@@ -47,7 +47,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
 
     public async Task<ErrorOr<QuestionResponseDto>> GetWithUserAsync(long questionId)
     {
-        var question = await _unitOfWork.Question.GetWithUser(questionId);
+        var question = await _unitOfWork.Question.GetWithUserAsync(questionId);
 
         return question is null ? Error.NotFound()
             : new QuestionResponseDto(
@@ -73,21 +73,21 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
 
     public async Task<List<QuestionResponseDto>> GetByUserIdAsync(long userId)
     {
-        var questions = await _unitOfWork.Question.GetByUserId(userId);
+        var questions = await _unitOfWork.Question.GetByUserIdAsync(userId);
 
         return questions.Select(q => q.ToDto()).ToList();
     }
 
     public async Task<List<QuestionResponseDto>> GetByUserResponsesAsync(long userId)
     {
-        var questions = await _unitOfWork.Question.GetByUserResponses(userId);
+        var questions = await _unitOfWork.Question.GetByUserResponsesAsync(userId);
 
         return questions.Select(q => q.ToDto()).ToList();
     }
 
     public async Task<ErrorOr<QuestionWithAnswersDto>> GetWithAnswersAsync(long questionId)
     {
-        var question = await _unitOfWork.Question.GetWithAnswers(questionId);
+        var question = await _unitOfWork.Question.GetWithAnswersAsync(questionId);
         var answers = await _answerService.GetAnswersWithRepliesAsync(questionId);
 
         return question is null
@@ -110,7 +110,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
 
     public async Task<ErrorOr<QuestionResponseDto>> UpdateAsync(QuestionUpdateDto dto, long userId, List<RoleType> roles)
     {
-        var question = await _unitOfWork.Question.GetWithUser(dto.QuestionId);
+        var question = await _unitOfWork.Question.GetWithUserAsync(dto.QuestionId);
 
         if (question is null)
         {

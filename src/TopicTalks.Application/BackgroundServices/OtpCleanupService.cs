@@ -17,7 +17,7 @@ internal class OtpCleanupService(IServiceScopeFactory serviceScopeFactory) : Bac
                 var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                 var otps = await unitOfWork.Otp.GetExpiredOtpsAsync();
 
-                unitOfWork.Otp.Remove(otps);
+                unitOfWork.Otp.RemoveRange(otps);
 
                 await unitOfWork.CommitAsync();
             }

@@ -8,7 +8,7 @@ internal class UserRepository(AppDbContext dbContext) : Repository<User>(dbConte
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task<bool> IsEmailExists(string email)
+    public async Task<bool> IsEmailExistsAsync(string email)
     {
         return await _dbContext.Users.AnyAsync(u => u.Email == email);
     }

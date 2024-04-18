@@ -9,5 +9,5 @@ public interface IAnswerRepository : IRepository<Answer>
     Task<List<Answer>> GetByQuestionAsync(long questionId);
     Task<Answer?> GetRepliesAsync(long questionId, long answerId, long parentAnswerId);
     Task<bool> HasTeachersAnswerAsync(int questionId);
-    Task<bool> IsQuestionOrParentExists(long questionId, long? parentAnswerId);
+    Task<bool> IsQuestionOrParentExistsAsync(long questionId, long? parentAnswerId);
 }

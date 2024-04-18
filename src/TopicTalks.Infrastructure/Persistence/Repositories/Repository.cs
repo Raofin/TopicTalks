@@ -28,14 +28,14 @@ internal class Repository<TEntity>(AppDbContext context) : IRepository<TEntity> 
         return await _entities.SingleOrDefaultAsync(predicate);
     }
 
-    public async Task AddAsync(TEntity entity)
+    public void Add(TEntity entity)
     {
-        await _entities.AddAsync(entity);
+        _entities.Add(entity);
     }
 
-    public async Task AddAsync(IEnumerable<TEntity> entities)
+    public void AddRange(IEnumerable<TEntity> entities)
     {
-        await _entities.AddRangeAsync(entities);
+        _entities.AddRange(entities);
     }
 
     public void Remove(TEntity entity)
@@ -43,7 +43,7 @@ internal class Repository<TEntity>(AppDbContext context) : IRepository<TEntity> 
         _entities.Remove(entity);
     }
 
-    public void Remove(IEnumerable<TEntity> entities)
+    public void RemoveRange(IEnumerable<TEntity> entities)
     {
         _entities.RemoveRange(entities);
     }

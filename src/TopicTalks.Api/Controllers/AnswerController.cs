@@ -37,7 +37,7 @@ public class AnswerController(IAnswerService answerService) : ApiController
     [HttpPost]
     public async Task<IActionResult> Create(AnswerCreateDto dto)
     {
-        var answerDto = await _answerService.Create(dto, User.GetUserId());
+        var answerDto = await _answerService.CreateAsync(dto, User.GetUserId());
 
         return !answerDto.IsError
             ? Ok(answerDto.Value)

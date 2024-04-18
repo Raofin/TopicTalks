@@ -18,7 +18,7 @@ public class AccountController(IAccountService accountService, IExcelService exc
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegistrationRequest request)
     {
-        var registration = await _userService.Register(request);
+        var registration = await _userService.RegisterAsync(request);
 
         return registration.IsError switch 
         {
@@ -33,7 +33,7 @@ public class AccountController(IAccountService accountService, IExcelService exc
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
-        var login = await _userService.Login(request);
+        var login = await _userService.LoginAsync(request);
 
         return login.IsError switch 
         {
@@ -47,7 +47,7 @@ public class AccountController(IAccountService accountService, IExcelService exc
     [HttpPatch("password")]
     public async Task<IActionResult> ChangePassword(PasswordChangeRequest request)
     {
-        var passwordChange = await _userService.ChangePassword(User.GetUserId(), request);
+        var passwordChange = await _userService.ChangePasswordAsync(User.GetUserId(), request);
 
         return passwordChange.IsError switch {
             false => Ok("Password was successfully updated."),
@@ -74,7 +74,7 @@ public class AccountController(IAccountService accountService, IExcelService exc
     [HttpGet("excel/users")]
     public async Task<IActionResult> GetExcel()
     {
-        var excelFile = await _excelService.UserListExcelFile();
+        var excelFile = await _excelService.GenerateUserListExcelAsync();
 
         return File(excelFile.Bytes, excelFile.ContentType, excelFile.Name);
     }
@@ -84,12 +84,12 @@ public class AccountController(IAccountService accountService, IExcelService exc
     {
         if (verify is null)
         {
-            await _userService.SendOtp(User.GetEmail());
+            await _userService.SendOtpAsync(User.GetEmail());
 
             return Ok("Otp was sent successfully.");
         }
 
-        var verification = await _userService.VerifyOtp(User.GetEmail(), verify.Code);
+        var verification = await _userService.VerifyOtpAsync(User.GetEmail(), verify.Code);
 
         return verification.IsError 
             ? BadRequest("Invalid Otp.") 
