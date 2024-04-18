@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
-using TopicTalks.Application.Common;
-using TopicTalks.Domain.Enums;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -14,6 +9,12 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using TopicTalks.Infrastructure.Persistence;
+using TopicTalks.Infrastructure.Services.Email;
+using TopicTalks.Domain.Enums;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using System.Text;
+using TopicTalks.Infrastructure.Services.Token;
 
 namespace TopicTalks.Infrastructure;
 
@@ -22,11 +23,11 @@ public static class AppConfigurations
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .Configure<AppSettings>(configuration)
             .AddHttpContextAccessor()
             .AddFluentValidationAutoValidation()
             .AddFluentValidationClientsideAdapters()
             .AddValidatorsFromAssemblyContaining(typeof(Dependencies))
+            .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
             .AddAuthorization()
             .AddAuthentication(configuration)
             .AddCorsConfiguration()
@@ -54,11 +55,9 @@ public static class AppConfigurations
 
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionStrings = new ConnectionStrings();
-        configuration.Bind(nameof(ConnectionStrings), connectionStrings);
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(connectionStrings.DefaultConnection));
+        services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
         return services;
     }

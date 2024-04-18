@@ -1,16 +1,18 @@
 ﻿using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TopicTalks.Api.Attributes;
+using TopicTalks.Application.Attributes;
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
+using TopicTalks.Application.Services;
 
 namespace TopicTalks.Api.Controllers;
 
-public class AccountController(IUserService userService) : ApiController
+public class AccountController(IAccountService accountService, IExcelService excelService) : ApiController
 {
-    private readonly IUserService _userService = userService;
+    private readonly IAccountService _userService = accountService;
+    private readonly IExcelService _excelService = excelService;
 
     [AllowAnonymous]
     [HttpPost("register")]
@@ -72,7 +74,7 @@ public class AccountController(IUserService userService) : ApiController
     [HttpGet("excel/users")]
     public async Task<IActionResult> GetExcel()
     {
-        var excelFile = await _userService.UserListExcelFile();
+        var excelFile = await _excelService.UserListExcelFile();
 
         return File(excelFile.Bytes, excelFile.ContentType, excelFile.Name);
     }

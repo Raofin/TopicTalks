@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TopicTalks.Domain;
-using TopicTalks.Domain.Interfaces;
+using TopicTalks.Domain.Interfaces.Repositories;
 
 namespace TopicTalks.Infrastructure.Persistence;
 

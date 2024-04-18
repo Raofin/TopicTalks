@@ -27,6 +27,8 @@
 @section Scripts
 {
     <script>
+        window.history.replaceState(null, '', window.location.pathname);
+
         var lastSentTime = 0;
 
         function resendCode() {

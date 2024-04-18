@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using TopicTalks.Domain.Interfaces;
+using TopicTalks.Domain.Interfaces.Repositories;
 
 namespace TopicTalks.Domain;
 

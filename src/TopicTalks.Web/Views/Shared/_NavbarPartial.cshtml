@@ -2,6 +2,10 @@
 @using TopicTalks.Web.Common
 @using TopicTalks.Web.Extensions
 
+@{
+    var y = Context.User;
+    var x = Context.UserRole();
+}
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="padding: 20px 100px;">
     <div class="container-fluid">
         <a asp-controller="Home" asp-action="Dashboard" class="navbar-brand logo-container">

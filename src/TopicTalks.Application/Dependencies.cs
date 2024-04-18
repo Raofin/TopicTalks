@@ -1,14 +1,7 @@
-﻿using DinkToPdf.Contracts;
-using DinkToPdf;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using TopicTalks.Application.BackgroundServices;
 using TopicTalks.Application.Interfaces;
 using TopicTalks.Application.Services;
-using TopicTalks.Application.Services.Pdf;
-using TopicTalks.Application.Interfaces.Pdf;
-using TopicTalks.Application.Interfaces.Excel;
-using TopicTalks.Application.Services.Excel;
 
 namespace TopicTalks.Application;
 
@@ -16,19 +9,11 @@ public static class Dependencies
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddSingleton<IPasswordHasher<IdentityUser>, PasswordHasher<IdentityUser>>();
-        services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
-        services.AddSingleton<IExcelExportService, ExcelExportService>();
-
-        services.AddScoped<IJwtService, JwtService>();
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IPasswordService, PasswordService>();
+        services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<IAnswerService, AnswerService>();
-        services.AddScoped<IEmailService, EmailService>();
-
-        services.AddTransient<IPdfGeneratorService, PdfGeneratorService>();
-        services.AddTransient<IPdfService, PdfService>();
+        services.AddScoped<IPdfService, PdfService>();
+        services.AddScoped<IExcelService, ExcelService>();
 
         services.AddHostedService<OtpCleanupService>();
 

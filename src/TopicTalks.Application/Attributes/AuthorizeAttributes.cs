@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using TopicTalks.Domain.Enums;
 
-namespace TopicTalks.Api.Attributes;
+namespace TopicTalks.Application.Attributes;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class AuthorizeStudentAttribute : AuthorizeAttribute

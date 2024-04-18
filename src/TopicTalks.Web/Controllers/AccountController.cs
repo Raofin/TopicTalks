@@ -9,13 +9,11 @@ using TopicTalks.Web.ViewModels;
 
 namespace TopicTalks.Web.Controllers;
 
-[Authorize]
 public class AccountController(IAuthService authService, IHttpService httpService) : Controller
 {
     private readonly IAuthService _authService = authService;
     private readonly IHttpService _httpService = httpService;
 
-    [AllowAnonymous]
     [RedirectIfAuthenticated]
     [HttpGet("login")]
     public IActionResult Login()
@@ -64,6 +62,7 @@ public class AccountController(IAuthService authService, IHttpService httpServic
         return new StatusCodeResult((int)response.StatusCode);
     }
 
+    [Authorize]
     [HttpGet("profile")]
     public async Task<IActionResult> Profile()
     {
@@ -129,8 +128,13 @@ public class AccountController(IAuthService authService, IHttpService httpServic
 
     [Authorize]
     [HttpGet("verify")]
-    public IActionResult Verify()
+    public async Task<IActionResult> Verify(bool otpSent = false)
     {
+        if (!otpSent)
+        {
+            await _httpService.Client.PostAsync("api/account/verify", null);
+        }
+
         return View();
     }
 

@@ -141,9 +141,8 @@
                     type: 'POST',
                     data: $(form).serialize(),
                     success: function (response) {
-                        $.post('/verify');
                         toastMessageNext("Registration Successful! Verification code has been sent to your email address.", ToastType.Success);
-                        window.location.href = '/verify';
+                        window.location.href = '/verify?otpSent=true';
                     },
                     error: function (xhr) {
                         if (xhr.status == 409) {

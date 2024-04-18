@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using TopicTalks.Domain.Interfaces;
+using TopicTalks.Domain.Interfaces.Repositories;
 
 namespace TopicTalks.Infrastructure.Persistence.Repositories;
 

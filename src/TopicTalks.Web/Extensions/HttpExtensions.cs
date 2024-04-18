@@ -51,6 +51,8 @@ public static class HttpExtensions
 
     public static List<RoleType> UserRole(this HttpContext httpContext)
     {
+        var x = httpContext.User.FindAll(ClaimTypes.Role);
+
         return httpContext.User
             .FindAll(ClaimTypes.Role)
             .Select(c => Enum.Parse<RoleType>(c.Value))
