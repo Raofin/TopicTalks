@@ -4,8 +4,7 @@ namespace TopicTalks.Application.Dtos;
 
 public record LoginRequest(
     string Email,
-    string Password,
-    RoleType Role
+    string Password
 );
 
 public record AuthenticationResponse(

@@ -30,8 +30,6 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
 
         await _unitOfWork.Answer.AddAsync(answer);
         await _unitOfWork.CommitAsync();
-
-        // explicitly loading the User navigation property
         await _unitOfWork.Entry(answer).Reference(a => a.User).LoadAsync();
 
         return answer.ToDto();

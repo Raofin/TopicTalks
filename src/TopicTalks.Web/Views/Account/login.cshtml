@@ -1,5 +1,4 @@
-﻿@using TopicTalks.Web.Common
-@model TopicTalks.Web.ViewModels.LoginViewModel
+﻿@model TopicTalks.Web.ViewModels.LoginViewModel
 
 <div class="container mt-5">
     <div class="container-div" style="max-width: 430px;">
@@ -16,17 +15,6 @@
                 <label asp-for="Password">Password</label>
                 <input asp-for="Password" type="password" name="password" class="form-control" placeholder="Enter your password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-
-            <div id="role" class="form-group mb-2">
-                <label asp-for="Role">Role</label>
-                <select asp-for="Role" name="role" class="form-control">
-                    <option value="" selected disabled>Select a role...</option>
-                    @foreach (var role in Enum.GetValues(typeof(RoleType)))
-                    {
-                        <option value="@role">@role</option>
-                    }
-                </select>
             </div>
 
             <div class="text-center pt-2">

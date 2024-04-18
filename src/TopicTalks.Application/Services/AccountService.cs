@@ -61,7 +61,7 @@ internal class AccountService(
 
     public async Task<ErrorOr<AuthenticationResponse>> Login(LoginRequest request)
     {
-        var user = await _unitOfWork.User.GetWithDetailsAsync(request.Email, (long)request.Role);
+        var user = await _unitOfWork.User.GetWithDetailsAsync(request.Email);
 
         if (user == null)
         {

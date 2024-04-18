@@ -30,9 +30,9 @@ public class HomeController(IHttpService httpService) : Controller
     {
         var response = await _httpService.Client.GetAsync("api/question/currentUser/questions");
 
-        var questions = JsonConvert.DeserializeObject<List<QuestionViewModel>>(response.ToJson())!;
+        var questions = JsonConvert.DeserializeObject<List<QuestionViewModel>>(response.ToJson());
 
-        return View(questions);
+        return View(questions ?? []);
     }
 
     [AuthorizeTeacher]
@@ -41,9 +41,9 @@ public class HomeController(IHttpService httpService) : Controller
     {
         var response = await _httpService.Client.GetAsync("api/question/currentUser/responses");
 
-        var answers = JsonConvert.DeserializeObject<List<QuestionViewModel>>(response.ToJson())!;
+        var answers = JsonConvert.DeserializeObject<List<QuestionViewModel>>(response.ToJson());
 
-        return View(answers);
+        return View(answers ?? []);
     }
 
     [HttpGet("question/{questionId}")]

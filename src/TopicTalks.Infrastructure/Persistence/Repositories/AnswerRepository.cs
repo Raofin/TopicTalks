@@ -55,7 +55,7 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
     {
         var hasTeachersAnswer = await _dbContext.Answers
                 .Where(a => a.QuestionId == questionId
-                    && a.User != null 
+                    && a.User != null
                     && a.User.UserRoles.Any(
                         ur => ur.Role.RoleName == nameof(RoleType.Teacher)))
                 .AnyAsync();
@@ -65,10 +65,9 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
 
     public async Task<bool> IsQuestionOrParentExists(long questionId, long? parentAnswerId)
     {
-        var isQuestionOrParentExists = await _dbContext.Answers
-            .AnyAsync(a => a.QuestionId == questionId
-                           || (!parentAnswerId.HasValue || parentAnswerId == 0 || a.AnswerId == parentAnswerId));
+        var answerOrParentExists = await _dbContext.Answers.AnyAsync(
+            a => a.AnswerId == parentAnswerId || !parentAnswerId.HasValue || parentAnswerId == 0);
 
-        return isQuestionOrParentExists;
+        return answerOrParentExists || await _dbContext.Questions.AnyAsync(q => q.QuestionId == questionId);
     }
 }

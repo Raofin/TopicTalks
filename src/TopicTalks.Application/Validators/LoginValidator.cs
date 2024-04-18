@@ -13,9 +13,5 @@ public class LoginValidator : AbstractValidator<LoginRequest>
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required.");
-
-        RuleFor(x => x.Role)
-            .NotEmpty().WithMessage("Role is required.")
-            .IsInEnum().WithMessage("Invalid Role.");
     }
 }

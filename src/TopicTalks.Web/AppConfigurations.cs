@@ -87,8 +87,6 @@ public static class AppConfigurations
                 options.LogoutPath = "/logout";
                 options.AccessDeniedPath = "/401";
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
-
-                // CSRF attack prevention
                 options.Cookie.Name = "TTs.Cookies";
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;

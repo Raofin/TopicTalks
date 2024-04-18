@@ -4,8 +4,7 @@ namespace TopicTalks.Web.ViewModels;
 
 public record LoginViewModel(
     string Email,
-    string Password,
-    RoleType Role
+    string Password
 );
 
 public record AuthenticationResponse(
