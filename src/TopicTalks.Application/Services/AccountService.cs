@@ -156,7 +156,7 @@ internal class AccountService(
         _unitOfWork.Otp.Add(new Otp {
             Email = email,
             Code = code,
-            ExpiresAt = DateTime.Now.AddMinutes(5),
+            ExpiresAt = DateTime.UtcNow.AddMinutes(5),
         });
 
         await _unitOfWork.CommitAsync();

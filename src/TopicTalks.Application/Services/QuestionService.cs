@@ -124,7 +124,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
 
         question.Topic = dto.Topic;
         question.Explanation = dto.Explanation;
-        question.UpdatedAt = DateTime.Now;
+        question.UpdatedAt = DateTime.UtcNow;
 
         await _unitOfWork.CommitAsync();
 

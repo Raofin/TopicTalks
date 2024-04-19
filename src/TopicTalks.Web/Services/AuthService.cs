@@ -35,7 +35,7 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor, IOptions<Ap
                     issuer: "https://rawfin.net",
                     audience: "https://rawfin.net",
                     claims: claims,
-                    expires: DateTime.Now.AddMinutes(30),
+                    expires: DateTime.UtcNow.AddMinutes(30),
                     signingCredentials: credentials
                 );
 
@@ -57,7 +57,7 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor, IOptions<Ap
             var properties = new AuthenticationProperties {
                 AllowRefresh = true,
                 IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.Now.AddDays(7)
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
             };
 
             await SignOutAsync();

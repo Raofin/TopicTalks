@@ -42,7 +42,7 @@ internal class PdfGenerator(IConverter converter, IWebHostEnvironment hostEnviro
                         FontSize = 7,
                         Line = false,
                         Right = "Page [page] of [toPage]",
-                        Center = "Printed on " + DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt")
+                        Center = "Printed on " + DateTime.UtcNow.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 }
             }

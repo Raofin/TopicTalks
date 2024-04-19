@@ -14,7 +14,7 @@ public class AnswerConfigurations : IEntityTypeConfiguration<Answer>
 
         // Property Configuration
         entity.Property(e => e.CreatedAt)
-            .HasDefaultValueSql("(getdate())")
+            .HasDefaultValueSql("(getutcdate())")
             .HasColumnType("datetime");
 
         entity.Property(e => e.Explanation)

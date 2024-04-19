@@ -13,7 +13,7 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
 
         // Property Configuration
         entity.Property(e => e.CreatedAt)
-            .HasDefaultValueSql("(getdate())")
+            .HasDefaultValueSql("(getutcdate())")
             .HasColumnType("datetime");
 
         entity.Property(e => e.Email)

@@ -22,6 +22,6 @@ public class OtpConfig : IEntityTypeConfiguration<Otp>
             .HasMaxLength(6);
 
         entity.Property(o => o.ExpiresAt)
-            .HasDefaultValueSql("DATEADD(MINUTE, 5, GETDATE())");
+            .HasDefaultValueSql("dateadd(minute, 5, getutcdate())");
     }
 }
