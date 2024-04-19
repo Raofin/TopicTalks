@@ -7,7 +7,7 @@
     var authorEmail = Model.UserInfo?.Email ?? "Delete User";
     var authorId = Model.UserInfo?.UserId.ToString() ?? "0";
 
-    void RenderAnswers(List<AnswerWithRepliesViewModel> answers, int marginLeft = 0)
+    async Task RenderAnswers(List<AnswerWithRepliesViewModel> answers, int marginLeft = 0)
     {
         foreach (var answer in answers)
         {
@@ -16,7 +16,7 @@
 
             <div id="answer-@(answer.AnswerId) parent-@(answer.ParentAnswerId)" class="rounded border p-3 mb-3" style="margin-left: @(marginLeft)px;">
                 <div class="d-flex justify-content-between">
-                    <p><strong>@(answerAuthorEmail)</strong> on @($"{answer.CreatedAt:MMM dd, yyyy} ({answer.CreatedAt.TimeAgo()})")</p>
+                    <p><strong>@(answerAuthorEmail)</strong> on <local-time utc-datetime="@answer.CreatedAt" format="2" time-ago="true"></local-time></p>
                     <div class="d-flex gap-2">
                         @if (Context.UserRole().Contains(RoleType.Moderator) || answerAuthorId == Context.UserId())
                         {
@@ -36,7 +36,7 @@
 
             @if (answer?.Answers != null)
             {
-                RenderAnswers(answer.Answers, marginLeft + 50);
+                await RenderAnswers(answer.Answers, marginLeft + 50);
             }
             else
             {
@@ -50,13 +50,17 @@
     <div id="question-details" class="q-list-container">
         <div id="question-container" question="@Model.QuestionId">
             <div class="d-flex justify-content-between">
-                @{
-                    var edited = "";
-                    if (Model.UpdatedAt != null)
-                        edited = $"Edited at {Model.UpdatedAt?.ToString("MMM dd, yyyy")}";
-                }
-                <p><strong>@(authorEmail)</strong> <i id="edited-at">@edited</i></p>
-                <p>@Model.CreatedAt.ToString("MMM dd, yyyy | hh:mm tt") (@Model.CreatedAt.TimeAgo())</p>
+                <p>
+                    <strong>@(authorEmail)</strong><i id="edited-at">
+                    @{
+                        if (Model.UpdatedAt is not null)
+                        {
+                            <span>Edited <local-time utc-datetime="@Model.UpdatedAt.Value" format="" time-ago="true"></local-time></span>
+                        }
+                    }
+                    </i>
+                </p>
+                <p><local-time utc-datetime="@Model.CreatedAt" format="3" time-ago="true"></local-time></p>
             </div>
             <div class="form-group row">
                 <p id="explanation">@Model.Explanation</p>
@@ -82,18 +86,18 @@
             </div>
         </div>
 
-        <hr />
+        <hr/>
 
         <div id="answer-container">
             @{
-                RenderAnswers(Model.Answers);
+                await RenderAnswers(Model.Answers);
             }
         </div>
         @if (!Context.UserRole().Contains(RoleType.Moderator))
         {
             <div id="answer-input" class="col-sm-9 w-100">
                 <form id="answer-form" asp-action="PostAnswer" asp-controller="Answer" method="post">
-                    <input type="hidden" name="questionId" value="@(Model.QuestionId)" />
+                    <input type="hidden" name="questionId" value="@(Model.QuestionId)"/>
                     <div class="text-center w-100">
                         <textarea id="reply-text" class="form-control mb-2" rows="3" placeholder="Write your answer here" name="explanation"></textarea>
                     </div>
@@ -164,7 +168,7 @@
                             success: (response) => {
                                 $("#explanation").text(response.explanation)
                                 $("#topics").html(formatTopics(response.topic))
-                                $("#edited-at").text("Edited at " + formatDate(new Date()))
+                                $("#edited-at").text(" Edited (0 second ago)")
                                 toastMessage("Edit Successful!", ToastType.Success)
                                 closeReplyInput()
                             },

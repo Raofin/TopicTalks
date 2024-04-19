@@ -11,7 +11,7 @@
             <div id="question-@item.QuestionId" class="q-list-container">
                 <div class="d-flex justify-content-between">
                     <p><strong>@(item.UserInfo != null ? item.UserInfo.Email : "Delete User")</strong></p>
-                    <p>@($"{item.CreatedAt:MMM dd, yyyy | hh:mm tt} ({item.CreatedAt.TimeAgo()})")</p>
+                    <p><local-time utc-datetime="@item.CreatedAt" format="3" time-ago="true"></local-time></p>
                 </div>
 
                 <div class="form-group row">

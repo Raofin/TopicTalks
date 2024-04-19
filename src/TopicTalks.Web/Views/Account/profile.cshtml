@@ -1,5 +1,4 @@
-﻿@using TopicTalks.Web.Extensions
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model TopicTalks.Web.ViewModels.UserViewModel
 
 <div class="container mt-5">
@@ -28,7 +27,7 @@
                 }
                 <tr>
                     <td><label><b>Joined On</b></label></td>
-                    <td>@Model.CreatedAt.ToString("dd/MM/yy") (@Model.CreatedAt.TimeAgo())</td>
+                    <td><local-time utc-datetime="@Model.CreatedAt" format="1" time-ago="true"></local-time></td>
                 </tr>
                 <tr>
                     <td><label><b>Status</b></label></td>

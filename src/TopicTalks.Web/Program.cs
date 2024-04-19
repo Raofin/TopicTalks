@@ -15,6 +15,7 @@ builder.Services.AddMvc();
 builder.Services.AddTransient<ITokenCacheService, TokenCacheService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IHttpService, HttpService>();
+builder.Services.AddScoped<ITimeZoneService, TimeZoneService>();
 
 var app = builder.Build();
 

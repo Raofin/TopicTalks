@@ -4,45 +4,28 @@ public static class DateTimeExtensions
 {
     public static string TimeAgo(this DateTime datetime)
     {
-        const int SECOND = 1;
-        const int MINUTE = 60 * SECOND;
-        const int HOUR = 60 * MINUTE;
-        const int DAY = 24 * HOUR;
-        const int MONTH = 30 * DAY;
+        const int second = 1;
+        const int minute = 60 * second;
+        const int hour = 60 * minute;
+        const int day = 24 * hour;
+        const int month = 30 * day;
 
-        var ts = new TimeSpan(DateTime.Now.Ticks - datetime.Ticks);
-        double delta = Math.Abs(ts.TotalSeconds);
+        var ts = new TimeSpan(DateTime.UtcNow.Ticks - datetime.Ticks);
+        var delta = Math.Abs(ts.TotalSeconds);
+        var years = Convert.ToInt32(Math.Floor((double)ts.Days / 365));
+        var months = Convert.ToInt32(Math.Floor((double)ts.Days / 30));
 
-        if (delta < 1 * MINUTE)
-            return ts.Seconds == 1 ? "one second ago" : ts.Seconds + " seconds ago";
-
-        if (delta < 2 * MINUTE)
-            return "a minute ago";
-
-        if (delta < 45 * MINUTE)
-            return ts.Minutes + " minutes ago";
-
-        if (delta < 90 * MINUTE)
-            return "an hour ago";
-
-        if (delta < 24 * HOUR)
-            return ts.Hours + " hours ago";
-
-        if (delta < 48 * HOUR)
-            return "yesterday";
-
-        if (delta < 30 * DAY)
-            return ts.Days + " days ago";
-
-        if (delta < 12 * MONTH)
+        return delta switch
         {
-            int months = Convert.ToInt32(Math.Floor((double)ts.Days / 30));
-            return months <= 1 ? "one month ago" : months + " months ago";
-        }
-        else
-        {
-            int years = Convert.ToInt32(Math.Floor((double)ts.Days / 365));
-            return years <= 1 ? "one year ago" : years + " years ago";
-        }
+            < 1 * minute => ts.Seconds == 1 ? "one second ago" : ts.Seconds + " seconds ago",
+            < 2 * minute => "a minute ago",
+            < 45 * minute => ts.Minutes + " minutes ago",
+            < 90 * minute => "an hour ago",
+            < 24 * hour => ts.Hours + " hours ago",
+            < 48 * hour => "yesterday",
+            < 30 * day => ts.Days + " days ago",
+            < 12 * month => months <= 1 ? "one month ago" : months + " months ago",
+            _ => years <= 1 ? "one year ago" : years + " years ago"
+        };
     }
 }
