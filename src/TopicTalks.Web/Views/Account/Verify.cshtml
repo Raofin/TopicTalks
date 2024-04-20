@@ -40,7 +40,7 @@
                 toastMessage("Please wait " + secondsLeft + " seconds before sending the next code.");
             } else {
                 $.ajax({
-                    url: '/verify',
+                    url: '@Url.Action("Verify", "Account")',
                     type: 'POST',
                     success: () => {
                         toastMessage("Verification code has been sent to your email address. Please use it within 5 minutes.", ToastType.Primary);
@@ -72,12 +72,12 @@
                 }).get().join('');
 
                 $.ajax({
-                    url: '/verify',
+                    url: '@Url.Action("Verify", "Account")',
                     type: 'POST',
                     data: { Code: code },
                     success: function (response) {
                         toastMessageNext("Verification Successful!", ToastType.Success);
-                        window.location.href = '/';
+                        window.location.href = '@Url.Action("Dashboard", "Home")';
                     },
                     error: function (xhr) {
                         if (xhr.status === 400) {

@@ -30,7 +30,7 @@
                         }
                     </div>
                     <div>
-                        <a href="/question/@question.QuestionId" class="btn btn-primary">Answers</a>
+                        <a asp-action="QuestionDetails" class="btn btn-primary">Answers</a>
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
     <script>
         function searchTag(searchText) {
             $('#questionContainer').empty();
-            window.location.href = '/?searchQuery=' + searchText;
+            window.location.href = '@Url.Action("Dashboard", "Home")?searchQuery=' + searchText;
         }
     </script>
 }

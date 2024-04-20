@@ -137,12 +137,12 @@
             },
             submitHandler: function (form) {
                 $.ajax({
-                    url: '/register',
+                    url: '@Url.Action("Register", "Account")',
                     type: 'POST',
                     data: $(form).serialize(),
                     success: function (response) {
                         toastMessageNext("Registration Successful! Verification code has been sent to your email address.", ToastType.Success);
-                        window.location.href = '/verify?otpSent=true';
+                        window.location.href = '@Url.Action("Verify", "Account", new { otpSent = true })';
                     },
                     error: function (xhr) {
                         if (xhr.status == 409) {

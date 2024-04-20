@@ -26,7 +26,7 @@
         function fetchQuestions(searchText) {
             $('#question-container').addClass('loading');
             $.ajax({
-                url: '/question/LoadQuestionList?searchQuery=' + searchText,
+                url: '@Url.Action("LoadQuestionList", "Home")?searchQuery=' + searchText,
                 method: 'GET',
                 success: function (questions) {
                     $('#question-container').empty();

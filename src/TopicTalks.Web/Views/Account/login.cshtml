@@ -65,7 +65,7 @@
             },
             submitHandler: function (form) {
                 $.ajax({
-                    url: '/login',
+                    url: '@Url.Action("Login", "Account")',
                     type: 'POST',
                     data: $(form).serialize(),
                     success: function (response) {
@@ -74,7 +74,7 @@
                         if (returnUrl && returnUrl.startsWith('/')) {
                             window.location.href = returnUrl;
                         } else {
-                            window.location.href = '/';
+                            window.location.href = '@Url.Action("Dashboard", "Home")';
                         }
                     },
                     error: function (xhr) {

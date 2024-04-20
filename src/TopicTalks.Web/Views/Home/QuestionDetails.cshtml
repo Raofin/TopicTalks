@@ -81,7 +81,9 @@
                     {
                         <span id="edit-question" class="link-text text-success">Edit</span>
                     }
-                    <a class="link-text text-dark" asp-controller="Question" asp-action="GetPdf" asp-route-questionId="@Model.QuestionId" target="_blank"><i class='bx bxs-printer bx-sm'></i></a>
+                    <a class="link-text text-dark" asp-controller="Question" asp-action="GetPdf" asp-route-questionId="@Model.QuestionId" target="_blank">
+                        <i class="bx bxs-printer bx-sm"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -155,7 +157,7 @@
                     },
                     submitHandler: (form) => {
                         $.ajax({
-                            url: '/question',
+                            url: '@Url.Action("UpdateQuestion", "Question")',
                             type: 'PATCH',
                             data: $(form).serialize(),
                             success: (response) => {
@@ -183,7 +185,7 @@
 
         function searchTag(searchText) {
             $('#questionContainer').empty();
-            window.location.href = '/?searchQuery=' + searchText;
+            window.location.href = '@Url.Action("Dashboard", "Home")?searchQuery=' + searchText;
         }
     </script>
 }

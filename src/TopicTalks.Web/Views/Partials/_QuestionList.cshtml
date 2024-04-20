@@ -29,7 +29,7 @@ else
                     }
                 </div>
                 <div>
-                    <a href="/question/@item.QuestionId" class="btn btn-primary">Answers</a>
+                    <a href="@Url.ActionLink("QuestionDetails", "Home", new { questionId = item.QuestionId })" class="btn btn-primary">Answers</a>
                 </div>
             </div>
         </div>
