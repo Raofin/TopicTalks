@@ -5,27 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>TopicTalks</title>
-    @await Html.PartialAsync("_CSSPartial")
+    @await Html.PartialAsync("_Styles")
 </head>
 
 <body>
-    <header>
-        @await Html.PartialAsync("_NavbarPartial")
-    </header>
+    @await Html.PartialAsync("_Header")
+
     <div class="container">
         <main role="main">
             @RenderBody()
-            @await Html.PartialAsync("_ToastMessage")
+            @await Html.PartialAsync("~/Views/Partials/_ToastMessage.cshtml")
         </main>
     </div>
 
-    <footer class="footer border-top">
-        <div class="container">
-            &copy; 2024 <a href="https://rawfin.net">Rawfin</a>. All rights reserved.
-        </div>
-    </footer>
+    @await Html.PartialAsync("_Footer")
+    @await Html.PartialAsync("_Scripts")
 
-    @await Html.PartialAsync("_JSPartial")
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -6,11 +6,11 @@ body {
   margin: 0;
   padding-bottom: 20px;
   min-height: 100vh;
-  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif
 }
 
 main {
-  margin-bottom: 85px;
+  margin-bottom: 85px
 }
 
 body::before {
@@ -23,11 +23,11 @@ body::before {
   background-repeat: unset;
   width: 100%;
   height: 100%;
-  content: '';
+  content: ''
 }
 
 label {
-  margin-left: 4px;
+  margin-left: 4px
 }
 
 .footer {
@@ -37,93 +37,93 @@ label {
   backdrop-filter: blur(3px);
   padding: 20px 10%;
   width: 100%;
-  text-align: center;
+  text-align: center
 }
 
 .container-div {
   backdrop-filter: blur(8px);
   margin: 0 auto 70px;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 30px 0px;
+  box-shadow: rgba(99, 99, 99, .2) 0 2px 30px 0;
   border-radius: 8px !important;
   background-color: rgba(255, 255, 255, 50%) !important;
-  padding: 50px;
+  padding: 50px
 }
 
   .container-div table {
-    --bs-table-bg: none;
+    --bs-table-bg: none
   }
 
 .navbar {
   backdrop-filter: blur(8px);
-  background-color: rgba(255, 255, 255, 50%) !important;
+  background-color: rgba(255, 255, 255, 50%) !important
 }
 
 .nav-text {
-  font-weight: 600;
+  font-weight: 600
 }
 
 .nav-link {
-  transition: .4s ease;
+  transition: .4s ease
 }
 
   .nav-link:hover {
-    color: #ff4653 !important;
+    color: #ff4653 !important
   }
 
 .logo {
   padding-right: 5px;
   max-width: 40px;
-  max-height: 35px;
+  max-height: 35px
 }
 
 .logo-container {
   display: flex;
   align-items: center;
-  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, .2));
   margin-right: 20px;
   font-weight: bold;
-  text-decoration: none;
+  text-decoration: none
 }
 
 .logo-text {
   margin-bottom: 2px;
   color: #ff4653;
   font-size: 30px;
-  font-family: "Tilt Warp", sans-serif;
+  font-family: "Tilt Warp", sans-serif
 }
 
   .logo-text span {
-    color: #30325e;
+    color: #30325e
   }
 
 .role {
-  filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, .2));
   margin: 3px 3px 5px;
   border-radius: 14px;
   background: #78e4a4d6;
   padding: 5px 12px !important;
-  font-weight: 500;
+  font-weight: 500
 }
 
 #login label {
-  padding-left: 3px;
+  padding-left: 3px
 }
 
 .title {
-  font-family: "Tilt Warp", sans-serif;
+  font-family: "Tilt Warp", sans-serif
 }
 
 .reg-table td {
   padding-bottom: 10px;
-  padding-left: 10px;
+  padding-left: 10px
 }
 
 .reg-table .form-control {
-  width: 250px;
+  width: 250px
 }
 
 a {
-  text-decoration: none;
+  text-decoration: none
 }
 
 .topic > p {
@@ -133,79 +133,86 @@ a {
   border-radius: 6px;
   background: #ddd;
   padding: 2px 9px;
-  font-size: 15px;
+  font-size: 15px
 }
-
 
 .q-list-container {
   backdrop-filter: blur(8px);
   margin: 0 auto 30px;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 30px 0px;
+  box-shadow: rgba(99, 99, 99, .2) 0 2px 30px 0;
   border-radius: 8px !important;
   background-color: rgba(255, 255, 255, 50%) !important;
   padding: 25px;
-  max-width: 800px;
+  max-width: 800px
 }
 
   .q-list-container p {
-    margin-bottom: 5px;
+    margin-bottom: 5px
   }
 
 .link-text {
   cursor: pointer;
-  color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
+  color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1))
 }
 
 .error {
-  border-color: #DC3545;
-  color: #DC3545;
+  border-color: #dc3545;
+  color: #dc3545
 }
 
   .error:focus {
     outline: 0;
-    box-shadow: 0 0 0 0.25rem rgba(255, 76, 50, 0.30);
-    border-color: darkred;
+    box-shadow: 0 0 0 .25rem rgba(255, 76, 50, .3);
+    border-color: #8b0000;
     background-color: var(--bs-body-bg);
-    color: var(--bs-body-color);
+    color: var(--bs-body-color)
   }
 
 .student-details {
   border: var(--bs-border-width) solid var(--bs-border-color);
-  border-radius: var(--bs-border-radius);
+  border-radius: var(--bs-border-radius)
 }
 
 .topic p {
-  transition: background 0.3s ease;
+  transition: background .3s ease;
   cursor: pointer;
   color: inherit;
-  text-decoration: none;
+  text-decoration: none
 }
 
   .topic p:hover {
-    background: #ededed;
+    background: #ededed
   }
 
-
 .otp-code input {
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  margin: 0 .25rem;
+  outline: 0;
+  border: 1px solid transparent;
+  border-radius: .375rem;
+  background-color: #ebebeb;
+  padding: 1rem;
   width: 3.5rem;
   height: 3.5rem;
-  text-align: center;
-  font-size: 1.5rem;
+  color: #1f2937;
   font-weight: 800;
-  color: #1F2937;
-  background-color: #ebebeb;
-  border: 1px solid transparent;
-  border-radius: 0.375rem;
-  padding: 1rem;
-  outline: none;
-  margin: 0 0.25rem;
-  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+  font-size: 1.5rem;
+  text-align: center
 }
 
   .otp-code input:focus {
-    color: var(--bs-body-color);
-    background-color: var(--bs-body-bg);
-    border-color: #86b7fe;
     outline: 0;
-    box-shadow: 0 0 0 .25rem rgba(13,110,253,.25)
+    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+    border-color: #86b7fe;
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color)
+  }
+
+#question-container {
+  transform: scale(1);
+  transition: transform .3s ease
+}
+
+  #question-container.loading {
+    transform: scale(.95)
   }

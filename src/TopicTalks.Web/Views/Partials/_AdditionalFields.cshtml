@@ -1,0 +1,22 @@
+﻿@model TopicTalks.Web.ViewModels.RegisterViewModel
+
+<div class="card rounded-border mb-3 student-details">
+    <div class="card-body">
+        <h5 class="text-center">Student Details</h5>
+        <div class="form-group">
+            <label asp-for="UserDetails!.Name">Name</label>
+            <input asp-for="UserDetails!.Name" class="form-control" placeholder="Enter your name" />
+            <span asp-validation-for="UserDetails!.Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="UserDetails!.InstituteName">Institute Name</label>
+            <input asp-for="UserDetails!.InstituteName" class="form-control" placeholder="Enter your institute name" />
+            <span asp-validation-for="UserDetails!.InstituteName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="UserDetails!.IdCardNumber">ID Card Number</label>
+            <input asp-for="UserDetails!.IdCardNumber" class="form-control" placeholder="Enter your ID card number" />
+            <span asp-validation-for="UserDetails!.IdCardNumber" class="text-danger"></span>
+        </div>
+    </div>
+</div>

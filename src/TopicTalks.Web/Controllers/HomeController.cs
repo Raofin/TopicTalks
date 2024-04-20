@@ -26,7 +26,7 @@ public class HomeController(IHttpService httpService) : Controller
 
     [AuthorizeStudent]
     [HttpGet("my-questions")]
-    public async Task<IActionResult> MyQuestions()
+    public async Task<IActionResult> UserQuestions()
     {
         var response = await _httpService.Client.GetAsync("api/question/currentUser/questions");
 
@@ -37,7 +37,7 @@ public class HomeController(IHttpService httpService) : Controller
 
     [AuthorizeTeacher]
     [HttpGet("my-responded-questions")]
-    public async Task<IActionResult> MyResponses()
+    public async Task<IActionResult> UserResponses()
     {
         var response = await _httpService.Client.GetAsync("api/question/currentUser/responses");
 
@@ -56,7 +56,22 @@ public class HomeController(IHttpService httpService) : Controller
         return View(question);
     }
 
-    [HttpGet("post-question")]
+    [HttpGet("question/LoadQuestionList")]
+    public async Task<IActionResult> LoadQuestionList(List<QuestionViewModel> questions, string? searchQuery)
+    {
+        if (questions.Count > 0)
+        {
+            return PartialView("~/Views/Partials/_QuestionList.cshtml", questions);
+        }
+
+        var response = await _httpService.Client.GetAsync($"api/question?searchQuery={searchQuery}");
+
+        return response.IsSuccessStatusCode
+            ? PartialView("~/Views/Partials/_QuestionList.cshtml", response.DeserializeTo<List<QuestionViewModel>>())
+            : new StatusCodeResult((int)response.StatusCode);
+    }
+
+    [HttpGet("question")]
     public IActionResult PostQuestion()
     {
         return View();

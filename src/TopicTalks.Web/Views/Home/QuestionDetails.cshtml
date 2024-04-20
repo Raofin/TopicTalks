@@ -52,12 +52,12 @@
             <div class="d-flex justify-content-between">
                 <p>
                     <strong>@(authorEmail)</strong><i id="edited-at">
-                    @{
-                        if (Model.UpdatedAt is not null)
-                        {
-                            <span>Edited <local-time utc-datetime="@Model.UpdatedAt.Value" format="" time-ago="true"></local-time></span>
+                        @{
+                            if (Model.UpdatedAt is not null)
+                            {
+                                <span>Edited <local-time utc-datetime="@Model.UpdatedAt.Value" format="" time-ago="true"></local-time></span>
+                            }
                         }
-                    }
                     </i>
                 </p>
                 <p><local-time utc-datetime="@Model.CreatedAt" format="3" time-ago="true"></local-time></p>
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <hr/>
+        <hr />
 
         <div id="answer-container">
             @{
@@ -97,7 +97,7 @@
         {
             <div id="answer-input" class="col-sm-9 w-100">
                 <form id="answer-form" asp-action="PostAnswer" asp-controller="Answer" method="post">
-                    <input type="hidden" name="questionId" value="@(Model.QuestionId)"/>
+                    <input type="hidden" name="questionId" value="@(Model.QuestionId)" />
                     <div class="text-center w-100">
                         <textarea id="reply-text" class="form-control mb-2" rows="3" placeholder="Write your answer here" name="explanation"></textarea>
                     </div>
@@ -127,8 +127,8 @@
                         <form id="reply-form" class="col-sm-9 w-100 d-flex">
                             <input type="hidden" name="questionId" value="${questionId}" />
                             <div class="text-center w-100">
-                                <input type="text" id="question-topics" class="form-control mb-1" placeholder="Write your question topics here" name="topic" />
-                                <textarea id="explanation-input" class="form-control mb-1" rows="3" placeholder="Write your reply here" name="explanation"></textarea>
+                                <input type="text" id="question-topics" class="form-control mb-1" placeholder="Write your question topics here" name="topic" value="@Model.Topic" />
+                                <textarea id="explanation-input" class="form-control mb-1" rows="3" placeholder="Write your reply here" name="explanation">@Model.Explanation</textarea>
                             </div>
                             <div class="text-center d-flex justify-content-between align-items-end" style ="width: 150px;">
                                 <div>
@@ -139,13 +139,6 @@
                             </div>
                         </form>
                     </div>`)
-
-                $.get(`/question/data/${questionId}`)
-                    .done(function (data) {
-                        $("#explanation-input").val(data.explanation)
-                        $("#question-topics").val(data.topic)
-                    })
-                    .fail(function (error) { toastMessage("Error fetching question.", ToastType.Error) })
 
                 $('#reply-form').validate({
                     rules: {

@@ -62,6 +62,12 @@ public class AccountController(IAuthService authService, IHttpService httpServic
         return new StatusCodeResult((int)response.StatusCode);
     }
 
+    [HttpGet("LoadAdditionalFields")]
+    public IActionResult LoadAdditionalFields()
+    {
+        return PartialView("~/Views/Partials/_AdditionalFields.cshtml");
+    }
+
     [Authorize]
     [HttpGet("profile")]
     public async Task<IActionResult> Profile()
@@ -89,12 +95,6 @@ public class AccountController(IAuthService authService, IHttpService httpServic
         return response.IsSuccessStatusCode
             ? Ok()
             : new StatusCodeResult((int)response.StatusCode);
-    }
-
-    [HttpGet("AdditionalFields")]
-    public IActionResult LoadAdditionalFields()
-    {
-        return PartialView("_AdditionalFields");
     }
 
     [HttpGet("logout")]

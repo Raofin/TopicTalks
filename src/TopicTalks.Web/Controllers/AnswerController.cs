@@ -22,6 +22,16 @@ public class AnswerController(IHttpService httpService) : Controller
             : new StatusCodeResult((int)response.StatusCode);
     }
 
+    [HttpGet("{answerId}")]
+    public async Task<IActionResult> GetAnswer(long answerId)
+    {
+        var response = await _httpService.Client.GetAsync($"api/answer/{answerId}");
+
+        return response.IsSuccessStatusCode
+            ? Ok(response.DeserializeTo<AnswerViewModel>())
+            : new StatusCodeResult((int)response.StatusCode);
+    }
+
     [HttpPatch]
     public async Task<IActionResult> UpdateAnswer(AnswerUpdateViewModel request)
     {
@@ -39,16 +49,6 @@ public class AnswerController(IHttpService httpService) : Controller
 
         return response.IsSuccessStatusCode
             ? Ok()
-            : new StatusCodeResult((int)response.StatusCode);
-    }
-
-    [HttpGet("{answerId}")]
-    public async Task<IActionResult> GetAnswer(long answerId)
-    {
-        var response = await _httpService.Client.GetAsync($"api/answer/{answerId}");
-
-        return response.IsSuccessStatusCode
-            ? Ok(response.DeserializeTo<AnswerViewModel>())
             : new StatusCodeResult((int)response.StatusCode);
     }
 }
