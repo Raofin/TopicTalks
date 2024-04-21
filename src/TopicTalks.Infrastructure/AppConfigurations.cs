@@ -14,6 +14,7 @@ using TopicTalks.Domain.Enums;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using System.Text;
+using TopicTalks.Infrastructure.Services.Cloud;
 using TopicTalks.Infrastructure.Services.Token;
 
 namespace TopicTalks.Infrastructure;
@@ -33,6 +34,7 @@ public static class AppConfigurations
             .AddCorsConfiguration()
             .AddDatabase(configuration)
             .AddEmailSettings(configuration)
+            .AddGoogleCloud()
             .AddDependencies()
             .AddHealthChecks();
 
@@ -163,6 +165,17 @@ public static class AppConfigurations
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+        return services;
+    }
+
+    #endregion
+
+    #region ### Google Cloud ###
+
+    private static IServiceCollection AddGoogleCloud(this IServiceCollection services)
+    {
+        services.AddSingleton(_ => new GoogleConfigurations().GetDriveService());
 
         return services;
     }

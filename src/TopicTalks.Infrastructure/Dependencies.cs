@@ -8,6 +8,7 @@ using TopicTalks.Infrastructure.Persistence.Repositories;
 using TopicTalks.Infrastructure.Services;
 using TopicTalks.Domain.Interfaces.Repositories;
 using TopicTalks.Domain.Interfaces.Core;
+using TopicTalks.Infrastructure.Services.Cloud;
 using TopicTalks.Infrastructure.Services.Email;
 using TopicTalks.Infrastructure.Services.Token;
 
@@ -25,6 +26,7 @@ internal static class Dependencies
         services.AddSingleton<IJwtGenerator, JwtGenerator>();
         services.AddSingleton<IExcelGenerator, ExcelGenerator>();
 
+        services.AddScoped<IGoogleCloud, GoogleCloud>();
         services.AddScoped<IEmailSender, EmailSender>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();
