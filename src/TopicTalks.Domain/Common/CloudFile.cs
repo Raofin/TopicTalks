@@ -1,21 +1,21 @@
 ﻿namespace TopicTalks.Domain.Common;
 
 public record CloudFile(
-    string Id,
+    string CloudFileId,
     string Name,
     string ContentType,
     long Size,
     string WebContentLink,
     string WebViewLink,
     string DirectLink,
-    DateTime CreatedTime
+    DateTime CreatedAt
 );
 
 public record CloudFileDownload(
-    string Id,
+    string CloudFileId,
     string Name,
     string ContentType,
     long Size,
     byte[] Bytes,
-    DateTime CreatedTime
+    DateTime CreatedAt
 );

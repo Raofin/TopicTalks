@@ -13,4 +13,5 @@ public class User
     public ICollection<Answer> Answers { get; set; } = new List<Answer>();
     public ICollection<Question> Questions { get; set; } = new List<Question>();
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public ICollection<Cloud> CloudFiles { get; set; } = new List<Cloud>();
 }
