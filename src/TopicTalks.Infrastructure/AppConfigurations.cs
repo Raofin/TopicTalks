@@ -8,14 +8,15 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Caching.Memory;
 using TopicTalks.Infrastructure.Persistence;
 using TopicTalks.Infrastructure.Services.Email;
+using TopicTalks.Infrastructure.Services.Cloud;
+using TopicTalks.Infrastructure.Services.Token;
 using TopicTalks.Domain.Enums;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using System.Text;
-using TopicTalks.Infrastructure.Services.Cloud;
-using TopicTalks.Infrastructure.Services.Token;
 
 namespace TopicTalks.Infrastructure;
 
@@ -25,16 +26,18 @@ public static class AppConfigurations
     {
         services
             .AddHttpContextAccessor()
+            .AddMemoryCache()
             .AddFluentValidationAutoValidation()
             .AddFluentValidationClientsideAdapters()
             .AddValidatorsFromAssemblyContaining(typeof(Dependencies))
             .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
+            .Configure<GoogleCloudSettings>(configuration.GetSection(nameof(GoogleCloudSettings)))
             .AddAuthorization()
             .AddAuthentication(configuration)
             .AddCorsConfiguration()
             .AddDatabase(configuration)
             .AddEmailSettings(configuration)
-            .AddGoogleCloud()
+            .AddGoogleCloud(configuration)
             .AddDependencies()
             .AddHealthChecks();
 
@@ -173,9 +176,17 @@ public static class AppConfigurations
 
     #region ### Google Cloud ###
 
-    private static IServiceCollection AddGoogleCloud(this IServiceCollection services)
+    private static IServiceCollection AddGoogleCloud(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton(_ => new GoogleConfigurations().GetDriveService());
+        var settings = new GoogleCloudSettings();
+        configuration.Bind(nameof(GoogleCloudSettings), settings);
+
+        services.AddSingleton(serviceProvider => {
+            var memoryCache = serviceProvider.GetRequiredService<IMemoryCache>();
+            var configs = new GoogleConfigurations(memoryCache, settings);
+
+            return configs.GetDriveService();
+        });
 
         return services;
     }

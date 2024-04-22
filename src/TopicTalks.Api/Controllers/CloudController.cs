@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TopicTalks.Infrastructure.Services.Cloud;
+using TopicTalks.Domain.Interfaces.Core;
 
 namespace TopicTalks.Api.Controllers;
 
@@ -9,47 +9,43 @@ public class CloudController(IGoogleCloud googleCloud) : ApiController
 {
     private readonly IGoogleCloud _googleCloud = googleCloud;
 
-    [HttpPost("upload")]
+    [HttpPost]
     public async Task<IActionResult> UploadFile(IFormFile file)
     {
         await using var stream = file.OpenReadStream();
-        var fileName = file.FileName;
-        var contentType = file.ContentType;
-        var fileId = await _googleCloud.UploadFileAsync(stream, fileName, contentType);
+        var fileInfo = await _googleCloud.UploadAsync(file.FileName, stream, file.ContentType);
 
-        return Ok(fileId);
+        return Ok(fileInfo);
     }
 
-    [HttpGet("url/{fileId}")]
+    [HttpGet("info/{fileId}")]
     public async Task<IActionResult> GetFileUrl(string fileId)
     {
-        var fileUrl = await _googleCloud.GetFileContentUrlAsync(fileId);
-        return Ok(new { FileUrl = fileUrl });
+        var fileInfo = await _googleCloud.InfoAsync(fileId);
+        return Ok(fileInfo);
     }
 
-    [HttpGet("download/{fileId}")]
+    [HttpGet("{fileId}")]
     public async Task<IActionResult> DownloadFile(string fileId)
     {
-        var fileBytes = await _googleCloud.DownloadFileAsync(fileId);
+        var fileBytes = await _googleCloud.DownloadAsync(fileId);
 
         return File(fileBytes, "image/jpeg");
     }
 
 
-    [HttpDelete("delete/{fileId}")]
-    public async Task<IActionResult> DeleteFile(string fileId)
+    [HttpDelete("{fileId}")]
+    public IActionResult DeleteFile(string fileId)
     {
-        await _googleCloud.DeleteFileAsync(fileId);
+        _googleCloud.Delete(fileId);
         return Ok();
     }
 
-    [HttpPut("update/{fileId}")]
+    [HttpPut("{fileId}")]
     public async Task<IActionResult> UpdateFile(string fileId, IFormFile file)
     {
         await using var stream = file.OpenReadStream();
-        var fileName = file.FileName;
-        var contentType = file.ContentType;
-        var updatedFileId = await _googleCloud.UpdateFileAsync(fileId, stream, fileName, contentType);
-        return Ok(updatedFileId);
+        var fileInfo = await _googleCloud.UpdateAsync(fileId, file.FileName, stream, file.ContentType);
+        return Ok(fileInfo);
     }
 }

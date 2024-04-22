@@ -1,88 +1,103 @@
 ﻿using Google.Apis.Drive.v3;
 using Google.Apis.Drive.v3.Data;
+using Google.Apis.Upload;
+using Microsoft.Extensions.Caching.Memory;
+using TopicTalks.Domain.Common;
+using TopicTalks.Domain.Interfaces.Core;
 using File = Google.Apis.Drive.v3.Data.File;
 
 namespace TopicTalks.Infrastructure.Services.Cloud;
 
-public interface IGoogleCloud
+internal class GoogleCloud(IMemoryCache cache, DriveService driveService) : IGoogleCloud
 {
-    Task<string> UploadFileAsync(Stream stream, string fileName, string contentType);
-    Task<string> GetFileContentUrlAsync(string fileId);
-    string GetFileUrlAsync(string fileId);
-    Task<byte[]> DownloadFileAsync(string fileId);
-    Task DeleteFileAsync(string fileId);
-    Task<string> UpdateFileAsync(string fileId, Stream stream, string fileName, string contentType);
-}
-
-internal class GoogleCloud(DriveService driveService) : IGoogleCloud
-{
+    private readonly IMemoryCache _cache = cache;
     private readonly DriveService _driveService = driveService;
 
-    public async Task<string> UploadFileAsync(Stream stream, string fileName, string contentType)
+    public async Task<CloudFile> UploadAsync(string fileName, Stream stream, string contentType)
     {
-        var fileMetadata = new File {
-            Name = fileName,
-            Parents = new List<string> { await GetFileIdAsync("TopicTalks") }
-        };
+        var metaData = CreateMetaData(fileName);
+        var request = _driveService.Files.Create(metaData, stream, contentType);
 
-        var request = _driveService.Files.Create(fileMetadata, stream, contentType);
-        request.Fields = "id";
-        await request.UploadAsync();
+        request.Fields = "id, name, mimeType, size, webContentLink, webViewLink, createdTime";
+        var result = await request.UploadAsync();
 
+        if (result.Status == UploadStatus.Failed)
+            throw new Exception("Failed to upload file");
+
+        SetPermissions(request.ResponseBody.Id);
+
+        return ToCloudFile(request.ResponseBody);
+    }
+
+    private void SetPermissions(string fileId)
+    {
         var permission = new Permission {
             Type = "anyone",
             Role = "reader"
         };
 
-        await _driveService.Permissions
-            .Create(permission, request.ResponseBody.Id)
+        _driveService.Permissions
+            .Create(permission, fileId)
             .ExecuteAsync();
-
-        return request.ResponseBody.Id;
     }
 
-    public async Task<string> GetFileContentUrlAsync(string fileId)
+    public async Task<CloudFile> InfoAsync(string fileId)
     {
         var request = _driveService.Files.Get(fileId);
-        request.Fields = "webContentLink";
-        var file = await request.ExecuteAsync();
-        return file.WebContentLink;
+        request.Fields = "id, name, mimeType, size, webContentLink, webViewLink, createdTime";
+        var response = await request.ExecuteAsync();
+
+        return ToCloudFile(response);
     }
 
-    public string GetFileUrlAsync(string fileId)
-    {
-        return "https://lh3.googleusercontent.com/d/" + fileId;
-    }
-
-    public async Task<byte[]> DownloadFileAsync(string fileId)
+    public async Task<byte[]> DownloadAsync(string fileId)
     {
         var request = _driveService.Files.Get(fileId);
+        request.Fields = "id, name, mimeType, size, webContentLink, webViewLink, createdTime";
 
         using var stream = new MemoryStream();
         await request.DownloadAsync(stream);
-        var fileBytes = stream.ToArray();
 
-        return fileBytes;
+        return stream.ToArray();
     }
 
-    public async Task DeleteFileAsync(string fileId)
+    public async Task<CloudFile> UpdateAsync(string fileId, string fileName, Stream stream, string contentType)
     {
-        await _driveService.Files.Delete(fileId).ExecuteAsync();
+        Delete(fileId);
+        return await UploadAsync(fileName, stream, contentType);
     }
 
-    public async Task<string> UpdateFileAsync(string fileId, Stream stream, string fileName, string contentType)
+    public void Delete(string fileId)
     {
-        await DeleteFileAsync(fileId);
-        return await UploadFileAsync(stream, fileName, contentType);
+        _driveService.Files.Delete(fileId).ExecuteAsync();
     }
 
-    public async Task<string> GetFileIdAsync(string fileName)
+    private File CreateMetaData(string fileName)
     {
-        var request = _driveService.Files.List();
-        request.Q = $"name='{fileName}'";
-        request.Fields = "files(id)";
-        var files = await request.ExecuteAsync();
+        const string cacheKey = "TT_FolderId";
+        var metaData = new File { Name = fileName, };
 
-        return files.Files.First().Id;
+        if (_cache.TryGetValue(cacheKey, out string? fileId) && fileId is not null)
+        {
+            metaData.Parents = new List<string> { fileId };
+        }
+
+        return metaData;
+    }
+
+    private static string GetDirectLink(string fileId) => "https://lh3.googleusercontent.com/d/" + fileId;
+
+    private static CloudFile ToCloudFile(File file)
+    {
+        return new CloudFile(
+            file.Id,
+            file.Name,
+            file.MimeType,
+            file.Size ?? 0,
+            file.WebContentLink,
+            file.WebViewLink,
+            GetDirectLink(file.Id),
+            file.CreatedTimeDateTimeOffset?.UtcDateTime ?? DateTime.Now
+        );
     }
 }
