@@ -12,7 +12,7 @@ public class UserRoleConfigurations : IEntityTypeConfiguration<UserRole>
         entity.ToTable("UserRoles", "auth");
         entity.HasKey(ur => new { ur.UserId, ur.RoleId });
 
-        // Table and Key Configuration
+        // Relationship Configuration
         entity.HasOne(ur => ur.User)
             .WithMany(u => u.UserRoles)
             .HasForeignKey(ur => ur.UserId);
@@ -20,9 +20,5 @@ public class UserRoleConfigurations : IEntityTypeConfiguration<UserRole>
         entity.HasOne(ur => ur.Role)
             .WithMany(r => r.UserRoles)
             .HasForeignKey(ur => ur.RoleId);
-
-        // Index Configuration
-        entity.HasIndex(e => e.RoleId, "IX_UserRoles_RoleId");
-        entity.HasIndex(e => e.UserId, "IX_UserRoles_UserId");
     }
 }

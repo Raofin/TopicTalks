@@ -9,6 +9,7 @@ public interface IUnitOfWork : IDisposable
     IAnswerRepository Answer { get; }
     IQuestionRepository Question { get; }
     IOtpRepository Otp { get; }
+    ICloudRepository CloudFile { get; }
 
     Task<int> CommitAsync();
     EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;

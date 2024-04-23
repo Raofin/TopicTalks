@@ -33,11 +33,16 @@ namespace TopicTalks.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getutcdate())");
+                        .HasDefaultValueSql("getUtcDate()");
 
                     b.Property<string>("Explanation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsNotified")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<long?>("ParentAnswerId")
                         .ValueGeneratedOnAdd()
@@ -52,11 +57,9 @@ namespace TopicTalks.Infrastructure.Migrations
 
                     b.HasKey("AnswerId");
 
-                    b.HasIndex(new[] { "ParentAnswerId" }, "IX_Answers_ParentAnswerId");
+                    b.HasIndex("QuestionId");
 
-                    b.HasIndex(new[] { "QuestionId" }, "IX_Answers_QuestionId");
-
-                    b.HasIndex(new[] { "UserId" }, "IX_Answers_UserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Answers", "post");
 
@@ -64,8 +67,9 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             AnswerId = 1L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(461),
-                            Explanation = "In C# 12, using record types with pattern matching and deconstruction in ASP.NET 8 code enhances readability and maintainability by providing a concise syntax for defining immutable data types and simplifying comparisons and extraction of property values. This approach, inspired by functional programming, allows for more expressive and type-driven code, making it easier to add new rules or modify existing ones without extensive refactoring. However, the immutability of records may introduce overhead in scenarios where mutable objects are preferred, potentially affecting performance. Despite this, the benefits of using records, such as improved code clarity and built-in support for value-based equality, often outweigh the performance considerations, especially in projects that prioritize immutability and pattern matching.",
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 10, 0, 0, DateTimeKind.Unspecified),
+                            Explanation = "Raspberry Pi OS (formerly known as Raspbian) is a Linux distribution specifically designed for the Raspberry Pi, based on Debian. It's optimized for the Pi's hardware, offering a lightweight desktop environment that's well-suited for its low-powered platform. Raspberry Pi OS includes special programs and kernel modules for HAT and additional hardware support, which other operating systems like Ubuntu or Arch Linux might not have. While Ubuntu and Arch Linux are also Linux distributions, they are not specifically tailored for the Raspberry Pi and may require modifications to work with its unique hardware and software environment. Therefore, Raspberry Pi OS is often the preferred choice for users looking for a seamless experience with their Raspberry Pi devices.",
+                            IsNotified = true,
                             ParentAnswerId = 0L,
                             QuestionId = 1L,
                             UserId = 2L
@@ -73,8 +77,9 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             AnswerId = 2L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(464),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 25, 0, 0, DateTimeKind.Unspecified),
                             Explanation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit?",
+                            IsNotified = true,
                             ParentAnswerId = 1L,
                             QuestionId = 1L,
                             UserId = 1L
@@ -82,17 +87,19 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             AnswerId = 3L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(465),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 34, 0, 0, DateTimeKind.Unspecified),
                             Explanation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et.",
+                            IsNotified = true,
                             ParentAnswerId = 2L,
                             QuestionId = 1L,
-                            UserId = 1L
+                            UserId = 4L
                         },
                         new
                         {
                             AnswerId = 4L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(467),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 46, 0, 0, DateTimeKind.Unspecified),
                             Explanation = "Lorem ipsum dolor sit amet, consectetur adipiscing.",
+                            IsNotified = true,
                             ParentAnswerId = 0L,
                             QuestionId = 1L,
                             UserId = 2L
@@ -100,15 +107,16 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             AnswerId = 5L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(470),
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 59, 0, 0, DateTimeKind.Unspecified),
                             Explanation = "Lorem ipsum dolor sit amet.",
+                            IsNotified = true,
                             ParentAnswerId = 4L,
                             QuestionId = 1L,
-                            UserId = 1L
+                            UserId = 5L
                         });
                 });
 
-            modelBuilder.Entity("TopicTalks.Domain.Entities.Cloud", b =>
+            modelBuilder.Entity("TopicTalks.Domain.Entities.CloudFile", b =>
                 {
                     b.Property<string>("CloudFileId")
                         .HasMaxLength(255)
@@ -122,7 +130,7 @@ namespace TopicTalks.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getutcdate())");
+                        .HasDefaultValueSql("getUtcDate()");
 
                     b.Property<string>("DirectLink")
                         .IsRequired()
@@ -135,7 +143,8 @@ namespace TopicTalks.Infrastructure.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<long>("Size")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasComment("Bytes");
 
                     b.Property<long?>("UserId")
                         .HasColumnType("bigint");
@@ -152,7 +161,7 @@ namespace TopicTalks.Infrastructure.Migrations
 
                     b.HasKey("CloudFileId");
 
-                    b.HasIndex(new[] { "UserId" }, "IX_CloudFiles_UserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("CloudFiles", "core");
                 });
@@ -170,8 +179,8 @@ namespace TopicTalks.Infrastructure.Migrations
 
                     b.Property<DateTime>("ExpiresAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("dateadd(minute, 5, getutcdate())");
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("dateAdd(minute, 5, getUtcDate())");
 
                     b.HasKey("Email");
 
@@ -189,11 +198,20 @@ namespace TopicTalks.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getutcdate())");
+                        .HasDefaultValueSql("getUtcDate()");
 
                     b.Property<string>("Explanation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageFileId")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsNotified")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Topic")
                         .IsRequired()
@@ -208,7 +226,9 @@ namespace TopicTalks.Infrastructure.Migrations
 
                     b.HasKey("QuestionId");
 
-                    b.HasIndex(new[] { "UserId" }, "IX_Questions_UserId");
+                    b.HasIndex("ImageFileId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Questions", "post");
 
@@ -216,49 +236,91 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             QuestionId = 1L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(418),
-                            Explanation = "In C# 12, what are the advantages and trade-offs of using record types with pattern matching and deconstruction in ASP.NET 8 code, considering maintainability, readability, and potential performance implications?",
-                            Topic = "C# 12, Code Syntax, Maintainability",
+                            CreatedAt = new DateTime(2024, 4, 5, 7, 1, 0, 0, DateTimeKind.Unspecified),
+                            Explanation = "What is the difference between Raspbian and other operating systems available for Raspberry Pi, like Ubuntu or Arch Linux?",
+                            IsNotified = true,
+                            Topic = "Raspberry Pi, Operating System, Raspbian",
                             UserId = 1L
                         },
                         new
                         {
                             QuestionId = 2L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(420),
-                            Explanation = "With ASP.NET 8's improved request caching and HTTP caching strategies, in what scenarios could you effectively combine them to achieve optimal performance gains across different data access patterns (in-memory, database, external APIs)?",
-                            Topic = "ASP.NET 8, HTTP Caching, Request Caching",
-                            UserId = 1L
+                            CreatedAt = new DateTime(2024, 4, 4, 7, 54, 0, 0, DateTimeKind.Unspecified),
+                            Explanation = "As a C# developer comfortable with Microsoft ecosystem, is Spring Boot worth exploring even though it uses Java? When might switching make sense, if ever?",
+                            IsNotified = true,
+                            Topic = "C#, Java, Spring Boot, Developer Experience",
+                            UserId = 4L
                         },
                         new
                         {
                             QuestionId = 3L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(421),
-                            Explanation = "What are the use cases for ASP.NET 8's hot reload capability, and how can it improve development workflow and reduce downtime in production environments?",
-                            Topic = "ASP.NET 8, Development Workflow, Live Updates",
+                            CreatedAt = new DateTime(2024, 3, 25, 8, 43, 0, 0, DateTimeKind.Unspecified),
+                            Explanation = "How does the use of timeouts help in preventing or resolving deadlocks?",
+                            IsNotified = true,
+                            Topic = "Deadlocks, Operating System",
                             UserId = 1L
                         },
                         new
                         {
                             QuestionId = 4L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(423),
-                            Explanation = "As a C# developer comfortable with Microsoft ecosystem, is Spring Boot worth exploring even though it uses Java? When might switching make sense, if ever?",
-                            Topic = "C#, Java, Developer Experience",
+                            CreatedAt = new DateTime(2024, 3, 21, 5, 13, 0, 0, DateTimeKind.Unspecified),
+                            Explanation = "How do the transport layer and network layer protocols, such as TCP and IP, facilitate communication between processes in a network application?",
+                            IsNotified = true,
+                            Topic = "Computer Networks, TCP/IP, Network Layer Protocols",
                             UserId = 1L
                         },
                         new
                         {
                             QuestionId = 5L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(424),
-                            Explanation = "When working with diverse data sources and integration needs, how do ASP.NET Core's Entity Framework Core and Spring Boot's Spring Data JPA compare in terms of ease of use, performance, and integration capabilities?",
-                            Topic = "ASP.NET, Spring Boot, Data Persistence",
-                            UserId = 1L
+                            CreatedAt = new DateTime(2024, 3, 10, 11, 46, 0, 0, DateTimeKind.Unspecified),
+                            Explanation = "What is a transaction, and why is ACID compliance important in database management?",
+                            IsNotified = true,
+                            Topic = "RDBMS, Transaction, ACID, Database Management",
+                            UserId = 5L
                         },
                         new
                         {
                             QuestionId = 6L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(426),
-                            Explanation = "How can you adapt React development for building mobile apps with React Native, desktop applications with Electron, or server-side rendering with Next.js?",
-                            Topic = "React Ecosystem, Mobile Apps, Desktop Apps",
+                            CreatedAt = new DateTime(2024, 2, 27, 8, 27, 0, 0, DateTimeKind.Unspecified),
+                            Explanation = "What's the difference between a Deterministic Finite Automaton (DFA) and a Nondeterministic Finite Automaton (NFA)?",
+                            IsNotified = true,
+                            Topic = "HTTP, FTP, SMTP, Internet Communication",
+                            UserId = 1L
+                        },
+                        new
+                        {
+                            QuestionId = 7L,
+                            CreatedAt = new DateTime(2024, 2, 16, 6, 16, 0, 0, DateTimeKind.Unspecified),
+                            Explanation = "How does the V-model integrate testing activities into each phase of the development process?",
+                            IsNotified = true,
+                            Topic = "V-model, Testing, SDLC",
+                            UserId = 5L
+                        },
+                        new
+                        {
+                            QuestionId = 8L,
+                            CreatedAt = new DateTime(2024, 2, 12, 5, 18, 0, 0, DateTimeKind.Unspecified),
+                            Explanation = "Can Arduino boards communicate with each other or with other devices, and if so, how?",
+                            IsNotified = true,
+                            Topic = "Arduino, I2C, SPI, Embedded Systems",
+                            UserId = 1L
+                        },
+                        new
+                        {
+                            QuestionId = 9L,
+                            CreatedAt = new DateTime(2024, 1, 25, 5, 25, 0, 0, DateTimeKind.Unspecified),
+                            Explanation = "How does the Domain Name System (DNS) work, and why is it important for navigating the internet?",
+                            IsNotified = true,
+                            Topic = "Domain Name System, DNS, Computer Networks",
+                            UserId = 4L
+                        },
+                        new
+                        {
+                            QuestionId = 10L,
+                            CreatedAt = new DateTime(2024, 1, 17, 7, 1, 0, 0, DateTimeKind.Unspecified),
+                            Explanation = "How do Hibernate's HQL (Hibernate Query Language) and Entity Framework's LINQ (Language Integrated Query) compare in terms of syntax and functionality for executing database queries?",
+                            IsNotified = true,
+                            Topic = "Hibernate, HQL, Entity Framework, LINQ, SQL",
                             UserId = 1L
                         });
                 });
@@ -309,10 +371,14 @@ namespace TopicTalks.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getutcdate())");
+                        .HasDefaultValueSql("getUtcDate()");
 
                     b.Property<string>("Email")
                         .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("ImageFileId")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -323,13 +389,30 @@ namespace TopicTalks.Infrastructure.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Salt")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("IX_User_Email");
+
+                    b.HasIndex("ImageFileId");
+
+                    b.HasIndex("Username")
+                        .IsUnique()
+                        .HasDatabaseName("IX_User_Username");
 
                     b.ToTable("Users", "auth");
 
@@ -337,29 +420,52 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             UserId = 1L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(251),
+                            CreatedAt = new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6694),
                             Email = "hello@rawfin.net",
-                            IsVerified = false,
+                            IsVerified = true,
                             PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
-                            Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM="
+                            Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=",
+                            Username = "Rawfin"
                         },
                         new
                         {
                             UserId = 2L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(255),
-                            Email = "doe@email.net",
+                            CreatedAt = new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6701),
+                            Email = "doe@topictalks.net",
                             IsVerified = false,
                             PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
-                            Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM="
+                            Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=",
+                            Username = "Doe"
                         },
                         new
                         {
                             UserId = 3L,
-                            CreatedAt = new DateTime(2024, 4, 22, 5, 7, 57, 175, DateTimeKind.Utc).AddTicks(257),
-                            Email = "bob@email.net",
+                            CreatedAt = new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6704),
+                            Email = "bob@topictalks.net",
                             IsVerified = false,
                             PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
-                            Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM="
+                            Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=",
+                            Username = "Bob"
+                        },
+                        new
+                        {
+                            UserId = 4L,
+                            CreatedAt = new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6707),
+                            Email = "oec@topictalks.net",
+                            IsVerified = false,
+                            PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
+                            Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=",
+                            Username = "Oweo"
+                        },
+                        new
+                        {
+                            UserId = 5L,
+                            CreatedAt = new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6709),
+                            Email = "eor@topictalks.net",
+                            IsVerified = false,
+                            PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
+                            Salt = "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=",
+                            Username = "Eorc"
                         });
                 });
 
@@ -371,17 +477,17 @@ namespace TopicTalks.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserDetailsId"));
 
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("IdCardNumber")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("InstituteName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -395,19 +501,32 @@ namespace TopicTalks.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.HasIndex(new[] { "UserId" }, "IX_UserDetails_UserId")
-                        .HasDatabaseName("IX_UserDetails_UserId1");
-
                     b.ToTable("UserDetails", "auth");
 
                     b.HasData(
                         new
                         {
                             UserDetailsId = 1L,
+                            FullName = "Zaid Amin Rawfin",
                             IdCardNumber = "20-42459-1",
                             InstituteName = "AIUB",
-                            Name = "Rawfin",
                             UserId = 1L
+                        },
+                        new
+                        {
+                            UserDetailsId = 2L,
+                            FullName = "Oweo Yec Wev",
+                            IdCardNumber = "2020-55-3361",
+                            InstituteName = "QWDA",
+                            UserId = 4L
+                        },
+                        new
+                        {
+                            UserDetailsId = 3L,
+                            FullName = "Voer Eor Oec",
+                            IdCardNumber = "3-17655614-43",
+                            InstituteName = "CREX",
+                            UserId = 5L
                         });
                 });
 
@@ -421,9 +540,7 @@ namespace TopicTalks.Infrastructure.Migrations
 
                     b.HasKey("UserId", "RoleId");
 
-                    b.HasIndex(new[] { "RoleId" }, "IX_UserRoles_RoleId");
-
-                    b.HasIndex(new[] { "UserId" }, "IX_UserRoles_UserId");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles", "auth");
 
@@ -464,25 +581,41 @@ namespace TopicTalks.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TopicTalks.Domain.Entities.Cloud", b =>
+            modelBuilder.Entity("TopicTalks.Domain.Entities.CloudFile", b =>
                 {
                     b.HasOne("TopicTalks.Domain.Entities.User", "User")
                         .WithMany("CloudFiles")
                         .HasForeignKey("UserId")
-                        .HasConstraintName("FK_CloudFiles_Users");
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("TopicTalks.Domain.Entities.Question", b =>
                 {
+                    b.HasOne("TopicTalks.Domain.Entities.CloudFile", "ImageFile")
+                        .WithMany("Questions")
+                        .HasForeignKey("ImageFileId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("TopicTalks.Domain.Entities.User", "User")
                         .WithMany("Questions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("FK_Questions_Users");
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("ImageFile");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TopicTalks.Domain.Entities.User", b =>
+                {
+                    b.HasOne("TopicTalks.Domain.Entities.CloudFile", "ImageFile")
+                        .WithMany("Users")
+                        .HasForeignKey("ImageFileId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("ImageFile");
                 });
 
             modelBuilder.Entity("TopicTalks.Domain.Entities.UserDetail", b =>
@@ -490,8 +623,7 @@ namespace TopicTalks.Infrastructure.Migrations
                     b.HasOne("TopicTalks.Domain.Entities.User", "User")
                         .WithOne("UserDetails")
                         .HasForeignKey("TopicTalks.Domain.Entities.UserDetail", "UserId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("FK_UserDetails_Users");
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("User");
                 });
@@ -513,6 +645,13 @@ namespace TopicTalks.Infrastructure.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TopicTalks.Domain.Entities.CloudFile", b =>
+                {
+                    b.Navigation("Questions");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("TopicTalks.Domain.Entities.Question", b =>

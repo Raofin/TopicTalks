@@ -17,7 +17,7 @@ internal class ExcelGenerator : IExcelGenerator
             user.UserId,
             user.Email,
             CreatedAt = user.CreatedAt.ToString("MM-dd-yyyy hh:mm tt"),
-            Name = user.UserDetails?.Name ?? "-",
+            Name = user.UserDetails?.FullName ?? "-",
             InstituteName = user.UserDetails?.InstituteName ?? "-",
             IdCardNumber = user.UserDetails?.IdCardNumber ?? "-",
             Roles = string.Join(", ", user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList())

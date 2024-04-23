@@ -44,7 +44,7 @@ internal class AccountService(
         if (request?.UserDetails != null)
         {
             user.UserDetails = new UserDetail {
-                Name = request.UserDetails.Name,
+                FullName = request.UserDetails.Name,
                 InstituteName = request.UserDetails.InstituteName,
                 IdCardNumber = request.UserDetails.IdCardNumber,
             };

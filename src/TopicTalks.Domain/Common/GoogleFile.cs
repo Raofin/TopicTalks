@@ -1,6 +1,6 @@
 ﻿namespace TopicTalks.Domain.Common;
 
-public record CloudFile(
+public record GoogleFile(
     string CloudFileId,
     string Name,
     string ContentType,
@@ -11,7 +11,7 @@ public record CloudFile(
     DateTime CreatedAt
 );
 
-public record CloudFileDownload(
+public record GoogleFileDownload(
     string CloudFileId,
     string Name,
     string ContentType,

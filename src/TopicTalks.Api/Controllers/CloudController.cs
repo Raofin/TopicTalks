@@ -1,19 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TopicTalks.Domain.Interfaces.Core;
+using TopicTalks.Application.Extensions;
+using TopicTalks.Application.Interfaces;
 
 namespace TopicTalks.Api.Controllers;
 
-[AllowAnonymous]
-public class CloudController(IGoogleCloud googleCloud) : ApiController
+public class CloudController(ICloudService cloudService) : ApiController
 {
-    private readonly IGoogleCloud _googleCloud = googleCloud;
+    private readonly ICloudService _cloudService = cloudService;
 
     [HttpPost]
     public async Task<IActionResult> UploadFile(IFormFile file)
     {
         await using var stream = file.OpenReadStream();
-        var fileInfo = await _googleCloud.UploadAsync(file.FileName, stream, file.ContentType);
+        var fileInfo = await _cloudService.UploadAsync(file.FileName, stream, file.ContentType, User.GetUserId());
 
         return Ok(fileInfo);
     }
@@ -21,23 +21,25 @@ public class CloudController(IGoogleCloud googleCloud) : ApiController
     [HttpGet("info/{fileId}")]
     public async Task<IActionResult> GetFileUrl(string fileId)
     {
-        var fileInfo = await _googleCloud.InfoAsync(fileId);
+        var fileInfo = await _cloudService.InfoAsync(fileId);
+
         return Ok(fileInfo);
     }
 
+    [AllowAnonymous]
     [HttpGet("{fileId}")]
     public async Task<IActionResult> DownloadFile(string fileId)
     {
-        var fileBytes = await _googleCloud.DownloadAsync(fileId);
+        var file = await _cloudService.DownloadAsync(fileId);
 
-        return File(fileBytes, "image/jpeg");
+        return File(file.Bytes, file.ContentType, file.Name);
     }
 
-
     [HttpDelete("{fileId}")]
-    public IActionResult DeleteFile(string fileId)
+    public async Task<IActionResult> DeleteFile(string fileId)
     {
-        _googleCloud.Delete(fileId);
+        await _cloudService.DeleteAsync(fileId);
+
         return Ok();
     }
 
@@ -45,7 +47,8 @@ public class CloudController(IGoogleCloud googleCloud) : ApiController
     public async Task<IActionResult> UpdateFile(string fileId, IFormFile file)
     {
         await using var stream = file.OpenReadStream();
-        var fileInfo = await _googleCloud.UpdateAsync(fileId, file.FileName, stream, file.ContentType);
+        var fileInfo = await _cloudService.UpdateAsync(fileId, file.FileName, stream, file.ContentType, User.GetUserId());
+
         return Ok(fileInfo);
     }
 }

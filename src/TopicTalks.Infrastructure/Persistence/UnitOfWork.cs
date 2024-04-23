@@ -9,7 +9,8 @@ internal class UnitOfWork(
     IUserRepository userRepository,
     IAnswerRepository answerRepository,
     IQuestionRepository questionRepository,
-    IOtpRepository otpRepository) : IUnitOfWork
+    IOtpRepository otpRepository, 
+    ICloudRepository cloudRepository) : IUnitOfWork
 {
     private readonly AppDbContext _context = dbContext;
 
@@ -17,6 +18,7 @@ internal class UnitOfWork(
     public IAnswerRepository Answer { get; } = answerRepository;
     public IQuestionRepository Question { get; } = questionRepository;
     public IOtpRepository Otp { get; } = otpRepository;
+    public ICloudRepository CloudFile { get; } = cloudRepository;
 
     public async Task<int> CommitAsync()
     {

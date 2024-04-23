@@ -29,10 +29,12 @@ internal static class Dependencies
         services.AddScoped<IGoogleCloud, GoogleCloud>();
         services.AddScoped<IEmailSender, EmailSender>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IQuestionRepository, QuestionRepository>();
         services.AddScoped<IAnswerRepository, AnswerRepository>();
         services.AddScoped<IOtpRepository, OtpRepository>();
+        services.AddScoped<ICloudRepository, CloudRepository>();
 
         return services;
     }

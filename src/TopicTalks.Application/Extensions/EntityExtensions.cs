@@ -25,7 +25,7 @@ public static class EntityExtensions
         return userDetail == null
             ? null
             : new UserDetailDto(
-                Name: userDetail.Name,
+                Name: userDetail.FullName,
                 InstituteName: userDetail.InstituteName,
                 IdCardNumber: userDetail.IdCardNumber
             );

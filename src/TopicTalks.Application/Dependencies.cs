@@ -14,6 +14,7 @@ public static class Dependencies
         services.AddScoped<IAnswerService, AnswerService>();
         services.AddScoped<IPdfService, PdfService>();
         services.AddScoped<IExcelService, ExcelService>();
+        services.AddScoped<ICloudService, CloudService>();
 
         services.AddHostedService<OtpCleanupService>();
 

@@ -4,9 +4,9 @@ namespace TopicTalks.Domain.Interfaces.Core;
 
 public interface IGoogleCloud
 {
-    Task<CloudFile> UploadAsync(string fileName, Stream stream, string contentType);
-    Task<CloudFile> InfoAsync(string fileId);
-    Task<byte[]> DownloadAsync(string fileId);
-    Task<CloudFile> UpdateAsync(string fileId, string fileName, Stream stream, string contentType);
+    Task<GoogleFile> UploadAsync(string fileName, Stream stream, string contentType);
+    Task<GoogleFile> InfoAsync(string fileId);
+    Task<GoogleFileDownload> DownloadAsync(string fileId);
+    Task<GoogleFile> UpdateAsync(string fileId, string fileName, Stream stream, string contentType);
     void Delete(string fileId);
 }

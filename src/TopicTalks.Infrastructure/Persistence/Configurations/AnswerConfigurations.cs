@@ -13,15 +13,10 @@ public class AnswerConfigurations : IEntityTypeConfiguration<Answer>
         entity.HasKey(x => x.AnswerId);
 
         // Property Configuration
-        entity.Property(e => e.CreatedAt)
-            .HasDefaultValueSql("(getutcdate())")
-            .HasColumnType("datetime");
-
-        entity.Property(e => e.Explanation)
-            .IsRequired();
-
-        entity.Property(e => e.ParentAnswerId)
-            .HasDefaultValue(0L);
+        entity.Property(e => e.ParentAnswerId).HasDefaultValue(0L);
+        entity.Property(e => e.Explanation).IsRequired();
+        entity.Property(e => e.IsNotified).HasDefaultValue(true);
+        entity.Property(e => e.CreatedAt).HasColumnType("datetime").HasDefaultValueSql("getUtcDate()");
 
         // Relationship Configuration
         entity.HasOne(d => d.User)
@@ -29,10 +24,5 @@ public class AnswerConfigurations : IEntityTypeConfiguration<Answer>
             .HasForeignKey(d => d.UserId)
             .OnDelete(DeleteBehavior.SetNull)
             .HasConstraintName("FK_Answers_Users");
-
-        // Index Configuration
-        entity.HasIndex(e => e.ParentAnswerId, "IX_Answers_ParentAnswerId");
-        entity.HasIndex(e => e.QuestionId, "IX_Answers_QuestionId");
-        entity.HasIndex(e => e.UserId, "IX_Answers_UserId");
     }
 }

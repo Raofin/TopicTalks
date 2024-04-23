@@ -13,7 +13,7 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
     {
         var searchTextLower = searchText?.ToLower();
 
-        var questions = await _dbContext.Questions
+        return await _dbContext.Questions
             .Include(q => q.User)
             .OrderByDescending(q => q.CreatedAt)
             .Where(q => string.IsNullOrEmpty(searchTextLower)
@@ -35,54 +35,44 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
             })
             .AsNoTracking()
             .ToListAsync();
-
-        return questions;
     }
 
     public async Task<List<Question>> GetWithUserAsync()
     {
-        var questions = await _dbContext.Questions
+        return await _dbContext.Questions
             .Include(q => q.User)
             .ToListAsync();
-
-        return questions;
     }
 
     public async Task<Question?> GetWithUserAsync(long questionId)
     {
-        var question = await _dbContext.Questions
+        return await _dbContext.Questions
             .Include(q => q.User)
             .FirstOrDefaultAsync(q => q.QuestionId == questionId);
-
-        return question;
     }
 
     public async Task<List<Question>> GetByUserIdAsync(long userId)
     {
-        var questions = await _dbContext.Questions
+        return await _dbContext.Questions
             .Include(q => q.User)
             .Where(q => q.User != null && q.User.UserId == userId)
             .ToListAsync();
-
-        return questions;
     }
 
     public async Task<List<Question>> GetByUserResponsesAsync(long userId)
     {
-        var questions = await (
+        return await (
             from answer in _dbContext.Answers
             where answer.UserId == userId
             join question in _dbContext.Questions.Include(q => q.User)
                 on answer.QuestionId equals question.QuestionId
             select question
         ).ToListAsync();
-
-        return questions;
     }
 
     public async Task<Question?> GetWithAnswersAsync(long questionId)
     {
-        var question = await _dbContext.Questions
+        return await _dbContext.Questions
             .Include(a => a.User)
             .Include(q => q.Answers)
             .ThenInclude(a => a.User)
@@ -91,7 +81,5 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
             .Where(q => q.QuestionId == questionId)
             .AsSingleQuery()
             .SingleOrDefaultAsync();
-
-        return question;
     }
 }

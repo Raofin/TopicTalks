@@ -11,56 +11,46 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
 
     public async Task<Answer?> GetWithUserAsync(long answerId)
     {
-        var answer = await _dbContext.Answers
-                .Include(a => a.User)
-                .Where(a => a.AnswerId == answerId)
-                .SingleOrDefaultAsync();
-
-        return answer;
+        return await _dbContext.Answers
+            .Include(a => a.User)
+            .Where(a => a.AnswerId == answerId)
+            .SingleOrDefaultAsync();
     }
 
     public async Task<List<Answer>> GetParentAnswersAsync(long questionId, long parentAnswerId)
     {
-        var answers = await _dbContext.Answers
+        return await _dbContext.Answers
             .Include(a => a.User)
             .Where(a => a.QuestionId == questionId && a.ParentAnswerId == parentAnswerId)
             .ToListAsync();
-
-        return answers;
     }
 
     public async Task<List<Answer>> GetByQuestionAsync(long questionId)
     {
-        var answers = await _dbContext.Answers
+        return await _dbContext.Answers
             .Include(a => a.User)
             .Where(a => a.QuestionId == questionId)
             .ToListAsync();
-
-        return answers;
     }
 
     public async Task<Answer?> GetRepliesAsync(long questionId, long answerId, long parentAnswerId)
     {
-        var answer = await _dbContext.Answers
-                .Include(a => a.User)
-                .Where(a => a.QuestionId == questionId
-                    && a.AnswerId == answerId
-                    && a.ParentAnswerId == parentAnswerId)
-                .SingleOrDefaultAsync();
-
-        return answer;
+        return await _dbContext.Answers
+            .Include(a => a.User)
+            .Where(a => a.QuestionId == questionId
+                && a.AnswerId == answerId
+                && a.ParentAnswerId == parentAnswerId)
+            .SingleOrDefaultAsync();
     }
 
     public async Task<bool> HasTeachersAnswerAsync(int questionId)
     {
-        var hasTeachersAnswer = await _dbContext.Answers
-                .Where(a => a.QuestionId == questionId
-                    && a.User != null
-                    && a.User.UserRoles.Any(
-                        ur => ur.Role.RoleName == nameof(RoleType.Teacher)))
-                .AnyAsync();
-
-        return hasTeachersAnswer;
+        return await _dbContext.Answers
+            .Where(a => a.QuestionId == questionId
+                && a.User != null
+                && a.User.UserRoles.Any(
+                    ur => ur.Role.RoleName == nameof(RoleType.Teacher)))
+            .AnyAsync();
     }
 
     public async Task<bool> IsQuestionOrParentExistsAsync(long questionId, long? parentAnswerId)

@@ -13,26 +13,14 @@ public class UserDetailConfigurations : IEntityTypeConfiguration<UserDetail>
         entity.HasKey(e => e.UserDetailsId);
 
         // Property Configuration
-        entity.Property(e => e.IdCardNumber)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        entity.Property(e => e.InstituteName)
-            .IsRequired()
-            .HasMaxLength(255);
-
-        entity.Property(e => e.Name)
-            .IsRequired()
-            .HasMaxLength(255);
+        entity.Property(e => e.FullName).IsRequired().HasMaxLength(255);
+        entity.Property(e => e.InstituteName).IsRequired().HasMaxLength(255);
+        entity.Property(e => e.IdCardNumber).IsRequired().HasMaxLength(50);
 
         // Relationship Configuration
         entity.HasOne(d => d.User)
             .WithOne(p => p.UserDetails)
             .HasForeignKey<UserDetail>(d => d.UserId)
-            .OnDelete(DeleteBehavior.SetNull)
-            .HasConstraintName("FK_UserDetails_Users");
-
-        // Index Configuration
-        entity.HasIndex(e => e.UserId, "IX_UserDetails_UserId");
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

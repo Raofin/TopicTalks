@@ -13,7 +13,7 @@ internal class GoogleCloud(IMemoryCache cache, DriveService driveService) : IGoo
     private readonly IMemoryCache _cache = cache;
     private readonly DriveService _driveService = driveService;
 
-    public async Task<CloudFile> UploadAsync(string fileName, Stream stream, string contentType)
+    public async Task<GoogleFile> UploadAsync(string fileName, Stream stream, string contentType)
     {
         var metaData = CreateMetaData(fileName);
         var request = _driveService.Files.Create(metaData, stream, contentType);
@@ -26,7 +26,7 @@ internal class GoogleCloud(IMemoryCache cache, DriveService driveService) : IGoo
 
         SetPermissions(request.ResponseBody.Id);
 
-        return ToCloudFile(request.ResponseBody);
+        return MapToGoogleFile(request.ResponseBody);
     }
 
     private void SetPermissions(string fileId)
@@ -41,27 +41,34 @@ internal class GoogleCloud(IMemoryCache cache, DriveService driveService) : IGoo
             .ExecuteAsync();
     }
 
-    public async Task<CloudFile> InfoAsync(string fileId)
+    public async Task<GoogleFile> InfoAsync(string fileId)
     {
         var request = _driveService.Files.Get(fileId);
         request.Fields = "id, name, mimeType, size, webContentLink, webViewLink, createdTime";
         var response = await request.ExecuteAsync();
 
-        return ToCloudFile(response);
+        return MapToGoogleFile(response);
     }
 
-    public async Task<byte[]> DownloadAsync(string fileId)
+    public async Task<GoogleFileDownload> DownloadAsync(string fileId)
     {
         var request = _driveService.Files.Get(fileId);
-        request.Fields = "id, name, mimeType, size, webContentLink, webViewLink, createdTime";
+        request.Fields = "id, name, mimeType, size, createdTime";
+        var fileInfo = await request.ExecuteAsync();
 
         using var stream = new MemoryStream();
         await request.DownloadAsync(stream);
 
-        return stream.ToArray();
+        return new GoogleFileDownload(
+            fileInfo.Id,
+            fileInfo.Name,
+            fileInfo.MimeType,
+            fileInfo.Size ?? 0,
+            stream.ToArray(),
+            fileInfo.CreatedTimeDateTimeOffset?.UtcDateTime ?? DateTime.UtcNow);
     }
 
-    public async Task<CloudFile> UpdateAsync(string fileId, string fileName, Stream stream, string contentType)
+    public async Task<GoogleFile> UpdateAsync(string fileId, string fileName, Stream stream, string contentType)
     {
         Delete(fileId);
         return await UploadAsync(fileName, stream, contentType);
@@ -87,9 +94,9 @@ internal class GoogleCloud(IMemoryCache cache, DriveService driveService) : IGoo
 
     private static string GetDirectLink(string fileId) => "https://lh3.googleusercontent.com/d/" + fileId;
 
-    private static CloudFile ToCloudFile(File file)
+    private static GoogleFile MapToGoogleFile(File file)
     {
-        return new CloudFile(
+        return new GoogleFile(
             file.Id,
             file.Name,
             file.MimeType,
