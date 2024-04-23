@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using TopicTalks.Web.Extensions;
 using TopicTalks.Web.Services.Interfaces;
+using TopicTalks.Web.ViewModels;
 
 namespace TopicTalks.Web.Controllers;
 
@@ -23,20 +25,15 @@ public class FileController(IHttpService httpService) : Controller
     [HttpPost]
     public async Task<IActionResult> UploadFile(IFormFile file)
     {
-        using (var content = new MultipartFormDataContent())
-        {
-            content.Add(new StreamContent(file.OpenReadStream()), "file", file.FileName);
+        using var content = new MultipartFormDataContent();
+        content.Add(new StreamContent(file.OpenReadStream()), "file", file.FileName);
 
-            var response = await _httpService.Client.PostAsync("api/cloud", content);
+        var response = await _httpService.Client.PostAsync("api/cloud", content);
+        var uploadedFile = JsonConvert.DeserializeObject<UploadedFile>(response.ToJson())!;
 
-            if (response.IsSuccessStatusCode)
-            {
-                var x = response.ToJson();
-                return Ok(x);
-            }
-
-            return StatusCode((int)response.StatusCode, "Error uploading file.");
-        }
+        return response.IsSuccessStatusCode 
+            ? Ok(uploadedFile) 
+            : StatusCode((int)response.StatusCode, "Error uploading file.");
     }
 
 }

@@ -6,77 +6,8 @@
     <script>
 
         $('#image').change(function () {
-
-            if (validateImage($(this))) {
-                previewImage(this)
-                toastMessage('Image is valid', ToastType.Success);
-
-                var formData = new FormData();
-                formData.append('file', $(this)[0].files[0]);
-
-                $.ajax({
-                    url: '@Url.Action("UploadFile", "File")',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: () => {
-                        toastMessage('Image uploaded successfully.', ToastType.Success);
-                    },
-                    error: () => {
-                        toastMessage('Error uploading image', ToastType.Error);
-                    }
-                });
-            } else {
-                $('#file-error').text('Please select a valid image.').show();
-                console.log('Image is invalid');
-            }
+            Upload(this);
         });
-
-        function previewImage(image) {
-            var file = $(image)[0].files[0];
-
-            if (file) {
-                var previewImage = $('#preview-image');
-                previewImage.attr('src', URL.createObjectURL(file));
-                previewImage.show();
-
-                previewImage.on('load', function () {
-                    URL.revokeObjectURL(previewImage.attr('src'));
-                });
-            }
-        }
-
-        function validateImage(fileInput, maxSize = 2097152) {
-            var file = fileInput[0].files[0];
-
-            if (!file) {
-                appendFileError(fileInput, 'Please select an image file.');
-                return false;
-            }
-
-            if (!file.type.startsWith('image/')) {
-                appendFileError(fileInput, 'Please select an image file.');
-                return false;
-            }
-
-            if (file.size > maxSize) {
-                appendFileError(fileInput, 'File size exceeds the maximum allowed size.');
-                return false;
-            }
-
-            removeFileError();
-
-            return true;
-        }
-
-        function appendFileError(selector, message) {
-            $(selector).after(`<label id="file-error" class="error" for="${$(selector).attr('id')}">${message}</label>`);
-        }
-
-        function removeFileError() {
-            $('#file-error').remove();
-        }
 
     </script>
 }
