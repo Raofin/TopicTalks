@@ -5,6 +5,7 @@ using TopicTalks.Application.Interfaces;
 
 namespace TopicTalks.Api.Controllers;
 
+[AllowAnonymous]
 public class CloudController(ICloudService cloudService) : ApiController
 {
     private readonly ICloudService _cloudService = cloudService;
@@ -13,7 +14,7 @@ public class CloudController(ICloudService cloudService) : ApiController
     public async Task<IActionResult> UploadFile(IFormFile file)
     {
         await using var stream = file.OpenReadStream();
-        var fileInfo = await _cloudService.UploadAsync(file.FileName, stream, file.ContentType, User.GetUserId());
+        var fileInfo = await _cloudService.UploadAsync(file.FileName, stream, file.ContentType/*, User.GetUserId()*/);
 
         return Ok(fileInfo);
     }
@@ -47,7 +48,7 @@ public class CloudController(ICloudService cloudService) : ApiController
     public async Task<IActionResult> UpdateFile(string fileId, IFormFile file)
     {
         await using var stream = file.OpenReadStream();
-        var fileInfo = await _cloudService.UpdateAsync(fileId, file.FileName, stream, file.ContentType, User.GetUserId());
+        var fileInfo = await _cloudService.UpdateAsync(fileId, file.FileName, stream, file.ContentType/*, User.GetUserId()*/);
 
         return Ok(fileInfo);
     }
