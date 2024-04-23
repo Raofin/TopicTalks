@@ -17,7 +17,7 @@ public static class Dependencies
 
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
                 In = ParameterLocation.Header,
-                Description = "Please enter a bearer token",
+                Description = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbGxvQHJhd2Zpbi5uZXQiLCJVc2VySWQiOiIxIiwiSXNWZXJpZmllZCI6dHJ1ZSwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiU3R1ZGVudCIsImV4cCI6MTcxNDQ2NjY4OCwiaXNzIjoiaHR0cHM6Ly9yYXdmaW4ubmV0IiwiYXVkIjoiaHR0cHM6Ly9yYXdmaW4ubmV0In0.UOYB2fttBpn1zVS-xgrSw8MOolWyvkO85sF60Rv4eu8",
                 Name = "Authorization",
                 Type = SecuritySchemeType.Http,
                 BearerFormat = "JWT",
