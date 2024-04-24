@@ -7,6 +7,10 @@ public class RegistrationValidator : AbstractValidator<RegistrationRequest>
 {
     public RegistrationValidator()
     {
+        RuleFor(x => x.Username)
+            .NotEmpty().WithMessage("Username is required.")
+            .Length(3, 20).WithMessage("Username must be between 3 and 20 characters.");
+
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required.")
             // https://stackoverflow.com/a/201378/15324456

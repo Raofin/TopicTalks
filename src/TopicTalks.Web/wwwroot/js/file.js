@@ -1,44 +1,51 @@
 ﻿function Upload(imageElement) {
-    if (validateImage($(imageElement), mbToBytes(2))) {
-        previewImage(imageElement)
+    return new Promise((resolve, reject) => {
+        if (validateImage($(imageElement), mbToBytes(2))) {
+            $('#profile-pic-loading').show();
 
-        var formData = new FormData();
-        formData.append('file', $(imageElement)[0].files[0]);
+            previewImage(imageElement);
 
-        $.ajax({
-            url: '/file',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: (response) => {
-                console.table(response);
-                return response;
-                toastMessage('Image uploaded successfully.', ToastType.Success);
-            },
-            error: () => {
-                toastMessage('Error uploading image', ToastType.Error);
-            }
-        });
-    } else {
-        $(imageElement).val('');
-        removePreviewImage();
-        toastMessage('Please select a valid image.', ToastType.Error);
-    }
+            var formData = new FormData();
+            formData.append('file', $(imageElement)[0].files[0]);
+
+            $.ajax({
+                url: '/file',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: (response) => {
+                    resolve(response);
+                },
+                error: () => {
+                    toastMessage('Error uploading image', ToastType.Error);
+                    reject('Error uploading image');
+                }
+            });
+        } else {
+            $(imageElement).val('');
+            removePreviewImage();
+            reject('Please select a valid image.');
+        }
+    });
 }
 
-function validateImage(imageElement, maxSize = 2097152) {
+function validateImage(imageElement) {
     var file = imageElement[0].files[0];
 
-    if (!file) {
-        appendFileError(imageElement, 'Please select an image file.');
-    } else if (!file.type.startsWith('image/')) {
-        appendFileError(imageElement, 'Please select a valid image.');
-    } else if (file.size > maxSize) {
-        appendFileError(imageElement, `Max size allowed is ${bytesToMB(maxSize)} MB.`);
-    } else {
-        removeFileError();
-        return true;
+    switch (true) {
+        case !file:
+            toastMessage('Please select an image.', ToastType.Error);
+            break;
+        case !file.type.startsWith('image/'):
+            toastMessage('Please select a valid image.', ToastType.Error);
+            break;
+        case file.size > mbToBytes(2):
+            toastMessage('Max image size allowed is 2 MB.', ToastType.Error);
+            break;
+        default:
+            removeFileError();
+            return true;
     }
 
     return false;
@@ -49,23 +56,27 @@ function previewImage(imageElement) {
 
     if (file) {
         var previewImage = $('#preview-image');
-        previewImage.attr('src', URL.createObjectURL(file)).show().on('load', function () {
+        previewImage.attr('src', URL.createObjectURL(file)).show().on('load', () => {
             URL.revokeObjectURL(previewImage.attr('src'));
         });
+        $('#image-label').hide()
+        $('.image-input').addClass('no-padding');
     }
 }
 
 function removePreviewImage() {
+    $('#image-label').show()
+    $('.image-input').removeClass('no-padding');
     $('#preview-image').hide();
     $('#preview-image').attr('src', '');
 }
 
-function appendFileError(selector, message) {
-    $(selector).after(`<label id="file-error" class="error" for="${$(selector).attr('id')}">${message}</label>`);
+function appendLabel(selector) {
+    $(selector).after(`<label id="message" style="color: #595c5f" for="${$(selector).attr('id')}">Choose an image (Max 2 MB)</label>`);
 }
 
 function removeFileError() {
-    $('#file-error').remove();
+    $('#message').remove();
 }
 
 function bytesToMB(bytes) {

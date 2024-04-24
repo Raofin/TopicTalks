@@ -4,7 +4,6 @@ using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
 using TopicTalks.Domain;
 using TopicTalks.Domain.Entities;
-using TopicTalks.Domain.Enums;
 using TopicTalks.Domain.Interfaces.Core;
 
 namespace TopicTalks.Application.Services;
@@ -22,9 +21,9 @@ internal class AccountService(
 
     public async Task<ErrorOr<AuthenticationResponse>> RegisterAsync(RegistrationRequest request)
     {
-        var isEmailExists = await _unitOfWork.User.IsEmailExistsAsync(request.Email);
+        var isExists = await _unitOfWork.User.IsExistsAsync(request.Username, request.Email);
 
-        if (isEmailExists)
+        if (isExists)
         {
             return Error.Conflict();
         }
@@ -32,9 +31,11 @@ internal class AccountService(
         var (hashedPassword, salt) = _passwordService.HashPasswordWithSalt(request.Password);
 
         var user = new User {
+            Username = request.Username,
             Email = request.Email,
             PasswordHash = hashedPassword,
             Salt = salt,
+            ImageFileId = request.ImageFileId
         };
 
         user.UserRoles.Add(new UserRole {
@@ -82,14 +83,7 @@ internal class AccountService(
     {
         return new AuthenticationResponse(
             Token: _tokenService.GenerateJwtToken(user),
-            User: new UserDto(
-                UserId: user.UserId,
-                Email: user.Email,
-                IsVerified: user.IsVerified,
-                UserDetails: user.UserDetails.ToDto(),
-                Roles: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList(),
-                CreatedAt: user.CreatedAt
-            )
+            User: user.ToDto()
         );
     }
 
@@ -97,21 +91,7 @@ internal class AccountService(
     {
         var user = await _unitOfWork.User.GetWithDetailsAsync(userId);
 
-        if (user is null)
-        {
-            return Error.NotFound();
-        }
-
-        var userDto = new UserDto(
-            UserId: user.UserId,
-            Email: user.Email,
-            IsVerified: user.IsVerified,
-            CreatedAt: user.CreatedAt,
-            UserDetails: user.UserDetails.ToDto(),
-            Roles: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()
-        );
-
-        return userDto;
+        return user is null ? Error.NotFound() : user.ToDto();
     }
 
     public async Task<ErrorOr<Success>> ChangePasswordAsync(long userId, PasswordChangeRequest request)

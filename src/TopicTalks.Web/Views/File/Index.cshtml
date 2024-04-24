@@ -1,4 +1,9 @@
-﻿<input type="file" id="image" name="image" accept="image/*">
+﻿
+<div class="mb-3">
+    <label for="image" class="form-label">Default file input example</label>
+    <input class="form-control" type="file" id="image" name="image" accept="image/*">
+</div>
+
 <img id="preview-image" style="display: none;" alt="">
 
 
@@ -6,7 +11,9 @@
     <script>
 
         $('#image').change(function () {
-            Upload(this);
+            Upload(this).then(res => {
+                console.table(res);
+            });
         });
 
     </script>

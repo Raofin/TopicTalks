@@ -4,28 +4,37 @@
 <div class="container mt-5">
     <div class="container-div" style="max-width: 430px;">
         <h2 class="mb-4 text-center title">Registration</h2>
-
         <form id="registration" asp-controller="Account" asp-action="Register" method="post">
+            <div class="mb-3">
+                <label for="image" class="form-label mb-0">Profile Picture</label>
+                <div class="image-input">
+                    <img id="preview-image" style="display: none;" alt="">
+                    <input class="form-control" type="file" id="image" name="image" accept="image/*">
+                    <img src="img/rolling.svg" id="profile-pic-loading" alt="" />
+                    <label id="image-label" for="image">Choose an image</label>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Username">Username</label>
+                <input asp-for="Username" class="form-control" placeholder="Enter your username" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
             <div class="form-group mb-3">
                 <label asp-for="Email">Email Address</label>
                 <input asp-for="Email" class="form-control" placeholder="Enter your email" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
-
             <div class="form-group mb-3">
                 <label asp-for="Password">Password</label>
                 <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-
             <div class="form-group mb-3">
                 <label asp-for="ConfirmPassword">Confirm Password</label>
                 <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm your password" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
-
             <div id="additional-fields"></div>
-
             <div class="form-group mb-2">
                 <label asp-for="Role">Role</label>
                 <select id="Role" asp-for="Role" class="form-control">
@@ -36,9 +45,11 @@
                     }
                 </select>
             </div>
-
             <div class="text-center pt-2">
-                <button type="submit" class="btn btn-primary">Register</button>
+                <button type="submit" id="register" class="btn btn-primary">
+                    <img src="img/rolling-white.svg" id="register-btn-loading" alt="" />
+                    Register
+                </button>
                 <div class="mt-3">
                     Already have an account? <a asp-action="Login" class="link-text">Login</a>
                 </div>
@@ -50,19 +61,40 @@
 @section Scripts
 {
     <script>
+        var imageFileId;
+        var uploading = false;
+        var submitWaiting = false;
 
-        $("#Role").change(function () {
-            var selectedRole = $(this).val();
+        $('#image').on("change", function () {
+            $('#image').css({ "pointer-events": "none" });
+            uploading = true;
 
-            if (selectedRole === "Student") {
-                $("#additional-fields").load('/LoadAdditionalFields');
-            } else {
-                $("#additional-fields").html("");
-            }
+            Upload(this)
+                .then((response) => {
+                    console.table(response)
+                    imageFileId = response.cloudFileId;
+                })
+                .catch(() => {
+                    imageFileId = null;
+                })
+                .finally(() => {
+                    uploading = false;
+                    $('#profile-pic-loading').hide();
+                    $('#image').css({ "pointer-events": "auto" });
+
+                    if (submitWaiting) {
+                        $("#registration").valid() && $("#registration").trigger("submit");
+                    }
+                });
         });
 
         $("#registration").validate({
             rules: {
+                Username: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 20
+                },
                 Email: {
                     required: true,
                     email: true
@@ -81,32 +113,25 @@
                 },
                 "UserDetails.Name": {
                     required: {
-                        depends: function (element) {
-                            return $("#Role").val() === "Student";
-                        }
+                        depends: () => $("#Role").val() === "Student"
                     },
                     minlength: 3,
                     maxlength: 50
                 },
                 "UserDetails.InstituteName": {
                     required: {
-                        depends: function (element) {
-                            return $("#Role").val() === "Student";
-                        }
+                        depends: () => $("#Role").val() === "Student"
                     },
                     minlength: 3,
                     maxlength: 50
                 },
                 "UserDetails.IdCardNumber": {
                     required: {
-                        depends: function (element) {
-                            return $("#Role").val() === "Student";
-                        }
+                        depends: () => $("#Role").val() === "Student"
                     },
                     minlength: 6,
                     maxlength: 20
                 },
-
             },
             messages: {
                 Email: {
@@ -135,18 +160,35 @@
                     required: "Please enter your ID card number"
                 }
             },
-            submitHandler: function (form) {
+            submitHandler: (form) => {
+                $('#register-btn-loading').show();
+
+                if (uploading == true) {
+                    submitWaiting = true;
+                    $('#register').css({ "pointer-events": "none" });
+                    return;
+                }
+
+                var data = $(form).serializeArray().reduce((obj, item) => {
+                    obj[item.name] = item.value;
+                    return obj;
+                }, {});
+
+                if (imageFileId) {
+                    data.ImageFileId = imageFileId;
+                }
+
                 $.ajax({
                     url: '@Url.Action("Register", "Account")',
                     type: 'POST',
-                    data: $(form).serialize(),
-                    success: function (response) {
+                    data: data,
+                    success: () => {
                         toastMessageNext("Registration Successful! Verification code has been sent to your email address.", ToastType.Success);
                         window.location.href = '@Url.Action("Verify", "Account", new { otpSent = true })';
                     },
-                    error: function (xhr) {
+                    error: (xhr) => {
                         if (xhr.status == 409) {
-                            toastMessage("User with the provided email already exists.");
+                            toastMessage("User with the provided username or email already exists.");
                         } else if (xhr.status === 400) {
                             toastMessage("Please fill out all the fields properly.");
                         } else {
@@ -154,6 +196,19 @@
                         }
                     }
                 });
+
+                $('#register').css({ "pointer-events": "auto" });
+                $('#register-btn-loading').hide();
+            }
+        });
+
+        $('#Role').on("change", function () {
+            var selectedRole = $(this).val();
+
+            if (selectedRole === "Student") {
+                $("#additional-fields").load('@Url.Action("LoadAdditionalFields", "Account")');
+            } else {
+                $("#additional-fields").html("");
             }
         });
     </script>

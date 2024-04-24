@@ -13,11 +13,13 @@ public record AuthenticationResponse(
 );
 
 public record RegistrationRequest(
+    string Username,
     string Email,
     string Password,
     string ConfirmPassword,
     RoleType Role,
-    UserDetailDto? UserDetails
+    UserDetailDto? UserDetails,
+    string? ImageFileId
 );
 
 public record PasswordChangeRequest(

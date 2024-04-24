@@ -1,10 +1,25 @@
 ﻿using TopicTalks.Application.Dtos;
 using TopicTalks.Domain.Entities;
+using TopicTalks.Domain.Enums;
 
 namespace TopicTalks.Application.Extensions;
 
 public static class EntityExtensions
 {
+    public static UserDto ToDto(this User user)
+    {
+        return new UserDto (
+            UserId: user.UserId,
+            Username: user.Username,
+            Email: user.Email,
+            IsVerified: user.IsVerified,
+            UserDetails: user.UserDetails.ToDto(),
+            Roles: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList(),
+            CreatedAt: user.CreatedAt,
+            ImageFileId: user.ImageFileId
+        );
+    }
+
     public static QuestionResponseDto ToDto(this Question question)
     {
         return new QuestionResponseDto(

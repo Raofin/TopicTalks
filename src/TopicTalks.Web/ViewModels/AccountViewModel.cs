@@ -13,11 +13,13 @@ public record AuthenticationResponse(
 );
 
 public record RegisterViewModel(
+    string Username,
     string Email,
     string Password,
     string ConfirmPassword,
     RoleType Role,
-    UserDetailsViewModel? UserDetails
+    UserDetailsViewModel? UserDetails,
+    string? ImageFileId
 );
 
 public record PasswordChangeViewModel(

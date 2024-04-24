@@ -9,9 +9,11 @@ public record UserBasicInfoDto(
 
 public record UserDto(
     long UserId,
+    string Username,
     string Email,
     bool IsVerified,
     DateTime CreatedAt,
+    string? ImageFileId,
     UserDetailDto? UserDetails,
     List<RoleType> Roles
 );
