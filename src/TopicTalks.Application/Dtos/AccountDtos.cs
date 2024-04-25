@@ -3,7 +3,7 @@
 namespace TopicTalks.Application.Dtos;
 
 public record LoginRequest(
-    string Email,
+    string UsernameOrEmail,
     string Password
 );
 

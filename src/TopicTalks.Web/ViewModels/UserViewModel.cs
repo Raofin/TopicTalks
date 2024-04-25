@@ -2,11 +2,13 @@
 
 public record UserBasicInfoViewModel(
     long? UserId,
+    string? Username,
     string? Email
 );
 
 public record UserViewModel(
     long UserId,
+    string Username,
     string Email,
     bool IsVerified,
     DateTime CreatedAt,

@@ -4,7 +4,7 @@
 @model TopicTalks.Web.ViewModels.QuestionWithAnswersViewModel
 
 @{
-    var authorEmail = Model.UserInfo?.Email ?? "Delete User";
+    var authorUsername = Model.UserInfo?.Username ?? "Delete User";
     var authorId = Model.UserInfo?.UserId.ToString() ?? "0";
 
     async Task RenderAnswers(List<AnswerWithRepliesViewModel> answers, int marginLeft = 0)
@@ -12,11 +12,11 @@
         foreach (var answer in answers)
         {
             var answerAuthorId = answer.UserInfo?.UserId.ToString() ?? "0";
-            var answerAuthorEmail = answer.UserInfo?.Email ?? "Delete User";
+            var answerAuthorUsername = answer.UserInfo?.Username ?? "Delete User";
 
             <div id="answer-@(answer.AnswerId) parent-@(answer.ParentAnswerId)" class="rounded border p-3 mb-3" style="margin-left: @(marginLeft)px;">
                 <div class="d-flex justify-content-between">
-                    <p><strong>@(answerAuthorEmail)</strong> on <local-time utc-datetime="@answer.CreatedAt" format="2" time-ago="true"></local-time></p>
+                    <p><strong>@(answerAuthorUsername)</strong> on <local-time utc-datetime="@answer.CreatedAt" format="2" time-ago="true"></local-time></p>
                     <div class="d-flex gap-2">
                         @if (Context.UserRole().Contains(RoleType.Moderator) || answerAuthorId == Context.UserId())
                         {
@@ -51,7 +51,7 @@
         <div id="question-container" question="@Model.QuestionId">
             <div class="d-flex justify-content-between">
                 <p>
-                    <strong>@(authorEmail)</strong><i id="edited-at">
+                    <strong>@(authorUsername)</strong><i id="edited-at">
                         @{
                             if (Model.UpdatedAt is not null)
                             {

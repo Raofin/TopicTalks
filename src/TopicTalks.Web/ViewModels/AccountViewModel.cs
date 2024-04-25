@@ -3,7 +3,7 @@
 namespace TopicTalks.Web.ViewModels;
 
 public record LoginViewModel(
-    string Email,
+    string UsernameOrEmail,
     string Password
 );
 

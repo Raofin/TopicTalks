@@ -27,13 +27,19 @@
 @section Scripts
 {
     <script>
-        window.history.replaceState(null, '', window.location.pathname);
+        var lastOtpSentTime = 0;
+        var urlParams = new URLSearchParams(window.location.search);
 
-        var lastSentTime = 0;
+        if (urlParams.has('otpSent')) {
+            window.history.replaceState(null, '', window.location.pathname);
+        } else {
+            lastOtpSentTime = new Date().getTime();
+            toastMessage("Verification code has been sent to your email address. Please use it within 5 minutes.", ToastType.Primary);
+        }
 
         function resendCode() {
             var currentTime = new Date().getTime();
-            var timeDifference = currentTime - lastSentTime;
+            var timeDifference = currentTime - lastOtpSentTime;
 
             if (timeDifference < 30000) { // 30 seconds
                 var secondsLeft = Math.ceil((30000 - timeDifference) / 1000);
@@ -44,7 +50,7 @@
                     type: 'POST',
                     success: () => {
                         toastMessage("Verification code has been sent to your email address. Please use it within 5 minutes.", ToastType.Primary);
-                        lastSentTime = currentTime;
+                        lastOtpSentTime = currentTime;
                     },
                     error: () => {
                         toastMessage("Failed to resend code. Please try again later.");

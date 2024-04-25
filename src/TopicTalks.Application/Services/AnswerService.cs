@@ -100,7 +100,7 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
                 ParentAnswerId = ans.ParentAnswerId,
                 Explanation = ans.Explanation,
                 CreatedAt = ans.CreatedAt,
-                UserInfo = ans.User == null ? null : new UserBasicInfoDto(ans.User.UserId, ans.User.Email),
+                UserInfo = ans.User?.ToBasicInfoDto(),
                 Answers = CreateReplyDtos(answers, ans.AnswerId)
             }).ToList();
     }

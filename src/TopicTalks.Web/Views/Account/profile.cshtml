@@ -2,10 +2,14 @@
 @model TopicTalks.Web.ViewModels.UserViewModel
 
 <div class="container mt-5">
-    <div class="container-div" style="max-width: 430px;">
+    <div class="container-div" style="max-width: 450px;">
         <h2 class="mb-4 text-center title">User Profile</h2>
         <table class="table">
             <tbody>
+                <tr>
+                    <td><label><b>Username</b></label></td>
+                    <td>@Model.Username</td>
+                </tr>
                 <tr>
                     <td><label><b>Email</b></label></td>
                     <td>@Model.Email</td>

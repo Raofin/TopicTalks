@@ -8,7 +8,7 @@ public static class EntityExtensions
 {
     public static UserDto ToDto(this User user)
     {
-        return new UserDto (
+        return new UserDto(
             UserId: user.UserId,
             Username: user.Username,
             Email: user.Email,
@@ -20,16 +20,22 @@ public static class EntityExtensions
         );
     }
 
+    public static UserBasicInfoDto ToBasicInfoDto(this User user)
+    {
+        return new UserBasicInfoDto(
+            UserId: user.UserId,
+            Username: user.Username,
+            Email: user.Email
+        );
+    }
+
     public static QuestionResponseDto ToDto(this Question question)
     {
         return new QuestionResponseDto(
             QuestionId: question.QuestionId,
             Topic: question.Topic,
             Explanation: question.Explanation,
-            UserInfo: question.User is null ? null : new UserBasicInfoDto(
-                UserId: question.User.UserId,
-                Email: question.User.Email
-            ),
+            UserInfo: question.User?.ToBasicInfoDto(),
             CreatedAt: question.CreatedAt,
             UpdatedAt: question.UpdatedAt
         );
@@ -37,8 +43,7 @@ public static class EntityExtensions
 
     public static UserDetailDto? ToDto(this UserDetail? userDetail)
     {
-        return userDetail == null
-            ? null
+        return userDetail == null ? null
             : new UserDetailDto(
                 Name: userDetail.FullName,
                 InstituteName: userDetail.InstituteName,
@@ -54,11 +59,7 @@ public static class EntityExtensions
             QuestionId: answer.QuestionId,
             Explanation: answer.Explanation,
             CreatedAt: answer.CreatedAt,
-            UserInfo: answer.User == null ? null
-                : new UserBasicInfoDto(
-                    UserId: answer.User.UserId,
-                    Email: answer.User.Email
-                )
-            );
+            UserInfo: answer.User?.ToBasicInfoDto()
+        );
     }
 }

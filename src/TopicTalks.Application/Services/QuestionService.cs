@@ -54,9 +54,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
                 QuestionId: question.QuestionId,
                 Topic: question.Topic,
                 Explanation: question.Explanation,
-                UserInfo: question.User is null 
-                    ? null 
-                    : new UserBasicInfoDto(question.User.UserId, question.User.Email),
+                UserInfo: question.User?.ToBasicInfoDto(),
                 CreatedAt: question.CreatedAt,
                 UpdatedAt: question.UpdatedAt
             );
@@ -99,9 +97,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
                 HasTeachersResponse: question.Answers
                     .Any(answer => answer.User is not null && answer.User.UserRoles
                         .Any(ur => ur.Role.RoleName == nameof(RoleType.Teacher))),
-                UserInfo: question.User is null
-                    ? null
-                    : new UserBasicInfoDto(question.User.UserId, question.User.Email),
+                UserInfo: question.User?.ToBasicInfoDto(),
                 Answers: answers,
                 CreatedAt: question.CreatedAt,
                 UpdatedAt: question.UpdatedAt

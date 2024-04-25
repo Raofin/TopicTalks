@@ -4,6 +4,7 @@ namespace TopicTalks.Application.Dtos;
 
 public record UserBasicInfoDto(
     long UserId,
+    string Username,
     string Email
 );
 

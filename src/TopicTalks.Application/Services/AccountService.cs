@@ -65,21 +65,16 @@ internal class AccountService(
 
     public async Task<ErrorOr<AuthenticationResponse>> LoginAsync(LoginRequest request)
     {
-        var user = await _unitOfWork.User.GetWithDetailsAsync(request.Email);
+        var user = await _unitOfWork.User.GetWithDetailsAsync(request.UsernameOrEmail);
 
         if (user == null)
         {
             return Error.NotFound();
         }
 
-        var isUserVerified = _passwordService.VerifyPassword(user.PasswordHash, user.Salt, request.Password);
-
-        if (!isUserVerified)
-        {
-            return Error.Unauthorized();
-        }
-
-        return Authenticate(user);
+        return _passwordService.VerifyPassword(user.PasswordHash, user.Salt, request.Password)
+            ? Authenticate(user) 
+            : Error.Unauthorized();
     }
 
     private AuthenticationResponse Authenticate(User user)

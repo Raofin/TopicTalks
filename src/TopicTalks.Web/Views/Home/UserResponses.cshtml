@@ -14,7 +14,7 @@
         {
             <div class="q-list-container">
                 <div class="d-flex justify-content-between">
-                    <p><strong>@(question.UserInfo != null ? question.UserInfo.Email : "Delete User")</strong></p>
+                    <p><strong>@(question.UserInfo != null ? question.UserInfo.Username : "Delete User")</strong></p>
                     <p><local-time utc-datetime="@question.CreatedAt" format="3" time-ago="true"></local-time></p>
                 </div>
 

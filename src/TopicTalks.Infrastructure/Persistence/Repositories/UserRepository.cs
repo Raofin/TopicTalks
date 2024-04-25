@@ -18,45 +18,37 @@ internal class UserRepository(AppDbContext dbContext) : Repository<User>(dbConte
 
     public Task<User> GetByEmailAsync(string email)
     {
-        var user = _dbContext.Users
+        return _dbContext.Users
             .Where(u => u.Email == email)
             .SingleAsync();
-
-        return user;
     }
 
     public async Task<List<User>> GetWithDetailsAsync()
     {
-        var user = await _dbContext.Users
+        return await _dbContext.Users
             .Include(u => u.UserDetails)
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
             .ToListAsync();
-
-        return user;
     }
 
-    public async Task<User?> GetWithDetailsAsync(string email)
+    public async Task<User?> GetWithDetailsAsync(string usernameOrEmail)
     {
-        var user = await _dbContext.Users
+        return await _dbContext.Users
             .Include(u => u.UserDetails)
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
-            .Where(u => u.Email == email)
+            .Where(u => u.Username == usernameOrEmail || u.Email == usernameOrEmail)
             .SingleOrDefaultAsync();
-
-        return user;
     }
 
     public async Task<User?> GetWithDetailsAsync(long userId)
     {
-        var user = await _dbContext.Users
+        return await _dbContext.Users
             .Include(u => u.UserDetails)
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
             .Where(u => u.UserId == userId)
             .SingleOrDefaultAsync();
-
-        return user;
     }
 }

@@ -142,7 +142,7 @@ function appendAnswer(response) {
     var answer = `
         <div id="answer-${response.answerId} parent-${response.parentAnswerId}" class="rounded border p-3 mb-3">
             <div class="d-flex justify-content-between">
-                <p><strong>${response.userInfo.email}</strong> on ${getFormattedDate()} (0 seconds ago)</p>
+                <p><strong>${response.userInfo.username}</strong> on ${getFormattedDate()} (0 seconds ago)</p>
                 <div class="d-flex gap-2">
                     <span class="link-text text-danger" onclick="deleteAnswer(${response.answerId})">Delete</span>
                     <span class="link-text text-success" onclick="appendInput(${response.questionId}, ${response.answerId}, true)">Edit</span>
@@ -164,7 +164,7 @@ function appendReply(response) {
     let reply = `
             <div id="answer-${response.answerId} parent-${response.parentAnswerId}" class="rounded border p-3 mb-3" style="margin-left: ${marginLeft}px;">
                 <div class="d-flex justify-content-between">
-                    <p><strong>${response.userInfo.email}</strong> on ${getFormattedDate()} (0 seconds ago)</p>
+                    <p><strong>${response.userInfo.username}</strong> on ${getFormattedDate()} (0 seconds ago)</p>
                     <div class="d-flex gap-2">
                         <span class="link-text text-danger" onclick="deleteAnswer(${response.answerId})">Delete</span>
                         <span class="link-text text-success" onclick="appendInput(${response.questionId}, ${response.answerId}, true)">Edit</span>

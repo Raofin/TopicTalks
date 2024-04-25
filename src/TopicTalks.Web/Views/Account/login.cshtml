@@ -1,14 +1,14 @@
 ﻿@model TopicTalks.Web.ViewModels.LoginViewModel
 
 <div class="container mt-5">
-    <div class="container-div" style="max-width: 430px;">
+    <div class="container-div" style="max-width: 400px;">
         <h2 class="mb-4 text-center title">Login</h2>
 
         <form id="login-form" asp-controller="Account" asp-action="Login" method="post">
             <div class="form-group mb-3">
-                <label asp-for="Email">Email Address</label>
-                <input id="emailInput" asp-for="Email" name="email" class="form-control" placeholder="Enter your email" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                <label asp-for="UsernameOrEmail">Username or Email</label>
+                <input asp-for="UsernameOrEmail" name="usernameOrEmail" class="form-control" placeholder="Enter your username or email" />
+                <span asp-validation-for="UsernameOrEmail" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
@@ -30,56 +30,45 @@
 @section Scripts
 {
     <script>
-        $("#login-form").submit(function (event) {
-            event.preventDefault();
-        });
-
         $('#login-form').validate({
             rules: {
-                email: {
+                usernameOrEmail: {
                     required: true,
-                    email: true,
-                    minlength: 8
+                    minlength: 3
                 },
                 password: {
                     required: true,
                     minlength: 4
-                },
-                role: {
-                    required: true
                 }
             },
             messages: {
-                Email: {
-                    required: "Please enter your email address",
-                    email: "Please enter a valid email address",
-                    minlength: "Email must be at least 8 characters long"
+                UsernameOrEmail: {
+                    required: "Please enter your username or email address",
+                    minlength: "Invalid username or password"
                 },
                 Password: {
                     required: "Please enter your password",
-                    minlength: "Password must be at least 4 characters long"
-                },
-                Role: {
-                    required: "Please select a role"
+                    minlength: "Invalid password"
                 }
             },
-            submitHandler: function (form) {
+            submitHandler: (form) => {
                 $.ajax({
                     url: '@Url.Action("Login", "Account")',
                     type: 'POST',
                     data: $(form).serialize(),
-                    success: function (response) {
+                    success: () => {
                         toastMessageNext("Login Successful!", ToastType.Success);
                         var returnUrl = new URLSearchParams(window.location.search).get('ReturnUrl');
+
                         if (returnUrl && returnUrl.startsWith('/')) {
                             window.location.href = returnUrl;
                         } else {
                             window.location.href = '@Url.Action("Dashboard", "Home")';
                         }
                     },
-                    error: function (xhr) {
+                    error: (xhr) => {
                         if (xhr.status === 401) {
-                            toastMessage("Login failed. Please check your credentials and role selection.");
+                            toastMessage("Login failed. Please check your credentials and try again.");
                         } else {
                             toastMessage("Internal server error. Please try again later.");
                         }
