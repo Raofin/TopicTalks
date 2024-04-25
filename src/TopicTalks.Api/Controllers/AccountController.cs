@@ -20,8 +20,7 @@ public class AccountController(IAccountService accountService, IExcelService exc
     {
         var registration = await _userService.RegisterAsync(request);
 
-        return registration.IsError switch 
-        {
+        return registration.IsError switch {
             false => Ok(registration.Value),
             _ => registration.Errors.Any(e => e.Type is ErrorType.Conflict)
                 ? Conflict("User with the provided email already exists.")
@@ -35,8 +34,7 @@ public class AccountController(IAccountService accountService, IExcelService exc
     {
         var login = await _userService.LoginAsync(request);
 
-        return login.IsError switch 
-        {
+        return login.IsError switch {
             false => Ok(login.Value),
             _ => login.Errors.Any(e => e.Type is ErrorType.NotFound or ErrorType.Unauthorized)
                 ? Unauthorized("Invalid Credentials.")
@@ -55,6 +53,15 @@ public class AccountController(IAccountService accountService, IExcelService exc
                 ? Unauthorized("Invalid old password.")
                 : Problem("An unexpected error occurred.")
         };
+    }
+
+    [AllowAnonymous]
+    [HttpPost("exists")]
+    public async Task<IActionResult> CheckUserExists(UserExistsRequest user)
+    {
+        var exists = await _userService.IsUserExistsAsync(user.Username, user.Email);
+
+        return Ok(new { Exists = exists });
     }
 
     [HttpGet("profile")]
@@ -91,8 +98,8 @@ public class AccountController(IAccountService accountService, IExcelService exc
 
         var verification = await _userService.VerifyOtpAsync(User.GetEmail(), verify.Code);
 
-        return verification.IsError 
-            ? BadRequest("Invalid Otp.") 
+        return verification.IsError
+            ? BadRequest("Invalid Otp.")
             : Ok(verification.Value);
     }
 }

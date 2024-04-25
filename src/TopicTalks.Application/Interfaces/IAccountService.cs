@@ -5,6 +5,7 @@ namespace TopicTalks.Application.Interfaces;
 
 public interface IAccountService
 {
+    Task<bool> IsUserExistsAsync(string? username, string? email);
     Task<ErrorOr<AuthenticationResponse>> RegisterAsync(RegistrationRequest request);
     Task<ErrorOr<AuthenticationResponse>> LoginAsync(LoginRequest request);
     Task<ErrorOr<UserDto>> GetWithDetailsAsync(long userId);

@@ -146,3 +146,10 @@ var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggl
 var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
     return new bootstrap.Popover(popoverTriggerEl)
 })
+
+// Override the default email validation method
+var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+$.validator.addMethod("email", function (value, element) {
+    return this.optional(element) || emailRegex.test(value);
+}, "Please enter a valid email address");

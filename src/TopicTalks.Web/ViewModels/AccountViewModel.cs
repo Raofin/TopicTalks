@@ -28,4 +28,6 @@ public record PasswordChangeViewModel(
     string ConfirmPassword
 );
 
+public record UserExistsViewModel(string? Username, string? Email);
+
 public record VerifyViewModel(string Code);

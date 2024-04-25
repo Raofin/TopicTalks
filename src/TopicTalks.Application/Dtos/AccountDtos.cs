@@ -28,4 +28,6 @@ public record PasswordChangeRequest(
     string ConfirmPassword
 );
 
+public record UserExistsRequest(string? Username, string? Email);
+
 public record VerifyRequest(string Code);

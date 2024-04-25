@@ -61,6 +61,14 @@
 @section Scripts
 {
     <script>
+        $.validator.setDefaults({
+            onkeyup: () => (element) => {
+                if ($("#Username")[0] === element || $("#Email")[0] === element) {
+                    return false;
+                }
+            }
+        })
+
         var imageFileId;
         var uploading = false;
         var submitWaiting = false;
@@ -93,16 +101,29 @@
                 Username: {
                     required: true,
                     minlength: 3,
-                    maxlength: 20
+                    maxlength: 20,
+                    remote: {
+                        url: "@Url.Action("CheckUserExists", "Account")",
+                        type: "post",
+                        data: { username: () => $("#Username").val() },
+                        dataFilter: (response) => !JSON.parse(response).exists
+                    }
                 },
                 Email: {
                     required: true,
-                    email: true
+                    email: true,
+                    remote: {
+                        url: "@Url.Action("CheckUserExists", "Account")",
+                        type: "post",
+                        data: { email: () => $("#Email").val() },
+                        dataFilter: (response) => !JSON.parse(response).exists
+                    }
                 },
                 Password: {
                     required: true,
                     minlength: 4,
-                    maxlength: 20
+                    maxlength: 20,
+                    onkeyup: false
                 },
                 ConfirmPassword: {
                     required: true,
@@ -134,9 +155,16 @@
                 },
             },
             messages: {
+                Username: {
+                    required: "Please enter a username",
+                    minlength: "Your username must be at least 3 characters long",
+                    maxlength: "Your username must not exceed 20 characters",
+                    remote: "Username is already taken"
+                },
                 Email: {
                     required: "Please enter your email address",
-                    email: "Please enter a valid email address"
+                    email: "Please enter a valid email address",
+                    remote: "Email already exists"
                 },
                 Password: {
                     required: "Please enter a password",

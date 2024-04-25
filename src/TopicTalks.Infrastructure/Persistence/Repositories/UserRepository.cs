@@ -8,9 +8,12 @@ internal class UserRepository(AppDbContext dbContext) : Repository<User>(dbConte
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task<bool> IsExistsAsync(string username, string email)
+    public async Task<bool> IsUserExistsAsync(string? username, string? email)
     {
-        return await _dbContext.Users.AnyAsync(u => u.Username == username || u.Email == email);
+        return await _dbContext.Users.AnyAsync(u =>
+            (!string.IsNullOrEmpty(username) && u.Username == username) ||
+            (!string.IsNullOrEmpty(email) && u.Email == email)
+        );
     }
 
     public Task<User> GetByEmailAsync(string email)

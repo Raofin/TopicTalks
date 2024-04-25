@@ -4,7 +4,7 @@ namespace TopicTalks.Domain.Interfaces.Repositories;
 
 public interface IUserRepository : IRepository<User>
 {
-    Task<bool> IsExistsAsync(string username, string email);
+    Task<bool> IsUserExistsAsync(string? username, string? email);
     Task<User> GetByEmailAsync(string email);
     Task<List<User>> GetWithDetailsAsync();
     Task<User?> GetWithDetailsAsync(string email);

@@ -68,6 +68,16 @@ public class AccountController(IAuthService authService, IHttpService httpServic
         return PartialView("~/Views/Partials/_AdditionalFields.cshtml");
     }
 
+    [HttpPost("exists")]
+    public async Task<IActionResult> CheckUserExists(UserExistsViewModel userExists)
+    {
+        var response = await _httpService.Client.PostAsync("api/account/exists", userExists.ToStringContent());
+
+        return response.IsSuccessStatusCode 
+            ? Ok(response.ToJson()) 
+            : new StatusCodeResult((int)response.StatusCode);
+    }
+
     [Authorize]
     [HttpGet("profile")]
     public async Task<IActionResult> Profile()

@@ -19,11 +19,14 @@ internal class AccountService(
     private readonly IJwtGenerator _tokenService = tokenService;
     private readonly IEmailSender _emailService = emailService;
 
+    public async Task<bool> IsUserExistsAsync(string? username, string? email)
+    {
+        return await _unitOfWork.User.IsUserExistsAsync(username, email);
+    }
+
     public async Task<ErrorOr<AuthenticationResponse>> RegisterAsync(RegistrationRequest request)
     {
-        var isExists = await _unitOfWork.User.IsExistsAsync(request.Username, request.Email);
-
-        if (isExists)
+        if (await IsUserExistsAsync(request.Username, request.Email))
         {
             return Error.Conflict();
         }
