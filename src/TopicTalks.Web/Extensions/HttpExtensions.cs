@@ -44,6 +44,11 @@ public static class HttpExtensions
         return httpContext.User.FindFirst(ClaimTypes.Email)?.Value;
     }
 
+    public static string? Username(this HttpContext httpContext)
+    {
+        return httpContext.User.FindFirst("Username")?.Value;
+    }
+
     public static bool IsUserVerified(this HttpContext httpContext)
     {
         return bool.Parse(httpContext.User.FindFirst("IsVerified")?.Value ?? "false");
@@ -51,8 +56,6 @@ public static class HttpExtensions
 
     public static List<RoleType> UserRole(this HttpContext httpContext)
     {
-        var x = httpContext.User.FindAll(ClaimTypes.Role);
-
         return httpContext.User
             .FindAll(ClaimTypes.Role)
             .Select(c => Enum.Parse<RoleType>(c.Value))

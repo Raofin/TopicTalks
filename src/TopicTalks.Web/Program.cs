@@ -2,15 +2,16 @@ using TopicTalks.Web;
 using TopicTalks.Web.Common;
 using TopicTalks.Web.Services;
 using TopicTalks.Web.Services.Interfaces;
+using WebMarkupMin.AspNetCore8;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<AppSettings>(builder.Configuration);
-builder.Services.AddAppConfigurations(builder.Environment);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient(builder.Configuration);
 builder.Services.AddMvc();
+builder.Services.AddAppConfigurations(builder.Environment);
 
 builder.Services.AddTransient<ITokenCacheService, TokenCacheService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
@@ -31,6 +32,7 @@ else
 
 app.UseStaticFiles();
 app.UseWebOptimizer();
+app.UseWebMarkupMin();
 
 app.UseHttpsRedirection();
 app.UseRouting();

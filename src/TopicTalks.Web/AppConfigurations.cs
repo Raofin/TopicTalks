@@ -14,9 +14,9 @@ public static class AppConfigurations
         services
             .AddAuthorization()
             .AddAuthentication()
-            .AddCorsConfiguration()
             .AddWebMarkupMin()
-            .AddWebOptimizer(environment);
+            .AddWebOptimizer(environment)
+            .AddCorsConfiguration();
 
         return services;
     }

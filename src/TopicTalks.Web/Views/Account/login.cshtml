@@ -1,7 +1,7 @@
 ﻿@model TopicTalks.Web.ViewModels.LoginViewModel
 
 <div class="container mt-5">
-    <div class="container-div" style="max-width: 400px;">
+    <div class="content-container" style="max-width: 400px;">
         <h2 class="mb-4 text-center title">Login</h2>
 
         <form id="login-form" asp-controller="Account" asp-action="Login" method="post">
@@ -20,7 +20,7 @@
             <div class="text-center pt-2">
                 <button type="submit" class="btn btn-primary">Login</button>
                 <div class="mt-3">
-                    New here? <a asp-action="Register" class="link-text">Register</a>
+                    New here? <a asp-action="Register" class="link">Register</a>
                 </div>
             </div>
         </form>

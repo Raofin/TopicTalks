@@ -20,12 +20,18 @@
                     <div class="d-flex gap-2">
                         @if (Context.UserRole().Contains(RoleType.Moderator) || answerAuthorId == Context.UserId())
                         {
-                            <span class="link-text text-danger" onclick="deleteAnswer(@(answer.AnswerId))">Delete</span>
-                            <span class="link-text text-success" onclick="appendInput(@(Model.QuestionId), @(answer.AnswerId), true)">Edit</span>
+                            <span class="link text-danger" onclick="deleteAnswer(@(answer.AnswerId))" pop="delete" data-tippy-theme="red">
+                                <i class="fi i-delete"></i>
+                            </span>
+                            <span class="link text-success" onclick="appendInput(@(Model.QuestionId), @(answer.AnswerId), true)" pop="Edit">
+                                <i class="fi i-edit blue-hover" data-bs-trigger="hover focus" data-bs-placement="bottom" data-bs-content="Edit"></i>
+                            </span>
                         }
                         @if (!Context.UserRole().Contains(RoleType.Moderator))
                         {
-                            <span class="link-text" onclick="appendInput(@(Model.QuestionId), @(answer.AnswerId))">Reply</span>
+                            <span onclick="appendInput(@(Model.QuestionId), @(answer.AnswerId))" pop="Reply">
+                                <i class="fi i-reply blue-hover" style="color: #333"></i>
+                            </span>
                         }
                     </div>
                 </div>
@@ -47,7 +53,7 @@
 }
 
 <div class="container mt-5">
-    <div id="question-details" class="q-list-container">
+    <div id="question-details" class="question-container">
         <div id="question-container" question="@Model.QuestionId">
             <div class="d-flex justify-content-between">
                 <p>
@@ -75,15 +81,19 @@
                 <div class="d-flex gap-2">
                     @if (Context.UserRole().Contains(RoleType.Moderator) || (authorId == Context.UserId() && !Model.HasTeachersResponse))
                     {
-                        <span class="link-text text-danger" onclick="deleteQuestion(@Model.QuestionId)">Delete</span>
+                        <span class="link text-danger" onclick="deleteQuestion(@Model.QuestionId)" pop="Delete" data-tippy-theme="red">
+                            <i class="fi i-delete"></i>
+                        </span>
                     }
                     @if (Context.UserRole().Contains(RoleType.Moderator) || authorId == Context.UserId())
                     {
-                        <span id="edit-question" class="link-text text-success">Edit</span>
+                        <span id="edit-question" class="link text-success blue-hover" pop="Edit">
+                            <i class="fi i-edit"></i>
+                        </span>
                     }
-                    <a class="link-text text-dark" asp-controller="Question" asp-action="GetPdf" asp-route-questionId="@Model.QuestionId" target="_blank">
-                        <i class="bx bxs-printer bx-sm"></i>
-                    </a>
+                    <span onclick="getPdf()" class="link blue-hover" pop="Print" style="color: indigo">
+                        <i class="fi i-printer"></i>
+                    </span>
                 </div>
             </div>
         </div>
@@ -111,10 +121,13 @@
         }
     </div>
 </div>
-
 @section Scripts
 {
     <script>
+        function getPdf() {
+            window.open('@Url.Action("GetPdf", "Question", new { questionId = Model.QuestionId })', '_blank');
+        }
+
         $("#edit-question").on("click", function () {
             var questionId = $("#question-container").attr("question")
             var editedQuestion = appendQuestionEditInput(questionId)

@@ -2,7 +2,7 @@
 @model TopicTalks.Web.ViewModels.RegisterViewModel
 
 <div class="container mt-5">
-    <div class="container-div" style="max-width: 430px;">
+    <div class="content-container" style="max-width: 430px;">
         <h2 class="mb-4 text-center title">Registration</h2>
         <form id="registration" asp-controller="Account" asp-action="Register" method="post">
             <div class="mb-3">
@@ -51,7 +51,7 @@
                     Register
                 </button>
                 <div class="mt-3">
-                    Already have an account? <a asp-action="Login" class="link-text">Login</a>
+                    Already have an account? <a asp-action="Login" class="link">Login</a>
                 </div>
             </div>
         </form>

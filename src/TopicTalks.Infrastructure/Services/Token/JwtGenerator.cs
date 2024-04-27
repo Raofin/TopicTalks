@@ -19,6 +19,7 @@ internal class JwtGenerator(IOptions<JwtSettings> jwtSettings) : IJwtGenerator
         {
             new(JwtRegisteredClaimNames.Email, user.Email),
             new("UserId", user.UserId.ToString()),
+            new("Username", user.Username),
             new("IsVerified", user.IsVerified.ToString(), ClaimValueTypes.Boolean),
         };
 

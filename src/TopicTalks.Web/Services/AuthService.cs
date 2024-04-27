@@ -23,6 +23,7 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor, IOptions<Ap
             {
                 new(JwtRegisteredClaimNames.Email, _principal.FindFirstValue(ClaimTypes.Email)!),
                 new("UserId", _principal.Claims.Single(c => c.Type == "UserId").Value),
+                new("Username", _principal.Claims.Single(c => c.Type == "Username").Value),
                 new("IsVerified", _principal.Claims.Single(c => c.Type == "IsVerified").Value, ClaimValueTypes.Boolean)
             };
 

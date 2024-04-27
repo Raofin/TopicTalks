@@ -1,33 +1,119 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+﻿/* #region Global Styles */
+
+:root {
+  --coral-red: #ff4653;
+  --deep-blue: #30325e
+}
+
+html {
+  font-size: 100%
+}
+
+main {
+  margin-bottom: 5.4rem
+}
 
 body {
   position: relative;
   margin: 0;
-  padding-bottom: 20px;
+  padding-bottom: 1.25rem;
   min-height: 100vh;
   font-family: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif
 }
 
-main {
-  margin-bottom: 85px
+  body::before {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background-image: url('../img/background.jpg');
+    background-size: cover;
+    background-repeat: unset;
+    width: 100%;
+    height: 100%;
+    content: ''
+  }
+
+a {
+  text-decoration: none;
+  transition: .4s ease
 }
 
-body::before {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  background-image: url('../img/background.jpg');
-  background-size: cover;
-  background-repeat: unset;
-  width: 100%;
-  height: 100%;
-  content: ''
-}
 
 label {
-  margin-left: 4px
+  margin-left: .25rem
+}
+
+.link {
+  color: dodgerblue
+}
+
+.link,
+.blue-hover {
+  cursor: pointer;
+  transition: .4s ease;
+}
+
+a:not(.btn):hover {
+  color: var(--coral-red) !important
+}
+
+.blue-hover:hover {
+  color: dodgerblue !important
+}
+
+/* #endregion */
+
+/* #region Header & Footer Styles */
+
+.navbar {
+  backdrop-filter: blur(.5rem);
+  background-color: rgba(255, 255, 255, 50%) !important
+}
+
+.navbar-nav a {
+  font-weight: 600;
+  transition: .4s ease;
+  --bs-text-opacity: 1;
+  color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important;
+}
+
+.container-fluid a,
+.container-fluid ul,
+.container-fluid li {
+  display: flex;
+  align-items: center
+}
+
+.navbar-brand {
+  filter: drop-shadow(.125rem .125rem .125rem rgba(0, 0, 0, .2));
+  font-weight: bold
+}
+
+.logo {
+  padding-right: .31rem;
+  max-width: 2.5rem;
+  max-height: 2.2rem
+}
+
+.logo-text {
+  margin-bottom: .13rem;
+  color: var(--coral-red);
+  font-size: 1.9rem;
+  font-family: "Tilt Warp", sans-serif
+}
+
+  .logo-text span {
+    color: var(--deep-blue)
+  }
+
+.nav-center li {
+  padding: 0 .32rem
+}
+
+.nav-link i {
+  margin-right: .25rem;
+  font-size: 1rem
 }
 
 .footer {
@@ -35,143 +121,50 @@ label {
   bottom: 0;
   left: 0;
   backdrop-filter: blur(3px);
-  padding: 20px 10%;
+  padding: 1.25rem 10%;
   width: 100%;
   text-align: center
 }
 
-.container-div {
-  backdrop-filter: blur(8px);
-  margin: 0 auto 70px;
-  box-shadow: rgba(99, 99, 99, .2) 0 2px 30px 0;
-  border-radius: 8px !important;
-  background-color: rgba(255, 255, 255, 50%) !important;
-  padding: 50px
-}
+/* #endregion */
 
-  .container-div table {
-    --bs-table-bg: none
-  }
-
-.navbar {
-  backdrop-filter: blur(8px);
-  background-color: rgba(255, 255, 255, 50%) !important
-}
-
-.nav-text {
-  font-weight: 600
-}
-
-.nav-link {
-  transition: .4s ease
-}
-
-  .nav-link:hover {
-    color: #ff4653 !important
-  }
-
-.logo {
-  padding-right: 5px;
-  max-width: 40px;
-  max-height: 35px
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, .2));
-  margin-right: 20px;
-  font-weight: bold;
-  text-decoration: none
-}
-
-.logo-text {
-  margin-bottom: 2px;
-  color: #ff4653;
-  font-size: 30px;
-  font-family: "Tilt Warp", sans-serif
-}
-
-  .logo-text span {
-    color: #30325e
-  }
-
-.role {
-  filter: drop-shadow(0 0 2px rgba(0, 0, 0, .2));
-  margin: 3px 3px 5px;
-  border-radius: 14px;
-  background: #78e4a4d6;
-  padding: 5px 12px !important;
-  font-weight: 500
-}
-
-#login label {
-  padding-left: 3px
-}
+/* #region Container Styles */
 
 .title {
   font-family: "Tilt Warp", sans-serif
 }
 
-.reg-table td {
-  padding-bottom: 10px;
-  padding-left: 10px
-}
-
-.reg-table .form-control {
-  width: 250px
-}
-
-a {
-  text-decoration: none
-}
-
-.topic > p {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 6px;
-  background: #ddd;
-  padding: 2px 9px;
-  font-size: 15px
-}
-
-.q-list-container {
-  backdrop-filter: blur(8px);
-  margin: 0 auto 30px;
+.content-container {
+  backdrop-filter: blur(.5rem);
+  margin: 0 auto 4.4rem;
   box-shadow: rgba(99, 99, 99, .2) 0 2px 30px 0;
-  border-radius: 8px !important;
+  border-radius: .5rem !important;
   background-color: rgba(255, 255, 255, 50%) !important;
-  padding: 25px;
-  max-width: 800px
+  padding: 3.12rem
 }
 
-  .q-list-container p {
-    margin-bottom: 5px
+.question-container {
+  backdrop-filter: blur(.5rem);
+  margin: 0 auto 1.875rem;
+  box-shadow: rgba(99, 99, 99, .2) 0 .125rem 1.875rem 0;
+  border-radius: .5rem !important;
+  background-color: rgba(255, 255, 255, 50%) !important;
+  padding: 1.6rem;
+  max-width: 50rem
+}
+
+  .question-container p {
+    margin-bottom: .32rem
   }
 
-.link-text {
-  cursor: pointer;
-  color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1))
+#question-container {
+  transform: scale(1);
+  transition: transform .3s ease
 }
 
-.error {
-  border-color: #dc3545;
-  color: #dc3545
-}
-
-  .error:focus {
-    outline: 0;
-    box-shadow: 0 0 0 .25rem rgba(255, 76, 50, .3);
-    border-color: #8b0000;
-    background-color: var(--bs-body-bg);
-    color: var(--bs-body-color)
+  #question-container.loading {
+    transform: scale(.95)
   }
-
-.student-details {
-  border: var(--bs-border-width) solid var(--bs-border-color);
-  border-radius: var(--bs-border-radius)
-}
 
 .topic p {
   transition: background .3s ease;
@@ -180,15 +173,30 @@ a {
   text-decoration: none
 }
 
-  .topic p:hover {
-    background: #ededed
-  }
+.topic > p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: .4rem;
+  background: #ddd;
+  padding: .13rem .6rem;
+  font-size: .95rem
+}
+
+.topic p:hover {
+  background: #ededed
+}
+
+.student-details {
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius)
+}
 
 .otp-code input {
   transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
   margin: 0 .25rem;
   outline: 0;
-  border: 1px solid transparent;
+  border: .07rem solid transparent;
   border-radius: .375rem;
   background-color: #ebebeb;
   padding: 1rem;
@@ -208,20 +216,40 @@ a {
     color: var(--bs-body-color)
   }
 
-#question-container {
-  transform: scale(1);
-  transition: transform .3s ease
+/* #endregion */
+
+/* #region Image & Icon Styles */
+
+.header-profile-image {
+  width: 1.88rem;
+  height: 1.88rem;
+  overflow: hidden;
+  border-radius: 50%;
+  border: .13rem solid #fff;
+  background: #fff;
+  outline: .13rem solid #212529;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: .4s ease
 }
 
-  #question-container.loading {
-    transform: scale(.95)
+  .header-profile-image img {
+    max-width: 100%;
+    max-height: 100%
+  }
+
+  .account:hover,
+  .header-profile-image:hover {
+    color: #ff4653 !important;
+    outline-color: #ff4653 !important
   }
 
 #preview-image {
   width: 100%;
   height: auto;
   object-fit: cover;
-  border-radius: 0.25rem;
+  border-radius: .25rem
 }
 
 .image-input {
@@ -232,13 +260,13 @@ a {
   background-color: #fff;
   border: var(--bs-border-width) solid var(--bs-border-color);
   border-radius: .25rem;
-  padding: .375rem .50rem;
-  cursor: pointer;
+  padding: .375rem .5rem;
+  cursor: pointer
 }
 
   .image-input:focus-within {
     border-color: #86b7fe;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, .25);
+    box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .25)
   }
 
   .image-input input[type="file"] {
@@ -249,24 +277,31 @@ a {
     height: 100%;
     opacity: 0;
     cursor: pointer;
-    padding: 0;
+    padding: 0
   }
 
   .image-input.no-padding {
-    padding: 0px;
+    padding: 0
   }
 
 #profile-pic-loading {
   display: none;
   position: absolute;
-  width: 50px;
-  right: 3px;
-  bottom: 3px;
+  width: 3.13rem;
+  right: .19rem;
+  bottom: .19rem
 }
 
 #register-btn-loading {
   display: none;
-  height: 20px;
-  margin-right: 3px;
-  padding-bottom: 3px;
+  height: 1.25rem;
+  margin-right: .19rem;
+  padding-bottom: .19rem
+}
+
+/* #endregion */
+
+
+.tippy-box[data-theme~='red'] {
+  background-color: var(--coral-red);
 }

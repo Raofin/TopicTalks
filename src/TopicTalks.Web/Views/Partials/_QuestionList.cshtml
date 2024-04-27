@@ -3,7 +3,7 @@
 
 @if (Model.Count == 0)
 {
-    <div class="q-list-container text-center" style="padding: 40px 130px">
+    <div class="question-container text-center" style="padding: 40px 130px">
         <h1 class="title">No responded questions available</h1>
     </div>
 }
@@ -11,7 +11,7 @@ else
 {
     foreach (var item in Model)
     {
-        <div id="question-@item.QuestionId" class="q-list-container">
+        <div id="question-@item.QuestionId" class="question-container">
             <div class="d-flex justify-content-between">
                 <p><strong>@(item.UserInfo != null ? item.UserInfo.Username : "Delete User")</strong></p>
                 <p><local-time utc-datetime="@item.CreatedAt" format="3" time-ago="true"></local-time></p>

@@ -2,7 +2,8 @@
 
 <div class="container mt-5">
     <div class="text-center mb-3 w-50 m-auto">
-        <input class="form-control text-center" style="height: 50px; font-size: 20px" type="text" id="searchInput" placeholder="Type anything to search">
+        <input id="searchInput" type="text" placeholder="Type anything to search"
+               class="form-control text-center" style="height: 3.125rem; font-size: 1.25rem">
     </div>
     <div id="question-container">
         @await Html.PartialAsync("~/Views/Partials/_QuestionList.cshtml", Model)

@@ -27,47 +27,6 @@ function formatTopics(topics) {
     }
 }
 
-function timeAgo(datetime) {
-    const SECOND = 1;
-    const MINUTE = 60 * SECOND;
-    const HOUR = 60 * MINUTE;
-    const DAY = 24 * HOUR;
-    const MONTH = 30 * DAY;
-
-    const now = new Date();
-    const timestamp = new Date(datetime);
-    const delta = Math.abs(now - timestamp) / 1000;
-
-    if (delta < 1 * MINUTE)
-        return timestamp.getSeconds() === 1 ? 'one second ago' : timestamp.getSeconds() + ' seconds ago';
-
-    if (delta < 2 * MINUTE)
-        return 'a minute ago';
-
-    if (delta < 45 * MINUTE)
-        return timestamp.getMinutes() + ' minutes ago';
-
-    if (delta < 90 * MINUTE)
-        return 'an hour ago';
-
-    if (delta < 24 * HOUR)
-        return timestamp.getHours() + ' hours ago';
-
-    if (delta < 48 * HOUR)
-        return 'yesterday';
-
-    if (delta < 30 * DAY)
-        return timestamp.getDate() + ' days ago';
-
-    if (delta < 12 * MONTH) {
-        const months = Math.floor(delta / 30);
-        return months <= 1 ? 'one month ago' : months + ' months ago';
-    } else {
-        const years = Math.floor(delta / 365);
-        return years <= 1 ? 'one year ago' : years + ' years ago';
-    }
-}
-
 const ToastType = {
     Error: "danger",
     Success: "success",
@@ -141,15 +100,26 @@ function logout() {
         });
 }
 
-// Enable popovers
-var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-    return new bootstrap.Popover(popoverTriggerEl)
-})
-
 // Override the default email validation method
 var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 $.validator.addMethod("email", function (value, element) {
     return this.optional(element) || emailRegex.test(value);
 }, "Please enter a valid email address");
+
+
+// Load RawfinIcons font
+new FontFaceObserver('RawfinIcons')
+    .load()
+    .then(() => $('.fi').css('display', 'inline'))
+
+// Initialize tippy.js
+tippy.setDefaultProps({ delayanimation: 'perspective-subtle' });
+
+function setTippyContent() {
+    tippy('[pop]', {
+        content: (reference) => reference.getAttribute('pop')
+    });
+}
+
+setTippyContent()

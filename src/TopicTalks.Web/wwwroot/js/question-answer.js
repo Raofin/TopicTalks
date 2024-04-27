@@ -144,9 +144,15 @@ function appendAnswer(response) {
             <div class="d-flex justify-content-between">
                 <p><strong>${response.userInfo.username}</strong> on ${getFormattedDate()} (0 seconds ago)</p>
                 <div class="d-flex gap-2">
-                    <span class="link-text text-danger" onclick="deleteAnswer(${response.answerId})">Delete</span>
-                    <span class="link-text text-success" onclick="appendInput(${response.questionId}, ${response.answerId}, true)">Edit</span>
-                    <span class="link-text" onclick="appendInput(${response.questionId}, ${response.answerId})">Reply</span>
+                    <span class="link text-danger" onclick="deleteAnswer(${response.answerId})" pop="Delete" data-tippy-theme="red">
+                        <i class="fi i-delete" style="display: inline;"></i>
+                    </span>
+                    <span class="link text-success" onclick="appendInput(${response.questionId}, ${response.answerId}, true)" pop="Edit">
+                        <i class="fi i-edit" style="display: inline;"></i>
+                    </span>
+                    <span class="link" onclick="appendInput(${response.questionId}, ${response.answerId})" pop="Reply">
+                        <i class="fi i-reply blue-hover" style="color: #333; display: inline;"></i>
+                    </span>
                 </div>
             </div>
             <div class="form-group row">
@@ -155,6 +161,8 @@ function appendAnswer(response) {
         </div>`;
 
     $("#answer-container").append(answer);
+
+    setTippyContent()
 }
 
 function appendReply(response) {
@@ -166,9 +174,15 @@ function appendReply(response) {
                 <div class="d-flex justify-content-between">
                     <p><strong>${response.userInfo.username}</strong> on ${getFormattedDate()} (0 seconds ago)</p>
                     <div class="d-flex gap-2">
-                        <span class="link-text text-danger" onclick="deleteAnswer(${response.answerId})">Delete</span>
-                        <span class="link-text text-success" onclick="appendInput(${response.questionId}, ${response.answerId}, true)">Edit</span>
-                        <span class="link-text" onclick="appendInput(${response.questionId}, ${response.answerId})">Reply</span>
+                        <span class="link text-danger" onclick="deleteAnswer(${response.answerId})" pop="Delete" data-tippy-theme="red">
+                            <i class="fi i-delete" style="display: inline;"></i>
+                        </span>
+                        <span class="link text-success" onclick="appendInput(${response.questionId}, ${response.answerId}, true)" pop="Edit">
+                            <i class="fi i-edit" style="display: inline;"></i>
+                        </span>
+                        <span class="link" onclick="appendInput(${response.questionId}, ${response.answerId})" pop="Reply">
+                            <i class="fi i-reply blue-hover" style="color: #333; display: inline;"></i>
+                        </span>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -177,6 +191,8 @@ function appendReply(response) {
             </div>`;
 
     $(`[id*='answer-${response.parentAnswerId}']`).after(reply);
+
+    setTippyContent()
 }
 
 function deleteQuestion(questionId) {

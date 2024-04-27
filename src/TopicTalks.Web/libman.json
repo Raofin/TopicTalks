@@ -3,11 +3,10 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "bootstrap@5.3.3",
-      "destination": "wwwroot/lib/bootstrap-5.3.3/",
+      "library": "normalize@8.0.1",
+      "destination": "wwwroot/lib/normalize-8.0.1/",
       "files": [
-        "css/bootstrap.min.css",
-        "js/bootstrap.bundle.min.js"
+        "normalize.min.css"
       ]
     },
     {
@@ -23,6 +22,21 @@
       "files": [
         "jquery.validate.min.js",
         "additional-methods.min.js"
+      ]
+    },
+    {
+      "library": "bootstrap@5.3.3",
+      "destination": "wwwroot/lib/bootstrap-5.3.3/",
+      "files": [
+        "css/bootstrap.min.css",
+        "js/bootstrap.bundle.min.js"
+      ]
+    },
+    {
+      "library": "fontfaceobserver@2.3.0",
+      "destination": "wwwroot/lib/fontfaceobserver-2.3.0/",
+      "files": [
+        "fontfaceobserver.min.js"
       ]
     }
   ]
