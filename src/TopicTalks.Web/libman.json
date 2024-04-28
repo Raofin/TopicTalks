@@ -33,6 +33,21 @@
       ]
     },
     {
+      "library": "popper.js@2.11.8",
+      "destination": "wwwroot/lib/popper.js-2.11.8/",
+      "files": [
+        "umd/popper.min.js"
+      ]
+    },
+    {
+      "library": "tippy.js@6.3.7",
+      "destination": "wwwroot/lib/tippy.js-6.3.7/",
+      "files": [
+        "tippy.umd.min.js",
+        "animations/perspective-subtle.min.css"
+      ]
+    },
+    {
       "library": "fontfaceobserver@2.3.0",
       "destination": "wwwroot/lib/fontfaceobserver-2.3.0/",
       "files": [

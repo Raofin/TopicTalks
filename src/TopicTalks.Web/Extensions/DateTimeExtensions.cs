@@ -17,14 +17,14 @@ public static class DateTimeExtensions
 
         return delta switch
         {
-            < 1 * minute => ts.Seconds == 1 ? "one second ago" : ts.Seconds + " seconds ago",
+            < 1 * minute => ts.Seconds == 1 ? "just now" : ts.Seconds + " seconds ago",
             < 2 * minute => "a minute ago",
             < 45 * minute => ts.Minutes + " minutes ago",
             < 90 * minute => "an hour ago",
             < 24 * hour => ts.Hours + " hours ago",
             < 48 * hour => "yesterday",
             < 30 * day => ts.Days + " days ago",
-            < 12 * month => months <= 1 ? "one month ago" : months + " months ago",
+            < 12 * month => months <= 1 ? "a month ago" : months + " months ago",
             _ => years <= 1 ? "one year ago" : years + " years ago"
         };
     }

@@ -57,7 +57,7 @@
                     type: 'POST',
                     data: $(form).serialize(),
                     success: () => {
-                        toastMessageNext("Login Successful!", ToastType.Success);
+                        toastMessageNext("Login Successful!", ToastColor.Green);
                         var returnUrl = new URLSearchParams(window.location.search).get('ReturnUrl');
 
                         if (returnUrl && returnUrl.startsWith('/')) {

@@ -57,11 +57,11 @@
                     type: 'POST',
                     data: $(form).serialize(),
                     success: (response) => {
-                        toastMessageNext("Question Posted!", ToastType.Success);
+                        toastMessageNext("Question Posted!", ToastColor.Green);
                         window.location.href = '@Url.Action("Dashboard", "Home")';
                     },
                     error: (xhr) => {
-                        toastMessage('Internal server error. Please try again later.', ToastType.Error);
+                        toastMessage('Internal server error. Please try again later.');
                     }
                 });
             }

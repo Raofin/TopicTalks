@@ -14,12 +14,12 @@
     <div class="container">
         <main role="main">
             @RenderBody()
-            @await Html.PartialAsync("~/Views/Partials/_ToastMessage.cshtml")
         </main>
     </div>
 
     @await Html.PartialAsync("_Footer")
     @await Html.PartialAsync("_Scripts")
+    @await Html.PartialAsync("~/Views/Partials/_ToastMessage.cshtml")
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

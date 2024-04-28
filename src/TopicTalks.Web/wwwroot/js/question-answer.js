@@ -30,7 +30,7 @@ function appendInput(questionId, answerId, edit) {
         if (edit) {
             $.get(`/answer/${answerId}`)
                 .done((data) => { $("#reply-text").val(data.explanation); })
-                .fail(() => { toastMessage("Error fetching answer.", ToastType.Error); });
+                .fail(() => { toastMessage("Error fetching answer.", ToastColor.Red); });
         }
 
         $('#reply-form').validate({
@@ -54,11 +54,11 @@ function appendInput(questionId, answerId, edit) {
                         data: $(form).serialize(),
                         success: (data) => {
                             $("#explanation-" + data.answerId).text(data.explanation);
-                            toastMessage("Edit Successful!", ToastType.Success);
+                            toastMessage("Edit Successful!", ToastColor.Green);
                             closeReplyInput();
                         },
                         error: () => {
-                            toastMessage('Internal server error. Please try again later.', ToastType.Error);
+                            toastMessage('Internal server error. Please try again later.', ToastColor.Red);
                         }
                     });
 
@@ -71,16 +71,11 @@ function appendInput(questionId, answerId, edit) {
                     data: $(form).serialize(),
                     success: (response) => {
                         appendReply(response);
-                        toastMessage("Reply Submitted!", ToastType.Success);
+                        toastMessage("Reply Submitted!", ToastColor.Green);
                         closeReplyInput();
-                        document.getElementById("answer-" + response.answerId).scrollIntoView({
-                            behavior: "smooth",
-                            block: "center",
-                            inline: "nearest"
-                        });
                     },
                     error: () => {
-                        toastMessage('Internal server error. Please try again later.', ToastType.Error);
+                        toastMessage('Internal server error. Please try again later.', ToastColor.Red);
                     }
                 });
             }
@@ -98,7 +93,7 @@ function fetchAnswer(answerId) {
             $("#answer-23 textarea#reply-text").val((_index, value) => value + explanation);
         },
         error: () => {
-            toastMessage("Error fetching answer.", ToastType.Error);
+            toastMessage("Error fetching answer.", ToastColor.Red);
         }
     });
 }
@@ -123,11 +118,11 @@ $('#answer-form').validate({
             data: $(form).serialize(),
             success: (response) => {
                 appendAnswer(response);
-                toastMessage("Answer Submitted!", ToastType.Success);
+                toastMessage("Answer Submitted!", ToastColor.Green);
                 $("#answer-form")[0].reset();
             },
             error: () => {
-                toastMessage('Internal server error. Please try again later.', ToastType.Error);
+                toastMessage('Internal server error. Please try again later.', ToastColor.Red);
             }
         });
     }
@@ -142,7 +137,7 @@ function appendAnswer(response) {
     var answer = `
         <div id="answer-${response.answerId} parent-${response.parentAnswerId}" class="rounded border p-3 mb-3">
             <div class="d-flex justify-content-between">
-                <p><strong>${response.userInfo.username}</strong> on ${getFormattedDate()} (0 seconds ago)</p>
+                <p><strong>${response.userInfo.username}</strong> on ${currentDate()} (just now)</p>
                 <div class="d-flex gap-2">
                     <span class="link text-danger" onclick="deleteAnswer(${response.answerId})" pop="Delete" data-tippy-theme="red">
                         <i class="fi i-delete" style="display: inline;"></i>
@@ -172,7 +167,7 @@ function appendReply(response) {
     let reply = `
             <div id="answer-${response.answerId} parent-${response.parentAnswerId}" class="rounded border p-3 mb-3" style="margin-left: ${marginLeft}px;">
                 <div class="d-flex justify-content-between">
-                    <p><strong>${response.userInfo.username}</strong> on ${getFormattedDate()} (0 seconds ago)</p>
+                    <p><strong>${response.userInfo.username}</strong> on ${currentDate()} (just now)</p>
                     <div class="d-flex gap-2">
                         <span class="link text-danger" onclick="deleteAnswer(${response.answerId})" pop="Delete" data-tippy-theme="red">
                             <i class="fi i-delete" style="display: inline;"></i>
@@ -200,11 +195,11 @@ function deleteQuestion(questionId) {
         url: `/question/${questionId}`,
         method: 'DELETE',
         success: () => {
-            toastMessageNext("Question Deleted!", ToastType.Success);
+            toastMessageNext("Question Deleted!", ToastColor.Green);
             window.location.href = '/';
         },
         error: () => {
-            toastMessage('Internal server error. Please try again later.', ToastType.Error);
+            toastMessage('Internal server error. Please try again later.', ToastColor.Red);
         }
     });
 }
@@ -214,13 +209,13 @@ function deleteAnswer(answerId) {
         url: `/answer/${answerId}`,
         method: 'DELETE',
         success: () => {
-            toastMessage("Answer Deleted!", ToastType.Success);
+            toastMessage("Answer Deleted!", ToastColor.Green);
 
             $(`[id*='answer-${answerId}']`).remove();
             $(`[id*='parent-${answerId}']`).remove();
         },
         error: () => {
-            toastMessage('Internal server error. Please try again later.', ToastType.Error);
+            toastMessage('Internal server error. Please try again later.', ToastColor.Red);
         }
     });
 }

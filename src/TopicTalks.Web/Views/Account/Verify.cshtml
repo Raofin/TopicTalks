@@ -34,7 +34,7 @@
             window.history.replaceState(null, '', window.location.pathname);
         } else {
             lastOtpSentTime = new Date().getTime();
-            toastMessage("Verification code has been sent to your email address. Please use it within 5 minutes.", ToastType.Primary);
+            toastMessage("Verification code has been sent to your email address. Please use it within 5 minutes.", ToastColor.Blue);
         }
 
         function resendCode() {
@@ -49,7 +49,7 @@
                     url: '@Url.Action("Verify", "Account")',
                     type: 'POST',
                     success: () => {
-                        toastMessage("Verification code has been sent to your email address. Please use it within 5 minutes.", ToastType.Primary);
+                        toastMessage("Verification code has been sent to your email address. Please use it within 5 minutes.", ToastColor.Blue);
                         lastOtpSentTime = currentTime;
                     },
                     error: () => {
@@ -82,7 +82,7 @@
                     type: 'POST',
                     data: { Code: code },
                     success: function (response) {
-                        toastMessageNext("Verification Successful!", ToastType.Success);
+                        toastMessageNext("Verification Successful!", ToastColor.Green);
                         window.location.href = '@Url.Action("Dashboard", "Home")';
                     },
                     error: function (xhr) {

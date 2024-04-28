@@ -177,11 +177,11 @@
                                 $("#explanation").text(response.explanation)
                                 $("#topics").html(formatTopics(response.topic))
                                 $("#edited-at").text(" Edited (0 second ago)")
-                                toastMessage("Edit Successful!", ToastType.Success)
+                                toastMessage("Edit Successful!", ToastColor.Green)
                                 closeReplyInput()
                             },
                             error: (xhr) => {
-                                toastMessage('Internal server error. Please try again later.', ToastType.Error);
+                                toastMessage('Internal server error. Please try again later.');
                             }
                         })
                     }

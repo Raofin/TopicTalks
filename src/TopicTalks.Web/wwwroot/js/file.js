@@ -18,7 +18,7 @@
                     resolve(response);
                 },
                 error: () => {
-                    toastMessage('Error uploading image', ToastType.Error);
+                    toastMessage('Error uploading image');
                     reject('Error uploading image');
                 }
             });
@@ -35,13 +35,13 @@ function validateImage(imageElement) {
 
     switch (true) {
         case !file:
-            toastMessage('Please select an image.', ToastType.Error);
+            toastMessage('Please select an image.');
             break;
         case !file.type.startsWith('image/'):
-            toastMessage('Please select a valid image.', ToastType.Error);
+            toastMessage('Please select a valid image.');
             break;
         case file.size > mbToBytes(2):
-            toastMessage('Max image size allowed is 2 MB.', ToastType.Error);
+            toastMessage('Max image size allowed is 2 MB.');
             break;
         default:
             removeFileError();

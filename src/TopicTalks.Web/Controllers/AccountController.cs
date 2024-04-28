@@ -90,7 +90,7 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     }
 
     [Authorize]
-    [HttpGet("change-password")]
+    [HttpGet("password")]
     public IActionResult ChangePassword()
     {
         return View();
@@ -102,8 +102,8 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     {
         var response = await _httpService.Client.PatchAsync("api/account/password", passwordChange.ToStringContent());
 
-        return response.IsSuccessStatusCode
-            ? Ok()
+        return response.IsSuccessStatusCode 
+            ? Ok() 
             : new StatusCodeResult((int)response.StatusCode);
     }
 

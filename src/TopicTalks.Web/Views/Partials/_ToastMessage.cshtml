@@ -1,30 +1,8 @@
-﻿@{
-    var customError = ViewData["Error"] as string;
+﻿@using TopicTalks.Web.Common
 
-    var isFormSubmitted = string.Equals(ViewContext.HttpContext.Request.Method, "POST", StringComparison.OrdinalIgnoreCase);
-}
-
-@if (isFormSubmitted && !string.IsNullOrEmpty(customError))
+@if (ViewData[nameof(Toast)] is Toast toast)
 {
-    <div id="toast-container" class="position-fixed end-0 p-3" style="z-index: 11; bottom: 40px">
-        <div id="error-toast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-            <div class="d-flex">
-                <div class="toast-body">
-                    <p class="mt-0 mb-0">@customError</p>
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var toast = new bootstrap.Toast(document.getElementById('error-toast'));
-            toast.show();
-
-            setTimeout(function () {
-                toast.hide();
-            }, 5000);
-        });
+        toastMessage('@toast.Message', '@toast.Type', @toast.Timer);
     </script>
 }

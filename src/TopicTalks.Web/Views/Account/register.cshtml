@@ -211,7 +211,7 @@
                     type: 'POST',
                     data: data,
                     success: () => {
-                        toastMessageNext("Registration Successful! Verification code has been sent to your email address.", ToastType.Success);
+                        toastMessageNext("Registration Successful! Verification code has been sent to your email address.", ToastColor.Green);
                         window.location.href = '@Url.Action("Verify", "Account", new { otpSent = true })';
                     },
                     error: (xhr) => {
