@@ -161,5 +161,14 @@ internal class AccountService(
         return Authenticate(user);
     }
 
+    public async Task<ErrorOr<UserBasicInfoDto>> GetUserBasicInfo(long userId)
+    {
+        var user = await _unitOfWork.User.GetBasicInfoAsync(userId);
+
+        return user is null 
+            ? Error.NotFound() 
+            : user.ToBasicInfoDto();
+    }
+
     #endregion ### OTP ###
 }

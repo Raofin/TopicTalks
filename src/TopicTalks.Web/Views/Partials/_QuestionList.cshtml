@@ -9,12 +9,33 @@
 }
 else
 {
+
     foreach (var item in Model)
     {
+        var username = item.UserInfo is not null ? "@" + item.UserInfo?.Username : "Delete User";
+        var url = item.UserInfo?.ProfileImageUrl ?? "/img/user.svg";
+
         <div id="question-@item.QuestionId" class="question-container">
             <div class="d-flex justify-content-between">
-                <p><strong>@(item.UserInfo != null ? item.UserInfo.Username : "Delete User")</strong></p>
-                <p><local-time utc-datetime="@item.CreatedAt" format="3" time-ago="true"></local-time></p>
+                <div class="d-flex align-items-center user-preview">
+                    <div class="user-info user-preview" style="display: none">
+                        <div class="d-flex flex-column justify-content-center align-items-center">
+                            <span class="user-image mb-1" style="width: 5rem; height: 5rem;">
+                                <img src="@url" alt="" />
+                            </span>
+                            <p class="text-center mb-0">
+                                <strong>@username</strong><br>Joined @item.CreatedAt.TimeAgo()
+                            </p>
+                        </div>
+                    </div>
+                    <span class="user-image" style="margin-right: 0.3rem">
+                        <img src="@url" alt="" />
+                    </span>
+                    <strong>@(item.UserInfo?.Username ?? "Delete User")</strong>
+                </div>
+                <div>
+                    <local-time utc-datetime="@item.CreatedAt" format="3" time-ago="true"></local-time>
+                </div>
             </div>
 
             <div class="form-group row">

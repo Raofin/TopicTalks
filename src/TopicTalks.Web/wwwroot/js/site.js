@@ -28,3 +28,22 @@ function logout() {
             window.location.href = '/login';
         });
 }
+
+tippy('.user-preview', {
+    content: (ref) => $(ref).children('.user-preview').html(),
+    theme: 'user-info',
+    allowHTML: true,
+    arrow: false,
+})
+
+tippy('.profile-preview', {
+    content: (ref) => $(ref).children('.profile-preview').html(),
+    theme: 'profile-info',
+    allowHTML: true,
+    arrow: false,
+    trigger: 'click',
+    interactive: true,
+    onShown: () => $('.fi').css('display', 'inline'),
+    popperOptions: { strategy: 'fixed' },
+    appendTo: document.body
+})

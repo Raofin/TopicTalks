@@ -75,7 +75,10 @@ new FontFaceObserver('RawfinIcons')
 
 
 // Initialize tippy.js
-tippy.setDefaultProps({ delayanimation: 'perspective-subtle' });
+tippy.setDefaultProps({
+    delayanimation: 'perspective-subtle',
+    theme: 'light'
+});
 
 function setTippyContent() {
     tippy('[pop]', {

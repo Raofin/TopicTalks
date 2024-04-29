@@ -51,4 +51,12 @@ internal class UserRepository(AppDbContext dbContext) : Repository<User>(dbConte
             .Where(u => u.UserId == userId)
             .SingleOrDefaultAsync();
     }
+
+    public async Task<User?> GetBasicInfoAsync(long userId)
+    {
+        return await _dbContext.Users
+            .Include(u => u.ImageFile)
+            .Where(u => u.UserId == userId)
+            .SingleOrDefaultAsync();
+    }
 }

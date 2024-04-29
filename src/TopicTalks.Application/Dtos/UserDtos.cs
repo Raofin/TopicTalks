@@ -2,12 +2,6 @@
 
 namespace TopicTalks.Application.Dtos;
 
-public record UserBasicInfoDto(
-    long UserId,
-    string Username,
-    string Email
-);
-
 public record UserDto(
     long UserId,
     string Username,
@@ -23,6 +17,14 @@ public record UserDetailDto(
     string Name,
     string InstituteName,
     string IdCardNumber
+);
+
+public record UserBasicInfoDto(
+    long UserId,
+    string Username,
+    string Email,
+    string? ProfileImageUrl,
+    DateTime CreatedAt
 );
 
 public record UserRoleDto(

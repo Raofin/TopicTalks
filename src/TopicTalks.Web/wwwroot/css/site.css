@@ -54,6 +54,10 @@ label {
   transition: .4s ease;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 a:not(.btn):hover {
   color: var(--coral-red) !important
 }
@@ -234,16 +238,89 @@ a:not(.btn):hover {
   transition: .4s ease
 }
 
-  .header-profile-image img {
+.user-image {
+  width: 1.5rem;
+  height: 1.5rem;
+  overflow: hidden;
+  border-radius: 50%;
+  border: .13rem solid #5f5f5f00;
+  background: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+  .header-profile-image img,
+  .user-image img,
+  .profile-image img {
     max-width: 100%;
     max-height: 100%
   }
 
-  .account:hover,
-  .header-profile-image:hover {
-    color: #ff4653 !important;
-    outline-color: #ff4653 !important
+.header-profile-image:hover {
+  outline-color: #07325d !important
+}
+
+.tippy-box[data-theme~='user-info'],
+.user-info {
+  width: max-content;
+  max-width: 13rem;
+  padding: 1.2rem;
+  margin: auto;
+  color: var(--bs-gray-900);
+  backdrop-filter: blur(.5rem);
+  box-shadow: rgb(0 0 0 / 24%) 0 1px 4px 0;
+  border-radius: .5rem !important;
+  background-color: rgba(255, 255, 255, 50%) !important;
+}
+
+.profile-image {
+  width: 5rem;
+  height: 5rem;
+  overflow: hidden;
+  border-radius: .3rem;
+  border: .13rem solid #5f5f5f00;
+  background: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-details {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 0.8rem;
+  text-align: center;
+  font-weight: 500;
+  margin-bottom: .1rem;
+  font-size: .92rem
+}
+
+  .profile-details strong {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: -.3rem 0
   }
+
+.profile-button span {
+  font-size: .9rem;
+  padding: .2rem .5rem;
+}
+
+.tippy-box[data-theme~='profile-info'],
+.profile-info {
+  width: max-content;
+  padding: 1rem 1rem .9rem;
+  margin: auto;
+  color: var(--bs-gray-900);
+  backdrop-filter: blur(.5rem);
+  box-shadow: rgb(0 0 0 / 24%) 0 1px 4px 0;
+  border-radius: .3rem !important;
+  max-width: 20rem;
+  background-color: rgb(255 255 255 / 80%) !important;
+}
 
 #preview-image {
   width: 100%;
@@ -300,8 +377,3 @@ a:not(.btn):hover {
 }
 
 /* #endregion */
-
-
-.tippy-box[data-theme~='red'] {
-  background-color: var(--coral-red);
-}

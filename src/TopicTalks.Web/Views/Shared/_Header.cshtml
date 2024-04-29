@@ -62,7 +62,7 @@
                 else
                 {
                     <li>
-                        @if (Context.IsUserVerified())
+                        @if (!Context.IsUserVerified())
                         {
                             <a asp-controller="Account" asp-action="Verify" pop="Please verify your account.">
                                 <i class="fi i-warning text-warning"></i>
@@ -71,15 +71,45 @@
 
                     </li>
                     <li>
-                        <a class="nav-link  fw-bold account" asp-controller="Account" asp-action="Profile">
-                            @Context.Username()
-                        </a>
-                        <a class="header-profile-image" asp-controller="Account" asp-action="Profile">
-                            <img src="https://rawfin.net/assets/img/Rawfin.png">
-                        </a>
-                    </li>
-                    <li>
-                        <i class="fi i-logout text-danger link" style="font-size: 22px; margin-left: 10px;" onclick="logout()"></i>
+                        <span class="d-flex align-items-center pointer profile-preview">
+                            <span class="fw-bold me-2">
+                                @Context.Username()
+                            </span>
+                            <span class="header-profile-image link">
+                                <img src="https://rawfin.net/assets/img/Rawfin.png" alt="">
+                            </span>
+                            <div class="user-info profile-preview" style=" display: none;">
+                                <div class="d-flex flex-column justify-content-center align-items-center">
+                                    <div class="d-flex">
+                                        <div class="profile-image mb-1">
+                                            <img src="https://rawfin.net/assets/img/Rawfin.png" alt="" />
+                                        </div>
+                                        <div class="profile-details">
+                                            <strong style="">@@@Context.Username()</strong>
+                                            <span>@Context.UserEmail()</span>
+                                            <div>
+                                                Status:
+                                                @if (Context.IsUserVerified())
+                                                {
+                                                    <span class="text-success font-weight-bold"> Verified</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="font-weight-bold link" style="color: #af8300" onclick="window.location.href='@Url.Action("Verify", "Account")'">
+                                                        Not Verified
+                                                    </span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="profile-button pt-1">
+                                        <span class="btn btn-danger me-1" onclick="logout()">Logout</span>
+                                        <span class="btn btn-primary" onclick="window.location.href='@Url.Action("Profile", "Account")'">Profile</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </span>
                     </li>
                 }
             </ul>

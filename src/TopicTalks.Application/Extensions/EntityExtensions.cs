@@ -25,7 +25,9 @@ public static class EntityExtensions
         return new UserBasicInfoDto(
             UserId: user.UserId,
             Username: user.Username,
-            Email: user.Email
+            Email: user.Email,
+            ProfileImageUrl: user.ImageFile?.DirectLink,
+            CreatedAt: user.CreatedAt
         );
     }
 

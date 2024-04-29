@@ -15,6 +15,8 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
 
         return await _dbContext.Questions
             .Include(q => q.User)
+            .ThenInclude(u => u!.ImageFile)
+            .Include(q => q.ImageFile)
             .OrderByDescending(q => q.CreatedAt)
             .Where(q => string.IsNullOrEmpty(searchTextLower)
                         || q.Topic.ToLower().Contains(searchTextLower)

@@ -1,11 +1,5 @@
 ﻿namespace TopicTalks.Web.ViewModels;
 
-public record UserBasicInfoViewModel(
-    long? UserId,
-    string? Username,
-    string? Email
-);
-
 public record UserViewModel(
     long UserId,
     string Username,
@@ -20,6 +14,14 @@ public record UserDetailsViewModel(
     string Name,
     string InstituteName,
     string IdCardNumber
+);
+
+public record UserBasicInfoViewModel(
+    long? UserId,
+    string? Username,
+    string? Email,
+    string? ProfileImageUrl,
+    DateTime CreatedAt
 );
 
 public record UserRoleViewModel(

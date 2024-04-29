@@ -77,6 +77,20 @@ public class AccountController(IAccountService accountService, IExcelService exc
             };
     }
 
+    [AllowAnonymous]
+    [HttpGet("basicInfo/{userId}")]
+    public async Task<IActionResult> GetBasicInfo(long userId)
+    {
+        var user = await _userService.GetUserBasicInfo(userId);
+
+        return !user.IsError
+            ? Ok(user.Value)
+            : user.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("User was not found."),
+                _ => Problem("An unexpected error occurred.")
+            };
+    }
+
     [AuthorizeModerator]
     [HttpGet("excel/users")]
     public async Task<IActionResult> GetExcel()

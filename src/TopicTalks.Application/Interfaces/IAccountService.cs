@@ -12,4 +12,5 @@ public interface IAccountService
     Task<ErrorOr<Success>> ChangePasswordAsync(long userId, PasswordChangeRequest request);
     Task SendOtpAsync(string email);
     Task<ErrorOr<AuthenticationResponse>> VerifyOtpAsync(string email, string code);
+    Task<ErrorOr<UserBasicInfoDto>> GetUserBasicInfo(long userId);
 }

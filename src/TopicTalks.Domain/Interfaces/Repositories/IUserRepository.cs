@@ -9,4 +9,5 @@ public interface IUserRepository : IRepository<User>
     Task<List<User>> GetWithDetailsAsync();
     Task<User?> GetWithDetailsAsync(string email);
     Task<User?> GetWithDetailsAsync(long userId);
+    Task<User?> GetBasicInfoAsync(long userId);
 }
