@@ -12,6 +12,8 @@ internal class OtpCleanupService(IServiceScopeFactory serviceScopeFactory) : Bac
     {
         while (!stoppingToken.IsCancellationRequested)
         {
+            await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
+
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
@@ -21,8 +23,6 @@ internal class OtpCleanupService(IServiceScopeFactory serviceScopeFactory) : Bac
 
                 await unitOfWork.CommitAsync();
             }
-
-            await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
         }
     }
 }

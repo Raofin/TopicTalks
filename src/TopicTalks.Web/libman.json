@@ -43,7 +43,7 @@
       "library": "tippy.js@6.3.7",
       "destination": "wwwroot/lib/tippy.js-6.3.7/",
       "files": [
-        "tippy.umd.min.js",
+        "tippy-bundle.umd.min.js",
         "animations/perspective-subtle.min.css"
       ]
     },
