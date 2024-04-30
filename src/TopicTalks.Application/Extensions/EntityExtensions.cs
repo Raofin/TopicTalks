@@ -39,13 +39,14 @@ public static class EntityExtensions
             Explanation: question.Explanation,
             UserInfo: question.User?.ToBasicInfoDto(),
             CreatedAt: question.CreatedAt,
-            UpdatedAt: question.UpdatedAt
+            UpdatedAt: question.UpdatedAt,
+            ImageFile: question.ImageFile?.ToDto()
         );
     }
 
     public static UserDetailDto? ToDto(this UserDetail? userDetail)
     {
-        return userDetail == null ? null
+        return userDetail is null ? null
             : new UserDetailDto(
                 Name: userDetail.FullName,
                 InstituteName: userDetail.InstituteName,
@@ -63,5 +64,21 @@ public static class EntityExtensions
             CreatedAt: answer.CreatedAt,
             UserInfo: answer.User?.ToBasicInfoDto()
         );
+    }
+
+    public static CloudFileDto? ToDto(this CloudFile? imageFile)
+    {
+        return imageFile is null ? null
+            : new CloudFileDto(
+                CloudFileId: imageFile.CloudFileId,
+                Name: imageFile.Name,
+                ContentType: imageFile.ContentType,
+                Size: imageFile.Size,
+                WebContentLink: imageFile.WebContentLink,
+                WebViewLink: imageFile.WebViewLink,
+                DirectLink: imageFile.DirectLink,
+                CreatedAt: imageFile.CreatedAt,
+                UserId: imageFile.UserId
+            );
     }
 }

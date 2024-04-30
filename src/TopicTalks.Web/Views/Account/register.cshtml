@@ -47,7 +47,7 @@
             </div>
             <div class="text-center pt-2">
                 <button type="submit" id="register" class="btn btn-primary">
-                    <img src="img/rolling-white.svg" id="register-btn-loading" alt="" />
+                    <img src="img/rolling-white.svg" class="btn-loading" alt="" />
                     Register
                 </button>
                 <div class="mt-3">
@@ -189,7 +189,7 @@
                 }
             },
             submitHandler: (form) => {
-                $('#register-btn-loading').show();
+                $('.btn-loading').show();
 
                 if (uploading == true) {
                     submitWaiting = true;
@@ -226,7 +226,7 @@
                 });
 
                 $('#register').css({ "pointer-events": "auto" });
-                $('#register-btn-loading').hide();
+                $('.btn-loading').hide();
             }
         });
 

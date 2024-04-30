@@ -1,6 +1,6 @@
 ﻿namespace TopicTalks.Web.ViewModels;
 
-public record UploadedFile(
+public record CloudFileViewModel(
     string CloudFileId,
     string Name,
     string ContentType,

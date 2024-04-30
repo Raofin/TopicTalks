@@ -19,6 +19,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
         var question = new Question {
             Topic = dto.Topic,
             Explanation = dto.Explanation,
+            ImageFileId = dto.ImageFileId,
             UserId = userId
         };
 
@@ -49,15 +50,9 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
     {
         var question = await _unitOfWork.Question.GetWithUserAsync(questionId);
 
-        return question is null ? Error.NotFound()
-            : new QuestionResponseDto(
-                QuestionId: question.QuestionId,
-                Topic: question.Topic,
-                Explanation: question.Explanation,
-                UserInfo: question.User?.ToBasicInfoDto(),
-                CreatedAt: question.CreatedAt,
-                UpdatedAt: question.UpdatedAt
-            );
+        return question is null
+            ? Error.NotFound()
+            : question.ToDto();
     }
 
     public async Task<List<QuestionResponseDto>> SearchAsync(string? searchText)
@@ -100,7 +95,8 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
                 UserInfo: question.User?.ToBasicInfoDto(),
                 Answers: answers,
                 CreatedAt: question.CreatedAt,
-                UpdatedAt: question.UpdatedAt
+                UpdatedAt: question.UpdatedAt,
+                ImageFile: question.ImageFile?.ToDto()
             );
     }
 

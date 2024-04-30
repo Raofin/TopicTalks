@@ -29,7 +29,7 @@ public class FileController(IHttpService httpService) : Controller
         content.Add(new StreamContent(file.OpenReadStream()), "file", file.FileName);
 
         var response = await _httpService.Client.PostAsync("api/cloud", content);
-        var uploadedFile = JsonConvert.DeserializeObject<UploadedFile>(response.ToJson())!;
+        var uploadedFile = JsonConvert.DeserializeObject<CloudFileViewModel>(response.ToJson())!;
 
         return response.IsSuccessStatusCode 
             ? Ok(uploadedFile) 

@@ -33,7 +33,8 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
                 HasTeachersResponse = _dbContext.Answers
                     .Where(a => a.QuestionId == q.QuestionId)
                     .Any(a => a.User != null && a.User.UserRoles
-                        .Any(ur => ur.Role.RoleName == nameof(RoleType.Teacher)))
+                        .Any(ur => ur.Role.RoleName == nameof(RoleType.Teacher))),
+                ImageFile = q.ImageFile
             })
             .AsNoTracking()
             .ToListAsync();
@@ -43,6 +44,7 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
     {
         return await _dbContext.Questions
             .Include(q => q.User)
+            .ThenInclude(u => u!.ImageFile)
             .ToListAsync();
     }
 
@@ -50,6 +52,8 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
     {
         return await _dbContext.Questions
             .Include(q => q.User)
+            .ThenInclude(u => u!.ImageFile)
+            .Include(q => q.ImageFile)
             .FirstOrDefaultAsync(q => q.QuestionId == questionId);
     }
 
@@ -57,31 +61,32 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
     {
         return await _dbContext.Questions
             .Include(q => q.User)
+            .ThenInclude(u => u!.ImageFile)
             .Where(q => q.User != null && q.User.UserId == userId)
             .ToListAsync();
     }
 
     public async Task<List<Question>> GetByUserResponsesAsync(long userId)
     {
-        return await (
-            from answer in _dbContext.Answers
-            where answer.UserId == userId
-            join question in _dbContext.Questions.Include(q => q.User)
-                on answer.QuestionId equals question.QuestionId
-            select question
-        ).ToListAsync();
+        return await _dbContext.Questions
+            .Include(q => q.User)
+            .ThenInclude(u => u!.ImageFile)
+            .Include(q => q.ImageFile)
+            .Where(q => q.Answers.Any(a => a.UserId == userId))
+            .ToListAsync();
     }
 
     public async Task<Question?> GetWithAnswersAsync(long questionId)
     {
         return await _dbContext.Questions
             .Include(a => a.User)
+            .ThenInclude(u => u!.ImageFile)
             .Include(q => q.Answers)
             .ThenInclude(a => a.User)
             .ThenInclude(u => u!.UserRoles)
             .ThenInclude(ur => ur.Role)
+            .Include(q => q.ImageFile)
             .Where(q => q.QuestionId == questionId)
-            .AsSingleQuery()
             .SingleOrDefaultAsync();
     }
 }

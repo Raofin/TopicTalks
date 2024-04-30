@@ -6,9 +6,15 @@
 
         <form id="post-question">
             <div class="form-group row">
+                <label class="col-form-label">Cover Image</label>
+                <div class="col-sm-9 w-100">
+                    <input type="file" id="image" name="Image" class="form-control mb-2" accept="image/*" />
+                </div>
+            </div>
+            <div class="form-group row">
                 <label class="col-form-label">Topic</label>
                 <div class="col-sm-9 w-100">
-                    <input asp-for="Topic" class="form-control mb-2" placeholder="Enter the topics of your question, seperated by commas" />
+                    <input asp-for="Topic" class="form-control mb-2" placeholder="Enter the topics of your question, seperated by commas"/>
                     <span asp-validation-for="Topic" class="text-danger"></span>
                 </div>
             </div>
@@ -22,7 +28,10 @@
             </div>
 
             <div class="text-center pt-2">
-                <button class="btn btn-primary">Post Question</button>
+                <button class="btn btn-primary">
+                    <img src="img/rolling-white.svg" class="btn-loading" alt="" />
+                    Post Question
+                </button>
             </div>
         </form>
     </div>
@@ -31,6 +40,32 @@
 @section Scripts
 {
     <script>
+        var imageFileId;
+        var uploading = false;
+        var submitWaiting = false;
+
+        $('#image').on("change", function () {
+            $('#image').css({ "pointer-events": "none" });
+            uploading = true;
+
+            Upload(this)
+                .then((response) => {
+                    console.table(response)
+                    imageFileId = response.cloudFileId;
+                })
+                .catch(() => {
+                    imageFileId = null;
+                })
+                .finally(() => {
+                    uploading = false;
+                    $('#image').css({ "pointer-events": "auto" });
+
+                    if (submitWaiting) {
+                        $("#post-question").valid() && $("#post-question").trigger("submit");
+                    }
+                });
+        });
+
         $("#post-question").validate({
             rules: {
                 Topic: {
@@ -52,6 +87,23 @@
                 }
             },
             submitHandler: (form) => {
+                $('.btn-loading').show();
+
+                if (uploading == true) {
+                    submitWaiting = true;
+                    $('#post-question').css({ "pointer-events": "none" });
+                    return;
+                }
+
+                var data = $(form).serializeArray().reduce((obj, item) => {
+                    obj[item.name] = item.value;
+                    return obj;
+                }, {});
+
+                if (imageFileId) {
+                    data.ImageFileId = imageFileId;
+                }
+
                 $.ajax({
                     url: '@Url.Action("PostQuestion", "Question")',
                     type: 'POST',
@@ -64,6 +116,9 @@
                         toastMessage('Internal server error. Please try again later.');
                     }
                 });
+
+                $('#post-question').css({ "pointer-events": "auto" });
+                $('.btn-loading').hide();
             }
         });
 

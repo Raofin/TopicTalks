@@ -2,7 +2,8 @@
 
 public record QuestionCreateDto(
     string Topic,
-    string Explanation
+    string Explanation,
+    string? ImageFileId
 );
 
 public record QuestionUpdateDto(
@@ -17,7 +18,8 @@ public record QuestionResponseDto(
     string Explanation,
     UserBasicInfoDto? UserInfo,
     DateTime CreatedAt,
-    DateTime? UpdatedAt
+    DateTime? UpdatedAt,
+    CloudFileDto? ImageFile
 );
 
 public record QuestionWithAnswersDto(
@@ -28,5 +30,6 @@ public record QuestionWithAnswersDto(
     UserBasicInfoDto? UserInfo,
     List<AnswerWithRepliesDto>? Answers,
     DateTime CreatedAt,
-    DateTime? UpdatedAt
+    DateTime? UpdatedAt,
+    CloudFileDto? ImageFile
 );

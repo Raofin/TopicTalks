@@ -5,8 +5,8 @@
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="padding: 1.25rem 6.25rem;">
         <div class="container-fluid">
-            <a asp-controller="Home" asp-action="Dashboard" class="navbar-brand">
-                <img src="~/img/logo-icon.svg" class="logo" alt="TopicTalks Logo" />
+            <a asp-controller="Home" asp-action="Dashboard" class="navbar-brand" style="width: 10rem">
+                <img src="~/img/logo-icon.svg" class="logo" alt="TopicTalks Logo"/>
                 <span class="logo-text">Topic<span>Talks</span></span>
             </a>
 
@@ -49,7 +49,7 @@
                 }
             </ul>
 
-            <ul class="navbar-nav">
+            <ul class="navbar-nav d-flex justify-content-end" style="width: 10rem">
                 @if (Context.UserId() is null)
                 {
                     <li>
@@ -82,10 +82,10 @@
                                 <div class="d-flex flex-column justify-content-center align-items-center">
                                     <div class="d-flex">
                                         <div class="profile-image mb-1">
-                                            <img src="https://rawfin.net/assets/img/Rawfin.png" alt="" />
+                                            <img src="https://rawfin.net/assets/img/Rawfin.png" alt=""/>
                                         </div>
                                         <div class="profile-details">
-                                            <strong style="">@@@Context.Username()</strong>
+                                            <strong>@@@Context.Username()</strong>
                                             <span>@Context.UserEmail()</span>
                                             <div>
                                                 Status:
