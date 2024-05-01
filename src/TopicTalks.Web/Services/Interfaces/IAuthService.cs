@@ -1,8 +1,10 @@
-﻿namespace TopicTalks.Web.Services.Interfaces;
+﻿using TopicTalks.Web.ViewModels;
+
+namespace TopicTalks.Web.Services.Interfaces;
 
 public interface IAuthService
 {
     string GenerateJwtToken();
-    Task SignInWithTokenAsync(string token);
+    Task SignInAsync(AuthenticationResponse authentication);
     Task SignOutAsync();
 }

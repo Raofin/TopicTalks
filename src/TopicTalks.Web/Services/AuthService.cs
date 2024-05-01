@@ -1,18 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TopicTalks.Web.Common;
 using TopicTalks.Web.Services.Interfaces;
+using TopicTalks.Web.ViewModels;
 
 namespace TopicTalks.Web.Services;
 
 internal class AuthService(IHttpContextAccessor httpContextAccessor, IOptions<AppSettings> appSettings) : IAuthService
 {
+    private readonly IHttpContextAccessor _httpAccessor = httpContextAccessor;
     private readonly ClaimsPrincipal _principal = httpContextAccessor.HttpContext!.User;
-    private readonly HttpContext _httpContext = httpContextAccessor.HttpContext!;
     private readonly JwtSettings _jwtSettings = appSettings.Value.JwtSettings;
 
     public string GenerateJwtToken()
@@ -49,33 +51,17 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor, IOptions<Ap
         }
     }
 
-    public async Task SignInWithTokenAsync(string token)
+    public async Task SignInAsync(AuthenticationResponse authentication)
     {
-        try
-        {
-            var principal = GetPrincipalFromToken(token);
-
-            var properties = new AuthenticationProperties {
-                AllowRefresh = true,
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-            };
-
-            await SignOutAsync();
-            await _httpContext.SignInAsync(principal, properties);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        await SignInWithTokenAsync(authentication.Token);
+        SetUserInfoCookies(authentication.User);
     }
 
     public async Task SignOutAsync()
     {
-        await _httpContext.SignOutAsync();
+        await _httpAccessor.HttpContext!.SignOutAsync();
+        _httpAccessor.HttpContext!.Response.Cookies.Delete("UserInfo");
     }
-
 
     private ClaimsPrincipal GetPrincipalFromToken(string token)
     {
@@ -98,8 +84,8 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor, IOptions<Ap
 
             var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
 
-            return IsJwtWithValidSecurityAlgorithm(validatedToken) 
-                ? principal 
+            return IsJwtWithValidSecurityAlgorithm(validatedToken)
+                ? principal
                 : throw new Exception("Invalid JWT.");
         }
         catch (Exception e)
@@ -115,5 +101,37 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor, IOptions<Ap
         return validatedToken is JwtSecurityToken jwtSecurityToken &&
                jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature,
                    StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    private async Task SignInWithTokenAsync(string token)
+    {
+        try
+        {
+            var principal = GetPrincipalFromToken(token);
+
+            var properties = new AuthenticationProperties {
+                AllowRefresh = true,
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
+            };
+
+            await SignOutAsync();
+            await _httpAccessor.HttpContext!.SignInAsync(principal, properties);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private void SetUserInfoCookies(UserViewModel user)
+    {
+        var userInfoJson = JsonConvert.SerializeObject(user);
+
+        _httpAccessor.HttpContext!.Response.Cookies.Append("UserInfo", userInfoJson, new CookieOptions {
+            HttpOnly = true,
+            Expires = DateTime.Now.AddDays(7)
+        });
     }
 }

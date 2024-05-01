@@ -34,6 +34,11 @@ public static class HttpExtensions
         );
     }
 
+    public static bool IsAuthenticated(this HttpContext httpContext)
+    {
+        return httpContext.User.Identity?.IsAuthenticated ?? false;
+    }
+
     public static string? UserId(this HttpContext httpContext)
     {
         return httpContext.User.FindFirst("UserId")?.Value;
@@ -60,5 +65,12 @@ public static class HttpExtensions
             .FindAll(ClaimTypes.Role)
             .Select(c => Enum.Parse<RoleType>(c.Value))
             .ToList();
+    }
+
+    public static UserViewModel? UserInfo(this HttpContext httpContext)
+    {
+        return !httpContext.Request.Cookies.TryGetValue("UserInfo", out var cookieValue) 
+            ? null 
+            : JsonConvert.DeserializeObject<UserViewModel>(cookieValue);
     }
 }

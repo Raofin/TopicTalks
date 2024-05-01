@@ -30,7 +30,7 @@ public class AccountController(IAuthService authService, IHttpService httpServic
         {
             var authResponse = JsonConvert.DeserializeObject<AuthenticationResponse>(response.ToJson())!;
 
-            await _authService.SignInWithTokenAsync(authResponse.Token);
+            await _authService.SignInAsync(authResponse);
 
             return Ok(authResponse.User);
         }
@@ -54,7 +54,7 @@ public class AccountController(IAuthService authService, IHttpService httpServic
         {
             var authResponse = JsonConvert.DeserializeObject<AuthenticationResponse>(response.ToJson())!;
 
-            await _authService.SignInWithTokenAsync(authResponse.Token);
+            await _authService.SignInAsync(authResponse);
 
             return Ok(authResponse.User);
         }
@@ -73,8 +73,8 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     {
         var response = await _httpService.Client.PostAsync("api/account/exists", userExists.ToStringContent());
 
-        return response.IsSuccessStatusCode 
-            ? Ok(response.ToJson()) 
+        return response.IsSuccessStatusCode
+            ? Ok(response.ToJson())
             : new StatusCodeResult((int)response.StatusCode);
     }
 
@@ -102,8 +102,8 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     {
         var response = await _httpService.Client.PatchAsync("api/account/password", passwordChange.ToStringContent());
 
-        return response.IsSuccessStatusCode 
-            ? Ok() 
+        return response.IsSuccessStatusCode
+            ? Ok()
             : new StatusCodeResult((int)response.StatusCode);
     }
 
@@ -125,9 +125,9 @@ public class AccountController(IAuthService authService, IHttpService httpServic
         {
             if (payload != null)
             {
-                var token = JsonConvert.DeserializeObject<AuthenticationResponse>(response.ToJson())!.Token;
+                var authResponse = JsonConvert.DeserializeObject<AuthenticationResponse>(response.ToJson())!;
 
-                await _authService.SignInWithTokenAsync(token);
+                await _authService.SignInAsync(authResponse);
             }
 
             return Ok();
