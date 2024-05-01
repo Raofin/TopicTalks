@@ -104,10 +104,12 @@
                     data.ImageFileId = imageFileId;
                 }
 
+                console.table(data);
+
                 $.ajax({
                     url: '@Url.Action("PostQuestion", "Question")',
                     type: 'POST',
-                    data: $(form).serialize(),
+                    data: data,
                     success: (response) => {
                         toastMessageNext("Question Posted!", ToastColor.Green);
                         window.location.href = '@Url.Action("Dashboard", "Home")';

@@ -19,6 +19,7 @@ internal class UserRepository(AppDbContext dbContext) : Repository<User>(dbConte
     public Task<User> GetByEmailAsync(string email)
     {
         return _dbContext.Users
+            .Include(u => u.ImageFile)
             .Where(u => u.Email == email)
             .SingleAsync();
     }
@@ -26,6 +27,7 @@ internal class UserRepository(AppDbContext dbContext) : Repository<User>(dbConte
     public async Task<List<User>> GetWithDetailsAsync()
     {
         return await _dbContext.Users
+            .Include(u => u.ImageFile)
             .Include(u => u.UserDetails)
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
@@ -35,6 +37,7 @@ internal class UserRepository(AppDbContext dbContext) : Repository<User>(dbConte
     public async Task<User?> GetWithDetailsAsync(string usernameOrEmail)
     {
         return await _dbContext.Users
+            .Include(u => u.ImageFile)
             .Include(u => u.UserDetails)
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
@@ -45,6 +48,7 @@ internal class UserRepository(AppDbContext dbContext) : Repository<User>(dbConte
     public async Task<User?> GetWithDetailsAsync(long userId)
     {
         return await _dbContext.Users
+            .Include(u => u.ImageFile)
             .Include(u => u.UserDetails)
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)

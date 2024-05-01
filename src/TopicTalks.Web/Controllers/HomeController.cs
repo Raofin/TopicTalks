@@ -46,6 +46,7 @@ public class HomeController(IHttpService httpService) : Controller
         return View(answers ?? []);
     }
 
+    [AllowAnonymous]
     [HttpGet("question/{questionId}")]
     public async Task<IActionResult> QuestionDetails(long questionId)
     {

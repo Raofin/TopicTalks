@@ -1,9 +1,18 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model TopicTalks.Web.ViewModels.UserViewModel
 
-<div class="container mt-5">
-    <div class="content-container" style="max-width: 450px;">
-        <h2 class="mb-4 text-center title">User Profile</h2>
+<div class="container" style="margin-top: 8rem">
+    <div class="content-container " style="max-width: 25rem; padding: 2rem">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <span class="user-profile-image" style="">
+                <img id="preview-image" src="https://rawfin.net/assets/img/Rawfin.png" alt="">
+                <span id="upload-trigger" class="change-icon pointer" pop="Change profile picture">
+                    <i class="fi i-refresh"></i>
+                </span>
+                <img src="img/rolling-white.svg" class="user-profile-loading" alt="" />
+                <input type="file" id="image" style="display: none;">
+            </span>
+        </div>
         <table class="table">
             <tbody>
                 <tr>
@@ -31,7 +40,7 @@
                 }
                 <tr>
                     <td><label><b>Joined On</b></label></td>
-                    <td><local-time utc-datetime="@Model.CreatedAt" format="1" time-ago="true"></local-time></td>
+                    <td><local-time utc-datetime="@Model.CreatedAt" format="2" time-ago="false"></local-time></td>
                 </tr>
                 <tr>
                     <td><label><b>Status</b></label></td>
@@ -41,7 +50,13 @@
                     }
                     else
                     {
-                        <td><a asp-controller="Account" asp-action="Verify" class="text-warning">⚠️ <b>Not Verified</b></a></td>
+                        <td>
+                            <a asp-controller="Account" asp-action="Verify" class="d-flex align-items-center text-warning">
+                                <i class="i-warning-yellow pe-2"><span class="path1"></span><span class="path2"></span></i>
+                                <strong>Not Verified</strong>
+                            </a>
+                        </td>
+
                     }
                 </tr>
             </tbody>
@@ -51,3 +66,61 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script>
+        var isUploading;
+
+        $('#upload-trigger').on('click', () => {
+            if (isUploading) return; // Prevent recursive calls
+            isUploading = true;
+
+            $('#image').css({ "pointer-events": "none" });
+            $('#image').trigger('click');
+        });
+
+        $('#image').on("change", () => {
+            $('.user-profile-loading').show();
+
+            uploadProfileImage()
+                .then((response) => {
+                    toastMessage('Profile image updated', ToastColor.Blue);
+                })
+                .catch(() => { })
+                .finally(() => {
+                    isUploading = false;
+                    $('.user-profile-loading').hide();
+                    $('#image').css({ "pointer-events": "auto" });
+                });
+        })
+
+        function uploadProfileImage() {
+            return new Promise((resolve, reject) => {
+                if (validateImage($('#image'), mbToBytes(2))) {
+                    previewImage('#image', '#preview-image')
+
+                    var formData = new FormData();
+                    formData.append('file', $('#image')[0].files[0]);
+
+                    $.ajax({
+                        url: '/file/changeProfileImage',
+                        type: 'PUT',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: (response) => {
+                            resolve(response);
+                        },
+                        error: (error) => {
+                            toastMessage('Error uploading image');
+                            reject(error);
+                        }
+                    })
+                } else {
+                    reject('Please select a valid image.');
+                }
+            });
+        }
+    </script>
+}

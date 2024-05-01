@@ -6,6 +6,7 @@ public record UserViewModel(
     string Email,
     bool IsVerified,
     DateTime CreatedAt,
+    CloudFileViewModel ImageFile,
     UserDetailsViewModel? UserDetails,
     List<string> Roles
 );

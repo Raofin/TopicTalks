@@ -12,12 +12,14 @@ internal class AccountService(
     IUnitOfWork unitOfWork, 
     IHashPassword passwordService, 
     IJwtGenerator tokenService, 
-    IEmailSender emailService) : IAccountService
+    IEmailSender emailService,
+    ICloudService cloudService) : IAccountService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IHashPassword _passwordService = passwordService;
     private readonly IJwtGenerator _tokenService = tokenService;
     private readonly IEmailSender _emailService = emailService;
+    private readonly ICloudService _cloudService = cloudService;
 
     public async Task<bool> IsUserExistsAsync(string? username, string? email)
     {
@@ -116,6 +118,26 @@ internal class AccountService(
         await _unitOfWork.CommitAsync();
 
         return Result.Success;
+    }
+
+    public async Task<ErrorOr<CloudFileDto>> ChangeProfileImageAsync(FileUploadDto dto, long userId)
+    {
+        var user = await _unitOfWork.User.GetAsync(userId);
+
+        if (user is null)
+        {
+            return Error.Unexpected();
+        }
+
+        var cloudFile = user.ImageFileId is not null
+            ? await _cloudService.UpdateAsync(user.ImageFileId, dto, commit: false)
+            : await _cloudService.UploadAsync(dto, userId, commit: false);
+
+        user.ImageFileId = cloudFile.CloudFileId;
+
+        await _unitOfWork.CommitAsync();
+
+        return cloudFile.ToDto()!;
     }
 
     #region ### OTP ###

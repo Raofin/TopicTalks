@@ -13,4 +13,5 @@ public interface IAccountService
     Task SendOtpAsync(string email);
     Task<ErrorOr<AuthenticationResponse>> VerifyOtpAsync(string email, string code);
     Task<ErrorOr<UserBasicInfoDto>> GetUserBasicInfo(long userId);
+    Task<ErrorOr<CloudFileDto>> ChangeProfileImageAsync(FileUploadDto dto, long userId);
 }

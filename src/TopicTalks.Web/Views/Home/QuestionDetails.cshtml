@@ -27,7 +27,7 @@
                                 <i class="fi i-edit blue-hover" data-bs-trigger="hover focus" data-bs-placement="bottom" data-bs-content="Edit"></i>
                             </span>
                         }
-                        @if (!Context.UserRole().Contains(RoleType.Moderator))
+                        @if (Context.IsAuthenticated() && !Context.UserRole().Contains(RoleType.Moderator))
                         {
                             <span onclick="appendInput(@(Model.QuestionId), @(answer.AnswerId))" pop="Reply">
                                 <i class="fi i-reply blue-hover" style="color: #333"></i>
@@ -58,7 +58,8 @@
             if (Model.ImageFile is not null)
             {
                 <div class="cover">
-                    <img src="@Model.ImageFile?.DirectLink" alt=""/>
+                    <img src="@Model.ImageFile?.DirectLink" alt=""
+                         class="pointer" onclick="window.location.href='@Model.ImageFile?.DirectLink'" />
                 </div>
             }
         }
@@ -68,8 +69,8 @@
                     <div class="d-flex user-preview">
                         <div class="user-info user-preview" style="display: none">
                             <div class="d-flex flex-column justify-content-center align-items-center">
-                                <span class="user-image mb-1" style="width: 5rem; height: 5rem;">
-                                    <img src="@(Model.UserInfo?.ProfileImageUrl ?? "/img/user.svg")" alt=""/>
+                                <span class="user-image mb-1" style="width: 6.5rem; height: 6.5rem;">
+                                    <img src="@(Model.UserInfo?.ProfileImageUrl ?? "/img/user.svg")" alt="" />
                                 </span>
                                 <p class="text-center mb-0">
                                     <strong>@authorUsername</strong><br>
@@ -78,7 +79,7 @@
                             </div>
                         </div>
                         <span class="user-image" style="margin-right: 0.3rem">
-                            <img src="@(Model.UserInfo?.ProfileImageUrl ?? "/img/user.svg")" alt=""/>
+                            <img src="@(Model.UserInfo?.ProfileImageUrl ?? "/img/user.svg")" alt="" />
                         </span>
                         <strong>@(authorUsername)</strong>
                         <i id="edited-at">
@@ -121,17 +122,17 @@
                     </div>
                 </div>
             </div>
-            <hr/>
+            <hr />
             <div id="answer-container">
                 @{
                     await RenderAnswers(Model.Answers);
                 }
             </div>
-            @if (!Context.UserRole().Contains(RoleType.Moderator))
+            @if (Context.IsAuthenticated() && !Context.UserRole().Contains(RoleType.Moderator))
             {
                 <div id="answer-input" class="col-sm-9 w-100">
                     <form id="answer-form" asp-action="PostAnswer" asp-controller="Answer" method="post">
-                        <input type="hidden" name="questionId" value="@(Model.QuestionId)"/>
+                        <input type="hidden" name="questionId" value="@(Model.QuestionId)" />
                         <div class="text-center w-100">
                             <textarea id="reply-text" class="form-control mb-2" rows="3" placeholder="Write your answer here" name="explanation"></textarea>
                         </div>
@@ -139,6 +140,12 @@
                             <button type="submit" class="btn btn-primary">Post Answer</button>
                         </div>
                     </form>
+                </div>
+            }
+            else if (!Context.IsAuthenticated())
+            {
+                <div class="text-center">
+                    <a href="@Url.Action("Login", "Account")" class="btn btn-primary">Login to post an answer</a>
                 </div>
             }
         </div>
@@ -161,22 +168,22 @@
 
             if (!$("#reply-input").length) {
                 $("#question-container").append(`
-                        <div id="reply-input">
-                            <form id="reply-form" class="col-sm-9 w-100 d-flex">
-                                <input type="hidden" name="questionId" value="${questionId}" />
-                                <div class="text-center w-100">
-                                    <input type="text" id="question-topics" class="form-control mb-1" placeholder="Write your question topics here" name="topic" value="@Model.Topic" />
-                                    <textarea id="explanation-input" class="form-control mb-1" rows="3" placeholder="Write your reply here" name="explanation">@Model.Explanation</textarea>
-                                </div>
-                                <div class="text-center d-flex justify-content-between align-items-end" style ="width: 150px;">
-                                    <div>
-                                        <button type="button" class="btn btn-primary mb-1 mt-1" style="width: 90px;" onclick="focusReplyTextArea()">Reply</button>
-                                        <button type="button" class="btn btn-danger mb-1 mt-1" style="width: 90px;" onclick="closeReplyInput()">Close</button>
-                                        <button type="submit" class="btn btn-success" style="width: 90px;">Confirm</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>`)
+                                        <div id="reply-input">
+                                            <form id="reply-form" class="col-sm-9 w-100 d-flex">
+                                                <input type="hidden" name="questionId" value="${questionId}" />
+                                                <div class="text-center w-100">
+                                                    <input type="text" id="question-topics" class="form-control mb-1" placeholder="Write your question topics here" name="topic" value="@Model.Topic" />
+                                                    <textarea id="explanation-input" class="form-control mb-1" rows="3" placeholder="Write your reply here" name="explanation">@Model.Explanation</textarea>
+                                                </div>
+                                                <div class="text-center d-flex justify-content-between align-items-end" style ="width: 150px;">
+                                                    <div>
+                                                        <button type="button" class="btn btn-primary mb-1 mt-1" style="width: 90px;" onclick="focusReplyTextArea()">Reply</button>
+                                                        <button type="button" class="btn btn-danger mb-1 mt-1" style="width: 90px;" onclick="closeReplyInput()">Close</button>
+                                                        <button type="submit" class="btn btn-success" style="width: 90px;">Confirm</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>`)
 
                 $('#reply-form').validate({
                     rules: {

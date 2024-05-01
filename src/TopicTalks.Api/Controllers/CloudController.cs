@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
 
@@ -13,8 +14,10 @@ public class CloudController(ICloudService cloudService) : ApiController
     [HttpPost]
     public async Task<IActionResult> UploadFile(IFormFile file)
     {
+        long? userId = User.Identity is { IsAuthenticated: true } ? User.GetUserId() : null;
+
         await using var stream = file.OpenReadStream();
-        var fileInfo = await _cloudService.UploadAsync(file.FileName, stream, file.ContentType/*, User.GetUserId()*/);
+        var fileInfo = await _cloudService.UploadAsync(new FileUploadDto(file.FileName, stream, file.ContentType), userId);
 
         return Ok(fileInfo);
     }
@@ -47,8 +50,10 @@ public class CloudController(ICloudService cloudService) : ApiController
     [HttpPut("{fileId}")]
     public async Task<IActionResult> UpdateFile(string fileId, IFormFile file)
     {
+        long? userId = User.Identity is { IsAuthenticated: true } ? User.GetUserId() : null;
+        
         await using var stream = file.OpenReadStream();
-        var fileInfo = await _cloudService.UpdateAsync(fileId, file.FileName, stream, file.ContentType/*, User.GetUserId()*/);
+        var fileInfo = await _cloudService.UpdateAsync(fileId, new FileUploadDto(file.FileName, stream, file.ContentType), userId);
 
         return Ok(fileInfo);
     }

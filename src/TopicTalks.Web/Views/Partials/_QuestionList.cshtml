@@ -12,13 +12,14 @@ else
     foreach (var question in Model)
     {
         var username = question.UserInfo is not null ? "@" + question.UserInfo?.Username : "Delete User";
-        var url = question.UserInfo?.ProfileImageUrl ?? "/img/user.svg";
+        var imageUrl = question.UserInfo?.ProfileImageUrl ?? "/img/user.svg";
 
         <div id="question-@question.QuestionId" class="content-container question-container mb-4">
             @if (question.ImageFile is not null)
             {
                 <div class="cover" style="margin-bottom: -.5rem">
-                    <img src="@question.ImageFile?.DirectLink" alt="" />
+                    <img src="@question.ImageFile?.DirectLink" alt="" 
+                         class="pointer" onclick="window.location.href='@question.ImageFile?.DirectLink'" />
                 </div>
             }
             <div style="padding: 1.5rem">
@@ -26,8 +27,8 @@ else
                     <div class="d-flex align-items-center user-preview">
                         <div class="user-info user-preview" style="display: none">
                             <div class="d-flex flex-column justify-content-center align-items-center">
-                                <span class="user-image mb-1" style="width: 5rem; height: 5rem;">
-                                    <img src="@url" alt="" />
+                                <span class="user-image mb-1" style="width: 6.5rem; height: 6.5rem;">
+                                    <img src="@imageUrl" alt="" />
                                 </span>
                                 <p class="text-center mb-0">
                                     <strong>@username</strong><br>Joined @question.CreatedAt.TimeAgo()
@@ -35,7 +36,7 @@ else
                             </div>
                         </div>
                         <span class="user-image" style="margin-right: 0.3rem">
-                            <img src="@url" alt="" />
+                            <img src="@imageUrl" alt="" />
                         </span>
                         <strong>@(question.UserInfo?.Username ?? "Delete User")</strong>
                     </div>

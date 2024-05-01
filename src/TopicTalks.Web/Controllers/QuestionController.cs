@@ -42,6 +42,7 @@ public class QuestionController(IHttpService httpService) : Controller
             : new StatusCodeResult((int)response.StatusCode);
     }
 
+    [AllowAnonymous]
     [HttpGet("pdf/{questionId}")]
     public async Task<IActionResult> GetPdf(long questionId)
     {

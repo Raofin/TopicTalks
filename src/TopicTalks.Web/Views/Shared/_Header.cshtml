@@ -6,7 +6,7 @@
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="padding: 1.25rem 6.25rem;">
         <div class="container-fluid">
             <a asp-controller="Home" asp-action="Dashboard" class="navbar-brand" style="width: 10rem">
-                <img src="~/img/logo-icon.svg" class="logo" alt="TopicTalks Logo"/>
+                <img src="~/img/logo-icon.svg" class="logo" alt="TopicTalks Logo" />
                 <span class="logo-text">Topic<span>Talks</span></span>
             </a>
 
@@ -64,45 +64,32 @@
                     <li>
                         @if (!Context.IsUserVerified())
                         {
-                            <a asp-controller="Account" asp-action="Verify" pop="Please verify your account.">
-                                <i class="fi i-warning text-warning"></i>
+                            <a class="pe-2" asp-controller="Account" asp-action="Verify" pop="Please verify your account.">
+                                <i class="i-warning-yellow"><span class="path1"></span><span class="path2"></span></i>
                             </a>
                         }
 
                     </li>
                     <li>
+                        @{
+                            var imageUrl = Context.UserInfo()?.ImageFile.DirectLink ?? "/img/user.svg";
+                        }
                         <span class="d-flex align-items-center pointer profile-preview">
-                            <span class="fw-bold me-2">
+                            <span class="fw-bold me-2 red-hover">
                                 @Context.Username()
                             </span>
                             <span class="header-profile-image link">
-                                <img src="https://rawfin.net/assets/img/Rawfin.png" alt="">
+                                <img src="@imageUrl" alt="">
                             </span>
                             <div class="user-info profile-preview" style=" display: none;">
-                                <div class="d-flex flex-column justify-content-center align-items-center">
-                                    <div class="d-flex">
-                                        <div class="profile-image mb-1">
-                                            <img src="https://rawfin.net/assets/img/Rawfin.png" alt=""/>
-                                        </div>
-                                        <div class="profile-details">
-                                            <strong>@@@Context.Username()</strong>
-                                            <span>@Context.UserEmail()</span>
-                                            <div>
-                                                Status:
-                                                @if (Context.IsUserVerified())
-                                                {
-                                                    <span class="text-success font-weight-bold"> Verified</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="font-weight-bold link" style="color: #af8300" onclick="window.location.href='@Url.Action("Verify", "Account")'">
-                                                        Not Verified
-                                                    </span>
-                                                }
-                                            </div>
-                                        </div>
+                                <div class="flex-col-center">
+                                    <div class="profile-image pointer mb-1" onclick="window.location.href='@imageUrl'">
+                                        <img src="@imageUrl" alt="" />
                                     </div>
-
+                                    <div class="flex-col-center mb-1" style="font-size: 1rem">
+                                        <strong>@@@Context.Username()</strong>
+                                        <span>@Context.UserEmail()</span>
+                                    </div>
                                     <div class="profile-button pt-1">
                                         <span class="btn btn-danger me-1" onclick="logout()">Logout</span>
                                         <span class="btn btn-primary" onclick="window.location.href='@Url.Action("Profile", "Account")'">Profile</span>

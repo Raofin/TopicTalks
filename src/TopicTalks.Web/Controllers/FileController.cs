@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TopicTalks.Web.Extensions;
 using TopicTalks.Web.Services.Interfaces;
@@ -33,6 +34,21 @@ public class FileController(IHttpService httpService) : Controller
 
         return response.IsSuccessStatusCode 
             ? Ok(uploadedFile) 
+            : StatusCode((int)response.StatusCode, "Error uploading file.");
+    }
+
+    [Authorize]
+    [HttpPut("changeProfileImage")]
+    public async Task<IActionResult> ChangeProfileImage(IFormFile file)
+    {
+        using var content = new MultipartFormDataContent();
+        content.Add(new StreamContent(file.OpenReadStream()), "file", file.FileName);
+
+        var response = await _httpService.Client.PutAsync("api/account/profileImage", content);
+        var uploadedFile = JsonConvert.DeserializeObject<CloudFileViewModel>(response.ToJson())!;
+
+        return response.IsSuccessStatusCode
+            ? Ok(uploadedFile)
             : StatusCode((int)response.StatusCode, "Error uploading file.");
     }
 

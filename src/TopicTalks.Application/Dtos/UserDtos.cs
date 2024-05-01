@@ -8,7 +8,7 @@ public record UserDto(
     string Email,
     bool IsVerified,
     DateTime CreatedAt,
-    string? ImageFileId,
+    CloudFileDto? ImageFile,
     UserDetailDto? UserDetails,
     List<RoleType> Roles
 );

@@ -48,6 +48,7 @@ public class QuestionController(IQuestionService questionService) : ApiControlle
             };
     }
 
+    [AllowAnonymous]
     [HttpGet("withAnswers/{questionId}")]
     public async Task<IActionResult> GetWithAnswers(int questionId)
     {
@@ -116,6 +117,7 @@ public class QuestionController(IQuestionService questionService) : ApiControlle
         return Ok(questionDtos);
     }
 
+    [AllowAnonymous]
     [HttpGet("pdf/{questionId}")]
     public async Task<IActionResult> GetPdf(long questionId)
     {

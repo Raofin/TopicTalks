@@ -1,4 +1,6 @@
-﻿using TopicTalks.Application.Dtos;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using TopicTalks.Application.Dtos;
+using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
 using TopicTalks.Domain;
 using TopicTalks.Domain.Common;
@@ -12,22 +14,21 @@ internal class CloudService(IGoogleCloud googleCloud, IUnitOfWork unitOfWork) : 
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IGoogleCloud _googleCloud = googleCloud;
 
-    public async Task<CloudFileDto> UploadAsync(string fileName, Stream stream, string contentType, long? userId = null)
+    public async Task<CloudFile> UploadAsync(FileUploadDto dto, long? userId = null, bool commit = true)
     {
-        var googleFile = await _googleCloud.UploadAsync(fileName, stream, contentType);
-        var cloudFile = MapToCloudFile(googleFile, userId);
+        var googleFile = await _googleCloud.UploadAsync(dto.FileName, dto.Stream, dto.ContentType);
+        var cloudFile = googleFile.ToCloudFile(userId);
 
         _unitOfWork.CloudFile.Add(cloudFile);
-        await _unitOfWork.CommitAsync();
 
-        return MapToDto(cloudFile);
+        if (commit) await _unitOfWork.CommitAsync();
+
+        return cloudFile;
     }
 
-    public async Task<CloudFileDto?> InfoAsync(string fileId)
+    public async Task<CloudFile?> InfoAsync(string fileId)
     {
-        var cloudFile = await _unitOfWork.CloudFile.SingleOrDefaultAsync(x => x.CloudFileId == fileId);
-
-        return cloudFile is null ? null : MapToDto(cloudFile);
+        return await _unitOfWork.CloudFile.SingleOrDefaultAsync(x => x.CloudFileId == fileId);
     }
 
     public async Task<GoogleFileDownload> DownloadAsync(string fileId)
@@ -35,16 +36,17 @@ internal class CloudService(IGoogleCloud googleCloud, IUnitOfWork unitOfWork) : 
         return await _googleCloud.DownloadAsync(fileId);
     }
 
-    public async Task<CloudFileDto> UpdateAsync(string fileId, string fileName, Stream stream, string contentType, long? userId = null)
+    public async Task<CloudFile> UpdateAsync(string fileId, FileUploadDto dto, long? userId = null, bool commit = true)
     {
-        var updatedFile = await _googleCloud.UpdateAsync(fileId, fileName, stream, contentType);
-        var cloudFile = MapToCloudFile(updatedFile, userId);
+        var updatedFile = await _googleCloud.UpdateAsync(fileId, dto.FileName, dto.Stream, dto.ContentType);
+        var cloudFile = updatedFile.ToCloudFile(userId);
 
         _unitOfWork.CloudFile.Remove(new CloudFile { CloudFileId = fileId });
         _unitOfWork.CloudFile.Add(cloudFile);
-        await _unitOfWork.CommitAsync();
 
-        return MapToDto(cloudFile);
+        if (commit) await _unitOfWork.CommitAsync();
+
+        return cloudFile;
     }
 
     public async Task DeleteAsync(string fileId)
@@ -54,38 +56,4 @@ internal class CloudService(IGoogleCloud googleCloud, IUnitOfWork unitOfWork) : 
         _unitOfWork.CloudFile.Remove(new CloudFile { CloudFileId = fileId });
         await _unitOfWork.CommitAsync();
     }
-
-    #region ### Map Methods ###
-
-    private static CloudFile MapToCloudFile(GoogleFile cloudFileInfo, long? userId = null)
-    {
-        return new CloudFile {
-            CloudFileId = cloudFileInfo.CloudFileId,
-            Name = cloudFileInfo.Name,
-            ContentType = cloudFileInfo.ContentType,
-            Size = cloudFileInfo.Size,
-            WebContentLink = cloudFileInfo.WebContentLink,
-            WebViewLink = cloudFileInfo.WebViewLink,
-            DirectLink = cloudFileInfo.DirectLink,
-            CreatedAt = cloudFileInfo.CreatedAt,
-            UserId = userId
-        };
-    }
-
-    private static CloudFileDto MapToDto(CloudFile cloudFile)
-    {
-        return new CloudFileDto(
-            cloudFile.CloudFileId,
-            cloudFile.Name,
-            cloudFile.ContentType,
-            cloudFile.Size,
-            cloudFile.WebContentLink,
-            cloudFile.WebViewLink,
-            cloudFile.DirectLink,
-            cloudFile.CreatedAt,
-            cloudFile.UserId
-        );
-    }
-
-    #endregion
 }

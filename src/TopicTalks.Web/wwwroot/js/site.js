@@ -31,16 +31,14 @@ function logout() {
 
 tippy('.user-preview', {
     content: (ref) => $(ref).children('.user-preview').html(),
-    theme: 'user-info',
+    theme: 'profile',
     allowHTML: true,
-    arrow: false,
 })
 
 tippy('.profile-preview', {
     content: (ref) => $(ref).children('.profile-preview').html(),
-    theme: 'profile-info',
+    theme: 'profile',
     allowHTML: true,
-    arrow: false,
     trigger: 'click',
     interactive: true,
     onShown: () => $('.fi').css('display', 'inline'),

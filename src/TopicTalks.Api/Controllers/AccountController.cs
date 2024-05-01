@@ -55,6 +55,17 @@ public class AccountController(IAccountService accountService, IExcelService exc
         };
     }
 
+    [HttpPut("profileImage")]
+    public async Task<IActionResult> ChangeProfileImage(IFormFile file)
+    {
+        await using var stream = file.OpenReadStream();
+        var image = await _userService.ChangeProfileImageAsync(new FileUploadDto(file.FileName, stream,file.ContentType), User.GetUserId());
+
+        return image.IsError
+            ? Problem("An unexpected error occurred.")
+            : Ok(image.Value);
+    }
+
     [AllowAnonymous]
     [HttpPost("exists")]
     public async Task<IActionResult> CheckUserExists(UserExistsRequest user)

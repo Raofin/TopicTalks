@@ -8,6 +8,11 @@ public record CloudFileDto(
     string WebContentLink,
     string WebViewLink,
     string DirectLink,
-    DateTime CreatedAt,
-    long? UserId
+    DateTime CreatedAt
+);
+
+public record FileUploadDto(
+    string FileName, 
+    Stream Stream, 
+    string ContentType
 );

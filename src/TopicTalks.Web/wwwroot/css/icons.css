@@ -1,24 +1,22 @@
 @font-face {
-  font-family: 'RawfinIcons';
-  src: url('icons/RawfinIcons.eot?f7q76j');
-  src: url('icons/RawfinIcons.eot?f7q76j#iefix') format('embedded-opentype'), url('icons/RawfinIcons.ttf?f7q76j') format('truetype'), url('icons/RawfinIcons.woff?f7q76j') format('woff'), url('icons/RawfinIcons.svg?f7q76j#RawfinIcons') format('svg');
-  font-weight: normal;
   font-style: normal;
+  font-weight: normal;
+  src: url('icons/RawfinIcons.eot?z8xkun');
+  src: url('icons/RawfinIcons.eot?z8xkun#iefix') format('embedded-opentype'), url('icons/RawfinIcons.ttf?z8xkun') format('truetype'), url('icons/RawfinIcons.woff?z8xkun') format('woff'), url('icons/RawfinIcons.svg?z8xkun#RawfinIcons') format('svg');
+  font-family: 'RawfinIcons';
   font-display: block;
 }
 
 i {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'RawfinIcons' !important;
   speak: never;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  line-height: 1;
+  font-family: 'RawfinIcons' !important;
+  text-transform: none;
 }
 
 .i-dashboard:before {
@@ -85,28 +83,47 @@ i {
   content: "\e90f";
 }
 
-.i-reply:before {
+.i-refresh:before {
   content: "\e910";
 }
 
-.i-search:before {
+.i-reply:before {
   content: "\e911";
 }
 
-.i-share:before {
+.i-search:before {
   content: "\e912";
 }
 
-.i-table:before {
+.i-share:before {
   content: "\e913";
 }
 
-.i-user:before {
+.i-table:before {
   content: "\e914";
 }
 
-.i-warning:before {
+.i-user:before {
   content: "\e915";
+}
+
+.i-user-image:before {
+  content: "\e916";
+}
+
+.i-warning:before {
+  content: "\e917";
+}
+
+.i-warning-yellow .path1:before {
+  content: "\e918";
+  color: rgb(0, 0, 0);
+}
+
+.i-warning-yellow .path2:before {
+  margin-left: -1.0009765625em;
+  content: "\e919";
+  color: rgb(255, 212, 81);
 }
 
 .fi {

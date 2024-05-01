@@ -1,4 +1,5 @@
 ﻿using TopicTalks.Application.Dtos;
+using TopicTalks.Domain.Common;
 using TopicTalks.Domain.Entities;
 using TopicTalks.Domain.Enums;
 
@@ -16,7 +17,7 @@ public static class EntityExtensions
             UserDetails: user.UserDetails.ToDto(),
             Roles: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList(),
             CreatedAt: user.CreatedAt,
-            ImageFileId: user.ImageFileId
+            ImageFile: user.ImageFile?.ToDto()
         );
     }
 
@@ -66,6 +67,21 @@ public static class EntityExtensions
         );
     }
 
+    public static CloudFile ToCloudFile(this GoogleFile googleFile, long? userId = null)
+    {
+        return new CloudFile {
+            CloudFileId = googleFile.CloudFileId,
+            Name = googleFile.Name,
+            ContentType = googleFile.ContentType,
+            Size = googleFile.Size,
+            WebContentLink = googleFile.WebContentLink,
+            WebViewLink = googleFile.WebViewLink,
+            DirectLink = googleFile.DirectLink,
+            CreatedAt = googleFile.CreatedAt,
+            UserId = userId
+        };
+    }
+
     public static CloudFileDto? ToDto(this CloudFile? imageFile)
     {
         return imageFile is null ? null
@@ -77,8 +93,7 @@ public static class EntityExtensions
                 WebContentLink: imageFile.WebContentLink,
                 WebViewLink: imageFile.WebViewLink,
                 DirectLink: imageFile.DirectLink,
-                CreatedAt: imageFile.CreatedAt,
-                UserId: imageFile.UserId
+                CreatedAt: imageFile.CreatedAt
             );
     }
 }

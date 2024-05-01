@@ -1,9 +1,8 @@
-﻿function Upload(imageElement) {
+﻿function Upload(imageElement, previewElement = '#preview-image') {
     return new Promise((resolve, reject) => {
         if (validateImage($(imageElement), mbToBytes(2))) {
+            previewImage(imageElement, previewElement);
             $('#profile-pic-loading').show();
-
-            previewImage(imageElement);
 
             var formData = new FormData();
             formData.append('file', $(imageElement)[0].files[0]);
@@ -24,7 +23,7 @@
             });
         } else {
             $(imageElement).val('');
-            removePreviewImage();
+            removePreviewImage(previewElement);
             reject('Please select a valid image.');
         }
     });
@@ -51,24 +50,25 @@ function validateImage(imageElement) {
     return false;
 }
 
-function previewImage(imageElement) {
+function previewImage(imageElement, previewElement) {
     var file = $(imageElement)[0].files[0];
 
     if (file) {
-        var previewImage = $('#preview-image');
+        var previewImage = $(previewElement);
         previewImage.attr('src', URL.createObjectURL(file)).show().on('load', () => {
             URL.revokeObjectURL(previewImage.attr('src'));
         });
+
         $('#image-label').hide()
         $('.image-input').addClass('no-padding');
     }
 }
 
-function removePreviewImage() {
-    $('#image-label').show()
+function removePreviewImage(previewElement) {
     $('.image-input').removeClass('no-padding');
-    $('#preview-image').hide();
-    $('#preview-image').attr('src', '');
+    $(previewElement).hide();
+    $(previewElement).attr('src', '');
+    $('#image-label').show()
 }
 
 function appendLabel(selector) {
