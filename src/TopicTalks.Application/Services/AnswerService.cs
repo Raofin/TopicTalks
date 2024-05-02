@@ -5,12 +5,14 @@ using TopicTalks.Application.Interfaces;
 using TopicTalks.Domain;
 using TopicTalks.Domain.Entities;
 using TopicTalks.Domain.Enums;
+using TopicTalks.Domain.Interfaces.Core;
 
 namespace TopicTalks.Application.Services;
 
-internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
+internal class AnswerService(IUnitOfWork unitOfWork, IEmailSender emailSender) : IAnswerService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IEmailSender _emailSender = emailSender;
 
     public async Task<ErrorOr<AnswerResponseDto>> CreateAsync(AnswerCreateDto dto, long userId)
     {
@@ -30,14 +32,25 @@ internal class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
 
         _unitOfWork.Answer.Add(answer);
         await _unitOfWork.CommitAsync();
-        await _unitOfWork.Entry(answer).Reference(a => a.User).LoadAsync();
 
-        return answer.ToDto();
+        var answerWithDetails = await _unitOfWork.Answer.GetWithUserAsync(answer.AnswerId);
+        var question = answerWithDetails!.Question;
+
+        if (answerWithDetails.IsNotified && question.User is not null && question.User.UserId != answer.UserId)
+        {
+            _emailSender.SendAnswerNotification(
+                question.User.Email, 
+                answerWithDetails.User!.Username,
+                answerWithDetails.Explanation, 
+                question.Explanation);
+        }
+
+        return answerWithDetails.ToDto();
     }
 
-    public async Task<ErrorOr<AnswerResponseDto>> GetWithUserAsync(long questionId)
+    public async Task<ErrorOr<AnswerResponseDto>> GetWithUserAsync(long answerId)
     {
-        var answer = await _unitOfWork.Answer.GetWithUserAsync(questionId);
+        var answer = await _unitOfWork.Answer.GetWithUserAsync(answerId);
 
         return answer is null 
             ? Error.NotFound()

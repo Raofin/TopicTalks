@@ -80,6 +80,27 @@ internal class EmailSender(IFluentEmail fluentEmail) : IEmailSender
         Send(email);
     }
 
+    public void SendAnswerNotification(string emailAddress, string author, string answer, string question)
+    {
+        var email = _fluentEmail
+            .To(emailAddress)
+            .Subject("New Answer Notification")
+            .Body($"""
+                    <body style='font-family: Inter, Arial, sans-serif;'>
+                     <div style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px;'>
+                       <h2 style='color: #333; text-align: center;'>Your Question Has a New Answer!</h2>
+                       <p>You have received a new answer by <strong>{author}</strong> to your question.</p>
+                       <p><strong>Question:</strong> {question}</p>
+                       <p><strong>Answer:</strong> {answer}</p>
+                       <p>Best,<br>TopicTalks Team</p>
+                     </div>
+                    </body>
+                   """,
+                isHtml: true);
+
+        Send(email);
+    }
+
     private void Send(IFluentEmail email)
     {
         try
