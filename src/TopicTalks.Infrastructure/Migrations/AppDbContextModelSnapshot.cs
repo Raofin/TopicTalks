@@ -166,6 +166,37 @@ namespace TopicTalks.Infrastructure.Migrations
                     b.ToTable("CloudFiles", "core");
                 });
 
+            modelBuilder.Entity("TopicTalks.Domain.Entities.LogEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Exception")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Level")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MessageTemplate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Properties")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LogEvents", (string)null);
+                });
+
             modelBuilder.Entity("TopicTalks.Domain.Entities.Otp", b =>
                 {
                     b.Property<string>("Email")
@@ -420,7 +451,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             UserId = 1L,
-                            CreatedAt = new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6694),
+                            CreatedAt = new DateTime(2024, 1, 27, 13, 13, 46, 462, DateTimeKind.Utc).AddTicks(5219),
                             Email = "hello@rawfin.net",
                             IsVerified = true,
                             PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
@@ -430,7 +461,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             UserId = 2L,
-                            CreatedAt = new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6701),
+                            CreatedAt = new DateTime(2024, 1, 27, 13, 13, 46, 462, DateTimeKind.Utc).AddTicks(5226),
                             Email = "doe@topictalks.net",
                             IsVerified = false,
                             PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
@@ -440,7 +471,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             UserId = 3L,
-                            CreatedAt = new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6704),
+                            CreatedAt = new DateTime(2024, 1, 27, 13, 13, 46, 462, DateTimeKind.Utc).AddTicks(5229),
                             Email = "bob@topictalks.net",
                             IsVerified = false,
                             PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
@@ -450,7 +481,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             UserId = 4L,
-                            CreatedAt = new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6707),
+                            CreatedAt = new DateTime(2024, 1, 27, 13, 13, 46, 462, DateTimeKind.Utc).AddTicks(5231),
                             Email = "oec@topictalks.net",
                             IsVerified = false,
                             PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",
@@ -460,7 +491,7 @@ namespace TopicTalks.Infrastructure.Migrations
                         new
                         {
                             UserId = 5L,
-                            CreatedAt = new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6709),
+                            CreatedAt = new DateTime(2024, 1, 27, 13, 13, 46, 462, DateTimeKind.Utc).AddTicks(5233),
                             Email = "eor@topictalks.net",
                             IsVerified = false,
                             PasswordHash = "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==",

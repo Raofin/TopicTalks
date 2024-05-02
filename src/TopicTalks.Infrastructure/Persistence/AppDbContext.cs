@@ -13,6 +13,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Answer> Answers { get; set; } = null!;
     public DbSet<Otp> Otps { get; set; } = null!;
     public DbSet<CloudFile> CloudFiles { get; set; } = null!;
+    public DbSet<LogEvent> LogEvents { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

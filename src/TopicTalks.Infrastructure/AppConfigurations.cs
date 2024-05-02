@@ -17,6 +17,9 @@ using TopicTalks.Domain.Enums;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using System.Text;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.MSSqlServer;
 
 namespace TopicTalks.Infrastructure;
 
@@ -51,7 +54,8 @@ public static class AppConfigurations
            .UseHttpsRedirection()
            .UseHostFiltering()
            .UseAuthentication()
-           .UseAuthorization();
+           .UseAuthorization()
+           .UseSerilogRequestLogging();
 
         return app;
     }
@@ -192,6 +196,29 @@ public static class AppConfigurations
         });
 
         return services;
+    }
+
+    #endregion
+
+    #region ### Serilog ###
+
+    public static IHostBuilder UseSerilogSqlServer(this IHostBuilder hostBuilder, IConfiguration configuration, IHostEnvironment env)
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+        hostBuilder.UseSerilog((context, config) =>
+            config.ReadFrom.Configuration(context.Configuration)
+                .WriteTo.Console(env.IsDevelopment() ? LogEventLevel.Information : LogEventLevel.Error)
+                .WriteTo.MSSqlServer(
+                    restrictedToMinimumLevel: LogEventLevel.Warning,
+                    connectionString: connectionString,
+                    sinkOptions: new MSSqlServerSinkOptions {
+                        TableName = "LogEvents",
+                        AutoCreateSqlTable = false
+                    })
+        );
+
+        return hostBuilder;
     }
 
     #endregion

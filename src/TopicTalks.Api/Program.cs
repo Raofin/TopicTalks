@@ -9,6 +9,7 @@ builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
 
+builder.Host.UseSerilogSqlServer(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 

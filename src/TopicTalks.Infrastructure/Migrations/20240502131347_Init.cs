@@ -26,6 +26,24 @@ namespace TopicTalks.Infrastructure.Migrations
                 name: "enum");
 
             migrationBuilder.CreateTable(
+                name: "LogEvents",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MessageTemplate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Level = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TimeStamp = table.Column<DateTime>(type: "datetime", nullable: false),
+                    Exception = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Properties = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LogEvents", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Otps",
                 schema: "auth",
                 columns: table => new
@@ -219,7 +237,7 @@ namespace TopicTalks.Infrastructure.Migrations
                 schema: "auth",
                 table: "Users",
                 columns: new[] { "UserId", "CreatedAt", "Email", "ImageFileId", "IsVerified", "PasswordHash", "Salt", "Username" },
-                values: new object[] { 1L, new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6694), "hello@rawfin.net", null, true, "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=", "Rawfin" });
+                values: new object[] { 1L, new DateTime(2024, 1, 27, 13, 13, 46, 462, DateTimeKind.Utc).AddTicks(5219), "hello@rawfin.net", null, true, "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=", "Rawfin" });
 
             migrationBuilder.InsertData(
                 schema: "auth",
@@ -227,10 +245,10 @@ namespace TopicTalks.Infrastructure.Migrations
                 columns: new[] { "UserId", "CreatedAt", "Email", "ImageFileId", "PasswordHash", "Salt", "Username" },
                 values: new object[,]
                 {
-                    { 2L, new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6701), "doe@topictalks.net", null, "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=", "Doe" },
-                    { 3L, new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6704), "bob@topictalks.net", null, "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=", "Bob" },
-                    { 4L, new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6707), "oec@topictalks.net", null, "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=", "Oweo" },
-                    { 5L, new DateTime(2024, 1, 17, 21, 58, 18, 6, DateTimeKind.Utc).AddTicks(6709), "eor@topictalks.net", null, "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=", "Eorc" }
+                    { 2L, new DateTime(2024, 1, 27, 13, 13, 46, 462, DateTimeKind.Utc).AddTicks(5226), "doe@topictalks.net", null, "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=", "Doe" },
+                    { 3L, new DateTime(2024, 1, 27, 13, 13, 46, 462, DateTimeKind.Utc).AddTicks(5229), "bob@topictalks.net", null, "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=", "Bob" },
+                    { 4L, new DateTime(2024, 1, 27, 13, 13, 46, 462, DateTimeKind.Utc).AddTicks(5231), "oec@topictalks.net", null, "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=", "Oweo" },
+                    { 5L, new DateTime(2024, 1, 27, 13, 13, 46, 462, DateTimeKind.Utc).AddTicks(5233), "eor@topictalks.net", null, "AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==", "vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=", "Eorc" }
                 });
 
             migrationBuilder.InsertData(
@@ -392,6 +410,9 @@ namespace TopicTalks.Infrastructure.Migrations
             migrationBuilder.DropTable(
                 name: "Answers",
                 schema: "post");
+
+            migrationBuilder.DropTable(
+                name: "LogEvents");
 
             migrationBuilder.DropTable(
                 name: "Otps",
