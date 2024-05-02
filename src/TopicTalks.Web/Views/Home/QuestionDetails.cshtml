@@ -13,18 +13,40 @@
         {
             var answerAuthorId = answer.UserInfo?.UserId.ToString() ?? "0";
             var answerAuthorUsername = answer.UserInfo?.Username ?? "Delete User";
+            var isTeacher = answer.UserInfo?.Roles?.Contains(nameof(RoleType.Teacher));
+            var userType = isTeacher is true ? "Teacher" : "Student";
 
             <div id="answer-@(answer.AnswerId) parent-@(answer.ParentAnswerId)" class="rounded border p-3 mb-3" style="margin-left: @(marginLeft)px;">
                 <div class="d-flex justify-content-between">
-                    <p><strong>@(answerAuthorUsername)</strong> on <local-time utc-datetime="@answer.CreatedAt" format="2" time-ago="true"></local-time></p>
+                    <div class="d-flex">
+                        <span class="user-image user-preview" style="margin-right: 0.3rem">
+                            <img src="@(answer.UserInfo?.ProfileImageUrl ?? "/img/user.svg")" alt="" />
+                            <div class="user-info user-preview" style="display: none">
+                                <div class="d-flex flex-column justify-content-center align-items-center">
+                                    <span class="user-image mb-1" style="width: 6.5rem; height: 6.5rem;">
+                                        <img src="@(Model.UserInfo?.ProfileImageUrl ?? "/img/user.svg")" alt="" />
+                                    </span>
+                                    <p class="text-center mb-0">
+                                        <strong>@answerAuthorUsername</strong><br>
+                                        @(answer.UserInfo is not null ? "Joined " + answer.UserInfo.CreatedAt.TimeAgo() : "")
+                                    </p>
+                                </div>
+                            </div>
+                        </span>
+                        <div>
+                            <strong>@(answerAuthorUsername)</strong>
+                            <i class="fi i-@userType.ToLower()" pop="@userType"></i>
+                            on <local-time utc-datetime="@answer.CreatedAt" format="2" time-ago="true"></local-time>
+                        </div>
+                    </div>
                     <div class="d-flex gap-2">
                         @if (Context.UserRole().Contains(RoleType.Moderator) || answerAuthorId == Context.UserId())
                         {
-                            <span class="link text-danger" onclick="deleteAnswer(@(answer.AnswerId))" pop="delete" data-tippy-theme="red">
+                            <span class="link text-danger" onclick="deleteAnswer(@(answer.AnswerId))" pop="Delete" data-tippy-theme="red">
                                 <i class="fi i-delete"></i>
                             </span>
                             <span class="link text-success" onclick="appendInput(@(Model.QuestionId), @(answer.AnswerId), true)" pop="Edit">
-                                <i class="fi i-edit blue-hover" data-bs-trigger="hover focus" data-bs-placement="bottom" data-bs-content="Edit"></i>
+                                <i class="fi i-edit-2 blue-hover" data-bs-trigger="hover focus" data-bs-placement="bottom" data-bs-content="Edit"></i>
                             </span>
                         }
                         @if (Context.IsAuthenticated() && !Context.UserRole().Contains(RoleType.Moderator))
@@ -110,10 +132,29 @@
                                 <i class="fi i-delete"></i>
                             </span>
                         }
+                        else if (authorId == Context.UserId() && Model.HasTeachersResponse)
+                        {
+                            <span class="link text-danger" pop="This question has been answerd by teacher" style="cursor: no-drop">
+                                <i class="fi i-delete"></i>
+                            </span>
+                        }
                         @if (Context.UserRole().Contains(RoleType.Moderator) || authorId == Context.UserId())
                         {
                             <span id="edit-question" class="link text-success blue-hover" pop="Edit">
-                                <i class="fi i-edit"></i>
+                                <i class="fi i-edit-2"></i>
+                            </span>
+                        }
+                        @if (string.Equals(Model.UserInfo?.UserId.ToString(), Context.UserId(), StringComparison.Ordinal))
+                        {
+                            <span>
+                                @if (Model.IsNotified)
+                                {
+                                    <i id="notification" class="fi i-notification-on color-blue red-hover" pop="Notification turned on"></i>
+                                }
+                                else
+                                {
+                                    <i id="notification" class="fi i-notification blue-hover" pop="Notification turned off"></i>
+                                }
                             </span>
                         }
                         <span onclick="getPdf()" class="link blue-hover" pop="Print" style="color: indigo">
@@ -158,6 +199,26 @@
             window.open('@Url.Action("GetPdf", "Question", new { questionId = Model.QuestionId })', '_blank');
         }
 
+        $('#notification').on("click", () => {
+            $.ajax({
+                url: '@Url.Action("UpdateNotification", "Question", new { questionId = Model.QuestionId })',
+                type: 'PATCH',
+                contentType: 'application/json',
+                success: () => {
+                    var element = $('#notification')
+
+                    if (element.hasClass('i-notification')) {
+                        element.removeClass('i-notification blue-hover').addClass('i-notification-on color-blue red-hover');
+                        toastMessage("Notification turned on", ToastColor.Blue);
+                    } else if (element.hasClass('i-notification-on')) {
+                        element.removeClass('i-notification-on color-blue red-hover').addClass('i-notification blue-hover');
+                        toastMessage("Notification turned off", ToastColor.Red)
+                    }
+                },
+                error: () => toastMessage("Internal server error. Please try again later.")
+            });
+        })
+
         $("#edit-question").on("click", function () {
             var questionId = $("#question-container").attr("question")
             var editedQuestion = appendQuestionEditInput(questionId)
@@ -168,22 +229,22 @@
 
             if (!$("#reply-input").length) {
                 $("#question-container").append(`
-                                        <div id="reply-input">
-                                            <form id="reply-form" class="col-sm-9 w-100 d-flex">
-                                                <input type="hidden" name="questionId" value="${questionId}" />
-                                                <div class="text-center w-100">
-                                                    <input type="text" id="question-topics" class="form-control mb-1" placeholder="Write your question topics here" name="topic" value="@Model.Topic" />
-                                                    <textarea id="explanation-input" class="form-control mb-1" rows="3" placeholder="Write your reply here" name="explanation">@Model.Explanation</textarea>
-                                                </div>
-                                                <div class="text-center d-flex justify-content-between align-items-end" style ="width: 150px;">
-                                                    <div>
-                                                        <button type="button" class="btn btn-primary mb-1 mt-1" style="width: 90px;" onclick="focusReplyTextArea()">Reply</button>
-                                                        <button type="button" class="btn btn-danger mb-1 mt-1" style="width: 90px;" onclick="closeReplyInput()">Close</button>
-                                                        <button type="submit" class="btn btn-success" style="width: 90px;">Confirm</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>`)
+                    <div id="reply-input">
+                        <form id="reply-form" class="col-sm-9 w-100 d-flex">
+                            <input type="hidden" name="questionId" value="${questionId}" />
+                            <div class="text-center w-100">
+                                <input type="text" id="question-topics" class="form-control mb-1" placeholder="Write your question topics here" name="topic" value="@Model.Topic" />
+                                <textarea id="explanation-input" class="form-control mb-1" rows="3" placeholder="Write your reply here" name="explanation">@Model.Explanation</textarea>
+                            </div>
+                            <div class="text-center d-flex justify-content-between align-items-end" style ="width: 150px;">
+                                <div>
+                                    <button type="button" class="btn btn-primary mb-1 mt-1" style="width: 90px;" onclick="focusReplyTextArea()">Reply</button>
+                                    <button type="button" class="btn btn-danger mb-1 mt-1" style="width: 90px;" onclick="closeReplyInput()">Close</button>
+                                    <button type="submit" class="btn btn-success" style="width: 90px;">Confirm</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>`)
 
                 $('#reply-form').validate({
                     rules: {

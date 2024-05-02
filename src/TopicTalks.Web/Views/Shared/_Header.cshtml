@@ -72,7 +72,7 @@
                     </li>
                     <li>
                         @{
-                            var imageUrl = Context.UserInfo()?.ImageFile.DirectLink ?? "/img/user.svg";
+                            var imageUrl = Context.UserInfo()?.ImageFile?.DirectLink != null ? Context.UserInfo()!.ImageFile!.DirectLink + "=s128" : "/img/user.svg";
                         }
                         <span class="d-flex align-items-center pointer profile-preview">
                             <span class="fw-bold me-2 red-hover">
@@ -83,7 +83,7 @@
                             </span>
                             <div class="user-info profile-preview" style=" display: none;">
                                 <div class="flex-col-center">
-                                    <div class="profile-image pointer mb-1" onclick="window.location.href='@imageUrl'">
+                                    <div class="profile-image pointer mb-1" onclick="window.location.href='@(Context.UserInfo()?.ImageFile?.DirectLink ?? "/img/user.svg")'">
                                         <img src="@imageUrl" alt="" />
                                     </div>
                                     <div class="flex-col-center mb-1" style="font-size: 1rem">

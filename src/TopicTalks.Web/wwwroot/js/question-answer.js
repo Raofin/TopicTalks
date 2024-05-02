@@ -134,16 +134,22 @@ function closeReplyInput() {
 }
 
 function appendAnswer(response) {
+    console.table(response)
     var answer = `
         <div id="answer-${response.answerId} parent-${response.parentAnswerId}" class="rounded border p-3 mb-3">
             <div class="d-flex justify-content-between">
-                <p><strong>${response.userInfo.username}</strong> on ${currentDate()} (just now)</p>
+                <div class="d-flex">
+                    <span class="user-image" style="margin-right: 0.3rem">
+                        <img src="${response.userInfo?.profileImageUrl ?? '/img/user.svg'}" alt="" />
+                    </span>
+                    <p><strong>${response.userInfo.username}</strong> on ${currentDate()} (just now)</p>
+                </div>
                 <div class="d-flex gap-2">
                     <span class="link text-danger" onclick="deleteAnswer(${response.answerId})" pop="Delete" data-tippy-theme="red">
                         <i class="fi i-delete" style="display: inline;"></i>
                     </span>
                     <span class="link text-success" onclick="appendInput(${response.questionId}, ${response.answerId}, true)" pop="Edit">
-                        <i class="fi i-edit" style="display: inline;"></i>
+                        <i class="fi i-edit-2" style="display: inline;"></i>
                     </span>
                     <span class="link" onclick="appendInput(${response.questionId}, ${response.answerId})" pop="Reply">
                         <i class="fi i-reply blue-hover" style="color: #333; display: inline;"></i>
@@ -167,13 +173,18 @@ function appendReply(response) {
     let reply = `
             <div id="answer-${response.answerId} parent-${response.parentAnswerId}" class="rounded border p-3 mb-3" style="margin-left: ${marginLeft}px;">
                 <div class="d-flex justify-content-between">
-                    <p><strong>${response.userInfo.username}</strong> on ${currentDate()} (just now)</p>
+                    <div class="d-flex">
+                        <span class="user-image" style="margin-right: 0.3rem">
+                            <img src="${response.userInfo?.profileImageUrl ?? '/img/user.svg'}" alt="" />
+                        </span>
+                        <p><strong>${response.userInfo.username}</strong> on ${currentDate()} (just now)</p>
+                    </div>
                     <div class="d-flex gap-2">
                         <span class="link text-danger" onclick="deleteAnswer(${response.answerId})" pop="Delete" data-tippy-theme="red">
                             <i class="fi i-delete" style="display: inline;"></i>
                         </span>
                         <span class="link text-success" onclick="appendInput(${response.questionId}, ${response.answerId}, true)" pop="Edit">
-                            <i class="fi i-edit" style="display: inline;"></i>
+                            <i class="fi i-edit-2" style="display: inline;"></i>
                         </span>
                         <span class="link" onclick="appendInput(${response.questionId}, ${response.answerId})" pop="Reply">
                             <i class="fi i-reply blue-hover" style="color: #333; display: inline;"></i>

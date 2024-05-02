@@ -13,6 +13,9 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
     {
         return await _dbContext.Answers
             .Include(a => a.User)
+            .ThenInclude(u => u!.ImageFile)
+            .Include(a => a.Question)
+            .ThenInclude(q => q!.User)
             .Where(a => a.AnswerId == answerId)
             .SingleOrDefaultAsync();
     }
@@ -29,6 +32,7 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
     {
         return await _dbContext.Answers
             .Include(a => a.User)
+            .ThenInclude(u => u!.ImageFile)
             .Where(a => a.QuestionId == questionId)
             .ToListAsync();
     }
@@ -37,6 +41,7 @@ internal class AnswerRepository(AppDbContext dbContext) : Repository<Answer>(dbC
     {
         return await _dbContext.Answers
             .Include(a => a.User)
+            .ThenInclude(u => u!.ImageFile)
             .Where(a => a.QuestionId == questionId
                 && a.AnswerId == answerId
                 && a.ParentAnswerId == parentAnswerId)

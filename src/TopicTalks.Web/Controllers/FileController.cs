@@ -8,20 +8,10 @@ using TopicTalks.Web.ViewModels;
 namespace TopicTalks.Web.Controllers;
 
 [Route("File")]
-public class FileController(IHttpService httpService) : Controller
+public class FileController(IHttpService httpService, IHttpContextAccessor httpContextAccessor) : Controller
 {
+    private readonly IHttpContextAccessor _httpAccessor = httpContextAccessor;
     private readonly IHttpService _httpService = httpService;
-
-    public IActionResult Index()
-    {
-        return View();
-    }
-
-    [Route("Form")]
-    public IActionResult Form()
-    {
-        return View();
-    }
 
     [HttpPost]
     public async Task<IActionResult> UploadFile(IFormFile file)
@@ -47,9 +37,18 @@ public class FileController(IHttpService httpService) : Controller
         var response = await _httpService.Client.PutAsync("api/account/profileImage", content);
         var uploadedFile = JsonConvert.DeserializeObject<CloudFileViewModel>(response.ToJson())!;
 
+        var cookieValue = _httpAccessor.HttpContext!.Request.Cookies["UserInfo"]!;
+        var userInfo = JsonConvert.DeserializeObject<UserInfoCookies>(cookieValue)!;
+        userInfo.ImageFile = uploadedFile;
+
+        _httpAccessor.HttpContext.Response.Cookies.Append(
+            "UserInfo",
+            JsonConvert.SerializeObject(userInfo), 
+            new CookieOptions { HttpOnly = true }
+        );
+
         return response.IsSuccessStatusCode
             ? Ok(uploadedFile)
             : StatusCode((int)response.StatusCode, "Error uploading file.");
     }
-
 }

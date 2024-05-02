@@ -21,8 +21,7 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
             .Where(q => string.IsNullOrEmpty(searchTextLower)
                         || q.Topic.ToLower().Contains(searchTextLower)
                         || q.Explanation.ToLower().Contains(searchTextLower))
-            .Select(q => new Question
-            {
+            .Select(q => new Question {
                 QuestionId = q.QuestionId,
                 Topic = q.Topic,
                 Explanation = q.Explanation,
@@ -64,6 +63,15 @@ internal class QuestionRepository(AppDbContext dbContext) : Repository<Question>
             .ThenInclude(u => u!.ImageFile)
             .Where(q => q.User != null && q.User.UserId == userId)
             .ToListAsync();
+    }
+
+    public async Task<Question?> GetByUserIdAsync(long questionId, long userId)
+    {
+        return await _dbContext.Questions
+            .Include(q => q.User)
+            .ThenInclude(u => u!.ImageFile)
+            .Where(q => q.QuestionId == questionId && q.User != null && q.User.UserId == userId)
+            .SingleOrDefaultAsync();
     }
 
     public async Task<List<Question>> GetByUserResponsesAsync(long userId)

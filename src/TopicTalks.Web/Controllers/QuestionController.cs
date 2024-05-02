@@ -52,4 +52,14 @@ public class QuestionController(IHttpService httpService) : Controller
             ? File(await response.Content.ReadAsByteArrayAsync(), "application/pdf")
             : new StatusCodeResult((int)response.StatusCode);
     }
+
+    [HttpPatch("UpdateNotification")]
+    public async Task<IActionResult> UpdateNotification(long questionId)
+    {
+        var response = await _httpService.Client.PatchAsync($"api/question/{questionId}/notification", null);
+
+        return response.IsSuccessStatusCode
+            ? Ok()
+            : new StatusCodeResult((int)response.StatusCode);
+    }
 }

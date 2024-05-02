@@ -4,7 +4,7 @@
 @if (Model.Count == 0)
 {
     <div class="content-container question-container text-center" style="padding: 2.5rem 8rem">
-        <h1 class="title">No questions available</h1>
+        <h1 class="title text-danger">No questions available</h1>
     </div>
 }
 else
@@ -12,7 +12,7 @@ else
     foreach (var question in Model)
     {
         var username = question.UserInfo is not null ? "@" + question.UserInfo?.Username : "Delete User";
-        var imageUrl = question.UserInfo?.ProfileImageUrl ?? "/img/user.svg";
+        var imageUrl = question.UserInfo?.ProfileImageUrl != null ? question.UserInfo.ProfileImageUrl + "=s256" : "/img/user.svg";
 
         <div id="question-@question.QuestionId" class="content-container question-container mb-4">
             @if (question.ImageFile is not null)

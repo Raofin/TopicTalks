@@ -130,4 +130,17 @@ public class QuestionController(IQuestionService questionService) : ApiControlle
                 _ => Problem("An unexpected error occurred.")
             };
     }
+
+    [HttpPatch("{questionId}/notification")]
+    public async Task<IActionResult> UpdateNotification(long questionId)
+    {
+        var result = await _questionService.UpdateNotificationAsync(questionId, User.GetUserId());
+
+        return !result.IsError
+            ? Ok()
+            : result.FirstError.Type switch {
+                ErrorType.NotFound => NotFound("Question was not found."),
+                _ => Problem("An unexpected error occurred.")
+            };
+    }
 }

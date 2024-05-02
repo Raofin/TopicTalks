@@ -24,6 +24,7 @@ public record UserBasicInfoDto(
     string Username,
     string Email,
     string? ProfileImageUrl,
+    List<RoleType> Roles,
     DateTime CreatedAt
 );
 

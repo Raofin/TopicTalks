@@ -28,6 +28,7 @@ public static class EntityExtensions
             Username: user.Username,
             Email: user.Email,
             ProfileImageUrl: user.ImageFile?.DirectLink,
+            Roles: user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList(),
             CreatedAt: user.CreatedAt
         );
     }
@@ -38,6 +39,7 @@ public static class EntityExtensions
             QuestionId: question.QuestionId,
             Topic: question.Topic,
             Explanation: question.Explanation,
+            IsNotified: question.IsNotified,
             UserInfo: question.User?.ToBasicInfoDto(),
             CreatedAt: question.CreatedAt,
             UpdatedAt: question.UpdatedAt,

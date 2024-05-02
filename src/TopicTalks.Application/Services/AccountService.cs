@@ -9,9 +9,9 @@ using TopicTalks.Domain.Interfaces.Core;
 namespace TopicTalks.Application.Services;
 
 internal class AccountService(
-    IUnitOfWork unitOfWork, 
-    IHashPassword passwordService, 
-    IJwtGenerator tokenService, 
+    IUnitOfWork unitOfWork,
+    IHashPassword passwordService,
+    IJwtGenerator tokenService,
     IEmailSender emailService,
     ICloudService cloudService) : IAccountService
 {
@@ -40,27 +40,35 @@ internal class AccountService(
             Email = request.Email,
             PasswordHash = hashedPassword,
             Salt = salt,
-            ImageFileId = request.ImageFileId
+            ImageFileId = request.ImageFileId,
+            UserRoles = new List<UserRole> {
+                new() { RoleId = (long)request.Role, }
+            },
+            UserDetails = request?.UserDetails is null ? null
+                : new UserDetail {
+                    FullName = request.UserDetails.Name,
+                    InstituteName = request.UserDetails.InstituteName,
+                    IdCardNumber = request.UserDetails.IdCardNumber,
+                }
         };
 
-        user.UserRoles.Add(new UserRole {
-            RoleId = (long)request.Role,
-        });
-
-        if (request?.UserDetails != null)
-        {
-            user.UserDetails = new UserDetail {
-                FullName = request.UserDetails.Name,
-                InstituteName = request.UserDetails.InstituteName,
-                IdCardNumber = request.UserDetails.IdCardNumber,
-            };
-        }
-
         _unitOfWork.User.Add(user);
+
+        var otpCode = GenerateOtp();
+
+        var otp = new Otp {
+            Email = user.Email,
+            Code = otpCode,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(5),
+        };
+
+        _unitOfWork.Otp.Add(otp);
+
         await _unitOfWork.CommitAsync();
+        await _unitOfWork.Entry(user).Reference(u => u.ImageFile).LoadAsync();
 
         _emailService.SendWelcome(user.Email);
-        await SendOtpAsync(user.Email);
+        _emailService.SendOtp(user.Email, otpCode);
 
         return Authenticate(user);
     }
@@ -75,7 +83,7 @@ internal class AccountService(
         }
 
         return _passwordService.VerifyPassword(user.PasswordHash, user.Salt, request.Password)
-            ? Authenticate(user) 
+            ? Authenticate(user)
             : Error.Unauthorized();
     }
 
@@ -144,7 +152,7 @@ internal class AccountService(
 
     public async Task SendOtpAsync(string email)
     {
-        var code = new Random().Next(1000, 9999).ToString();
+        var code = GenerateOtp();
 
         var otp = await _unitOfWork.Otp.GetOtpAsync(email);
 
@@ -187,9 +195,14 @@ internal class AccountService(
     {
         var user = await _unitOfWork.User.GetBasicInfoAsync(userId);
 
-        return user is null 
-            ? Error.NotFound() 
+        return user is null
+            ? Error.NotFound()
             : user.ToBasicInfoDto();
+    }
+
+    private static string GenerateOtp()
+    {
+        return new Random().Next(1000, 9999).ToString();
     }
 
     #endregion ### OTP ###

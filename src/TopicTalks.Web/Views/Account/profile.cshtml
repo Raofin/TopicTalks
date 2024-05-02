@@ -1,11 +1,16 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using TopicTalks.Web.Extensions
 @model TopicTalks.Web.ViewModels.UserViewModel
+
+@{
+    var imageUrl = Context.UserInfo()?.ImageFile?.DirectLink ?? "/img/user.svg";
+}
 
 <div class="container" style="margin-top: 8rem">
     <div class="content-container " style="max-width: 25rem; padding: 2rem">
         <div class="d-flex flex-column justify-content-center align-items-center">
             <span class="user-profile-image" style="">
-                <img id="preview-image" src="https://rawfin.net/assets/img/Rawfin.png" alt="">
+                <img id="preview-image" class="pointer" src="@imageUrl" alt="" onclick="window.location.href='@imageUrl'">
                 <span id="upload-trigger" class="change-icon pointer" pop="Change profile picture">
                     <i class="fi i-refresh"></i>
                 </span>
@@ -56,7 +61,6 @@
                                 <strong>Not Verified</strong>
                             </a>
                         </td>
-
                     }
                 </tr>
             </tbody>
@@ -85,6 +89,7 @@
 
             uploadProfileImage()
                 .then((response) => {
+                    $('.header-profile-image img').attr('src', response.directLink);
                     toastMessage('Profile image updated', ToastColor.Blue);
                 })
                 .catch(() => { })

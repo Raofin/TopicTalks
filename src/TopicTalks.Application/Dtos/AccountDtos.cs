@@ -17,9 +17,9 @@ public record RegistrationRequest(
     string Email,
     string Password,
     string ConfirmPassword,
+    string? ImageFileId,
     RoleType Role,
-    UserDetailDto? UserDetails,
-    string? ImageFileId
+    UserDetailDto? UserDetails
 );
 
 public record PasswordChangeRequest(

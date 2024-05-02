@@ -16,20 +16,22 @@ public record QuestionResponseDto(
     long QuestionId,
     string Topic,
     string Explanation,
+    bool IsNotified,
     UserBasicInfoDto? UserInfo,
+    CloudFileDto? ImageFile,
     DateTime CreatedAt,
-    DateTime? UpdatedAt,
-    CloudFileDto? ImageFile
+    DateTime? UpdatedAt
 );
 
 public record QuestionWithAnswersDto(
     long QuestionId,
     string Topic,
     string Explanation,
+    bool IsNotified,
     bool? HasTeachersResponse,
     UserBasicInfoDto? UserInfo,
     List<AnswerWithRepliesDto>? Answers,
+    CloudFileDto? ImageFile,
     DateTime CreatedAt,
-    DateTime? UpdatedAt,
-    CloudFileDto? ImageFile
+    DateTime? UpdatedAt
 );

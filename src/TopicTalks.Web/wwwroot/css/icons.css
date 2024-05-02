@@ -1,8 +1,8 @@
 @font-face {
   font-style: normal;
   font-weight: normal;
-  src: url('icons/RawfinIcons.eot?z8xkun');
-  src: url('icons/RawfinIcons.eot?z8xkun#iefix') format('embedded-opentype'), url('icons/RawfinIcons.ttf?z8xkun') format('truetype'), url('icons/RawfinIcons.woff?z8xkun') format('woff'), url('icons/RawfinIcons.svg?z8xkun#RawfinIcons') format('svg');
+  src: url('icons/RawfinIcons.eot?e3pfr5');
+  src: url('icons/RawfinIcons.eot?e3pfr5#iefix') format('embedded-opentype'), url('icons/RawfinIcons.ttf?e3pfr5') format('truetype'), url('icons/RawfinIcons.woff?e3pfr5') format('woff'), url('icons/RawfinIcons.svg?e3pfr5#RawfinIcons') format('svg');
   font-family: 'RawfinIcons';
   font-display: block;
 }
@@ -99,30 +99,46 @@ i {
   content: "\e913";
 }
 
-.i-table:before {
+.i-student:before {
   content: "\e914";
 }
 
-.i-user:before {
+.i-student-2:before {
   content: "\e915";
 }
 
-.i-user-image:before {
+.i-table:before {
   content: "\e916";
 }
 
-.i-warning:before {
+.i-teacher:before {
   content: "\e917";
 }
 
-.i-warning-yellow .path1:before {
+.i-teacher-2:before {
   content: "\e918";
+}
+
+.i-user:before {
+  content: "\e919";
+}
+
+.i-user-image:before {
+  content: "\e91a";
+}
+
+.i-warning:before {
+  content: "\e91b";
+}
+
+.i-warning-yellow .path1:before {
+  content: "\e91c";
   color: rgb(0, 0, 0);
 }
 
 .i-warning-yellow .path2:before {
   margin-left: -1.0009765625em;
-  content: "\e919";
+  content: "\e91d";
   color: rgb(255, 212, 81);
 }
 

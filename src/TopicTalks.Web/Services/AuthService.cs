@@ -129,9 +129,8 @@ internal class AuthService(IHttpContextAccessor httpContextAccessor, IOptions<Ap
     {
         var userInfoJson = JsonConvert.SerializeObject(user);
 
-        _httpAccessor.HttpContext!.Response.Cookies.Append("UserInfo", userInfoJson, new CookieOptions {
-            HttpOnly = true,
-            Expires = DateTime.Now.AddDays(7)
-        });
+        _httpAccessor.HttpContext!.Response.Cookies.Append("UserInfo", userInfoJson, 
+            new CookieOptions { HttpOnly = true }
+        );
     }
 }

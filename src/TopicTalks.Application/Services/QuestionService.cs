@@ -89,6 +89,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
                 QuestionId: question.QuestionId,
                 Topic: question.Topic,
                 Explanation: question.Explanation,
+                IsNotified: question.IsNotified,
                 HasTeachersResponse: question.Answers
                     .Any(answer => answer.User is not null && answer.User.UserRoles
                         .Any(ur => ur.Role.RoleName == nameof(RoleType.Teacher))),
@@ -153,5 +154,20 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
         return question.IsError 
             ? question.Errors 
             : _pdfService.GenerateQuestionPdf(question.Value);
+    }
+
+    public async Task<ErrorOr<Success>> UpdateNotificationAsync(long questionId, long userId)
+    {
+        var question = await _unitOfWork.Question.GetByUserIdAsync(questionId, userId);
+
+        if (question is null)
+        {
+            return Error.NotFound();
+        }
+
+        question.IsNotified = !question.IsNotified;
+        await _unitOfWork.CommitAsync();
+
+        return Result.Success;
     }
 }
