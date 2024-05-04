@@ -67,8 +67,7 @@ internal class AccountService(
         await _unitOfWork.CommitAsync();
         await _unitOfWork.Entry(user).Reference(u => u.ImageFile).LoadAsync();
 
-        _emailService.SendWelcome(user.Email);
-        _emailService.SendOtp(user.Email, otpCode);
+        _emailService.SendWelcomeWithOtp(user.Email, otpCode);
 
         return Authenticate(user);
     }
@@ -182,8 +181,8 @@ internal class AccountService(
 
         _unitOfWork.Otp.Remove(otp);
 
-        var user = await _unitOfWork.User.GetByEmailAsync(email);
-        user.IsVerified = true;
+        var user = await _unitOfWork.User.GetWithDetailsAsync(email);
+        user!.IsVerified = true;
 
         await _unitOfWork.CommitAsync();
         _emailService.SendVerified(email);

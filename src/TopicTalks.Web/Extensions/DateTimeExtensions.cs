@@ -17,7 +17,8 @@ public static class DateTimeExtensions
 
         return delta switch
         {
-            < 1 * minute => ts.Seconds == 1 ? "just now" : ts.Seconds + " seconds ago",
+            < 10 * second => "just now",
+            < 1 * minute => ts.Seconds + " seconds ago",
             < 2 * minute => "a minute ago",
             < 45 * minute => ts.Minutes + " minutes ago",
             < 90 * minute => "an hour ago",

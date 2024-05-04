@@ -2,8 +2,9 @@
 
 public interface IEmailSender
 {
-    void SendWelcome(string email);
-    void SendOtp(string email, string code);
+    void SendWelcome(string emailAddress);
+    void SendWelcomeWithOtp(string emailAddress, string code);
+    void SendOtp(string emailAddress, string code);
     void SendVerified(string emailAddress);
-    void SendAnswerNotification(string email, string author, string answer, string question);
+    void SendAnswerNotification(string emailAddress, string author, string answer, string question);
 }

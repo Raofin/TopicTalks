@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TopicTalks.Application.Attributes;
@@ -9,10 +10,11 @@ using TopicTalks.Application.Services;
 
 namespace TopicTalks.Api.Controllers;
 
-public class AccountController(IAccountService accountService, IExcelService excelService) : ApiController
+public class AccountController(IAccountService accountService, IExcelService excelService, IValidator<IFormFile> validator) : ApiController
 {
     private readonly IAccountService _userService = accountService;
     private readonly IExcelService _excelService = excelService;
+    private readonly IValidator<IFormFile> _validator = validator;
 
     [AllowAnonymous]
     [HttpPost("register")]
@@ -58,6 +60,13 @@ public class AccountController(IAccountService accountService, IExcelService exc
     [HttpPut("profileImage")]
     public async Task<IActionResult> ChangeProfileImage(IFormFile file)
     {
+        var validationResult = await _validator.ValidateAsync(file);
+
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.ToDto());
+        }
+
         await using var stream = file.OpenReadStream();
         var image = await _userService.ChangeProfileImageAsync(new FileUploadDto(file.FileName, stream,file.ContentType), User.GetUserId());
 

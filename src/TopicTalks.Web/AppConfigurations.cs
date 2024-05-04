@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using NUglify.Css;
 using NUglify.JavaScript;
+using Serilog;
+using Serilog.Events;
 using TopicTalks.Web.Common;
 using WebMarkupMin.AspNetCore8;
 
@@ -119,7 +121,7 @@ public static class AppConfigurations
         return services;
     }
 
-    private static IServiceCollection AddWebOptimizer(this IServiceCollection services, IWebHostEnvironment environment)
+    private static IServiceCollection AddWebOptimizer(this IServiceCollection services, IHostEnvironment environment)
     {
         if (!environment.IsDevelopment())
         {
@@ -142,6 +144,20 @@ public static class AppConfigurations
         }
 
         return services;
+    }
+
+    #endregion
+
+    #region ### Serilog ###
+
+    public static IHostBuilder UseSerilogConfig(this IHostBuilder hostBuilder, IHostEnvironment env)
+    {
+        hostBuilder.UseSerilog((context, config) =>
+            config.ReadFrom.Configuration(context.Configuration)
+                .WriteTo.Console(env.IsDevelopment() ? LogEventLevel.Information : LogEventLevel.Error)
+        );
+
+        return hostBuilder;
     }
 
     #endregion

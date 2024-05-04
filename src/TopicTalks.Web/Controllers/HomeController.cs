@@ -1,27 +1,47 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using TopicTalks.Web.Common;
 using TopicTalks.Web.Extensions;
 using TopicTalks.Web.Services.Interfaces;
 using TopicTalks.Web.ViewModels;
+using ILogger = Serilog.ILogger;
 
 namespace TopicTalks.Web.Controllers;
 
 [Authorize]
-public class HomeController(IHttpService httpService) : Controller
+public class HomeController(IHttpService httpService, ILogger logger) : Controller
 {
     private readonly IHttpService _httpService = httpService;
+    private readonly ILogger _logger = logger;
 
     [AllowAnonymous]
     [HttpGet("")]
     public async Task<IActionResult> Dashboard(string? searchQuery)
     {
-        var response = await _httpService.Client.GetAsync($"api/question?searchQuery={searchQuery}");
+        for (var i = 0; i < 3; i++)
+        {
+            try
+            {
+                var response = await _httpService.Client.GetAsync($"api/question?searchQuery={searchQuery}");
 
-        var questions = JsonConvert.DeserializeObject<List<QuestionViewModel>>(response.ToJson())!;
+                return response.IsSuccessStatusCode
+                    ? View(response.DeserializeTo<List<QuestionViewModel>>())
+                    : RedirectToAction("Error");
+            }
+            catch (HttpRequestException ex) when (ex.InnerException is System.Net.Sockets.SocketException)
+            {
+                _logger.Warning("Error connecting to the API. Retrying in 5 seconds...");
+                await Task.Delay(5000);
+            }
+        }
+        
+        throw new HttpRequestException("Error connecting to the API. Please try again later.");
+    }
 
-        return View(questions);
+    [HttpGet("question")]
+    public IActionResult PostQuestion()
+    {
+        return View();
     }
 
     [AuthorizeStudent]
@@ -29,10 +49,10 @@ public class HomeController(IHttpService httpService) : Controller
     public async Task<IActionResult> UserQuestions()
     {
         var response = await _httpService.Client.GetAsync("api/question/currentUser/questions");
-
-        var questions = JsonConvert.DeserializeObject<List<QuestionViewModel>>(response.ToJson());
-
-        return View(questions ?? []);
+        
+        return response.IsSuccessStatusCode
+            ? View(response.DeserializeTo<List<QuestionViewModel>>())
+            : RedirectToAction("Error");
     }
 
     [AuthorizeTeacher]
@@ -41,9 +61,9 @@ public class HomeController(IHttpService httpService) : Controller
     {
         var response = await _httpService.Client.GetAsync("api/question/currentUser/responses");
 
-        var answers = JsonConvert.DeserializeObject<List<QuestionViewModel>>(response.ToJson());
-
-        return View(answers ?? []);
+        return response.IsSuccessStatusCode
+            ? View(response.DeserializeTo<List<QuestionViewModel>>())
+            : RedirectToAction("Error");
     }
 
     [AllowAnonymous]
@@ -52,9 +72,9 @@ public class HomeController(IHttpService httpService) : Controller
     {
         var response = await _httpService.Client.GetAsync($"api/question/withAnswers/{questionId}");
 
-        var question = JsonConvert.DeserializeObject<QuestionWithAnswersViewModel>(response.ToJson())!;
-
-        return View(question);
+        return response.IsSuccessStatusCode
+            ? View(response.DeserializeTo<QuestionWithAnswersViewModel>())
+            : RedirectToAction("Error");
     }
 
     [HttpGet("question/LoadQuestionList")]
@@ -70,12 +90,6 @@ public class HomeController(IHttpService httpService) : Controller
         return response.IsSuccessStatusCode
             ? PartialView("~/Views/Partials/_QuestionList.cshtml", response.DeserializeTo<List<QuestionViewModel>>())
             : new StatusCodeResult((int)response.StatusCode);
-    }
-
-    [HttpGet("question")]
-    public IActionResult PostQuestion()
-    {
-        return View();
     }
 
     [AllowAnonymous]

@@ -20,10 +20,9 @@ public class FileController(IHttpService httpService, IHttpContextAccessor httpC
         content.Add(new StreamContent(file.OpenReadStream()), "file", file.FileName);
 
         var response = await _httpService.Client.PostAsync("api/cloud", content);
-        var uploadedFile = JsonConvert.DeserializeObject<CloudFileViewModel>(response.ToJson())!;
 
         return response.IsSuccessStatusCode
-            ? Ok(uploadedFile)
+            ? Ok(JsonConvert.DeserializeObject<CloudFileViewModel>(response.ToJson())!)
             : StatusCode((int)response.StatusCode, "Error uploading file.");
     }
 
@@ -33,12 +32,17 @@ public class FileController(IHttpService httpService, IHttpContextAccessor httpC
     {
         using var content = new MultipartFormDataContent();
         content.Add(new StreamContent(file.OpenReadStream()), "file", file.FileName);
-
         var response = await _httpService.Client.PutAsync("api/account/profileImage", content);
-        var uploadedFile = JsonConvert.DeserializeObject<CloudFileViewModel>(response.ToJson())!;
 
+        if (!response.IsSuccessStatusCode)
+        {
+            return StatusCode((int)response.StatusCode, "Error uploading file.");
+        }
+
+        var uploadedFile = JsonConvert.DeserializeObject<CloudFileViewModel>(response.ToJson())!;
         var cookieValue = _httpAccessor.HttpContext!.Request.Cookies["UserInfo"]!;
         var userInfo = JsonConvert.DeserializeObject<dynamic>(cookieValue)!;
+
         userInfo.ImageFile = uploadedFile;
 
         _httpAccessor.HttpContext.Response.Cookies.Append(
@@ -50,8 +54,6 @@ public class FileController(IHttpService httpService, IHttpContextAccessor httpC
             }
         );
 
-        return response.IsSuccessStatusCode
-            ? Ok(uploadedFile)
-            : StatusCode((int)response.StatusCode, "Error uploading file.");
+        return Ok(uploadedFile);
     }
 }

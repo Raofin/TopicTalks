@@ -6,6 +6,8 @@ using WebMarkupMin.AspNetCore8;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilogConfig(builder.Environment);
+
 builder.Services.Configure<AppSettings>(builder.Configuration);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
