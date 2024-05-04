@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +21,7 @@ using System.Text;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
+using TopicTalks.Application.Validators;
 
 namespace TopicTalks.Infrastructure;
 
@@ -30,15 +32,13 @@ public static class AppConfigurations
         services
             .AddHttpContextAccessor()
             .AddMemoryCache()
-            .AddFluentValidationAutoValidation()
-            .AddFluentValidationClientsideAdapters()
-            .AddValidatorsFromAssemblyContaining(typeof(Dependencies))
             .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
             .Configure<GoogleCloudSettings>(configuration.GetSection(nameof(GoogleCloudSettings)))
             .AddAuthorization()
             .AddAuthentication(configuration)
             .AddCorsConfiguration()
             .AddDatabase(configuration)
+            .AddFluentValidator()
             .AddEmailSettings(configuration)
             .AddGoogleCloud(configuration)
             .AddDependencies()
@@ -47,10 +47,14 @@ public static class AppConfigurations
         return services;
     }
 
-    public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
+    public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app, IHostEnvironment env)
     {
-        app.ApplyMigration()
-           .UseCustomCors()
+        if (env.IsDevelopment())
+        {
+            app.ApplyMigration();
+        }
+
+        app.UseCustomCors()
            .UseHttpsRedirection()
            .UseHostFiltering()
            .UseAuthentication()
@@ -87,6 +91,20 @@ public static class AppConfigurations
         }
 
         return app;
+    }
+
+    #endregion
+
+    #region ### FluentValidator ###
+
+    private static IServiceCollection AddFluentValidator(this IServiceCollection services)
+    {
+        services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters()
+                .AddValidatorsFromAssemblyContaining(typeof(Application.Dependencies));
+
+
+        return services;
     }
 
     #endregion
@@ -190,9 +208,9 @@ public static class AppConfigurations
 
         services.AddSingleton(serviceProvider => {
             var memoryCache = serviceProvider.GetRequiredService<IMemoryCache>();
-            var configs = new GoogleConfigurations(memoryCache, settings);
+            var logger = serviceProvider.GetRequiredService<ILogger>();
 
-            return configs.GetDriveService();
+            return new GoogleConfigurations(memoryCache, settings, logger).GetDriveService();
         });
 
         return services;
@@ -216,7 +234,7 @@ public static class AppConfigurations
                         TableName = "LogEvents",
                         AutoCreateSqlTable = false
                     })
-        );
+            );
 
         return hostBuilder;
     }

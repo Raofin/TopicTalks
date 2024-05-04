@@ -74,7 +74,8 @@
 @section Scripts
 {
     <script>
-        var isUploading;
+        let isUploading;
+        let previousImage;
 
         $('#upload-trigger').on('click', () => {
             if (isUploading) return; // Prevent recursive calls
@@ -86,13 +87,16 @@
 
         $('#image').on("change", () => {
             $('.user-profile-loading').show();
+            previousImage = $('#preview-image').attr('src');
 
             uploadProfileImage()
                 .then((response) => {
                     $('.header-profile-image img').attr('src', response.directLink);
                     toastMessage('Profile image updated', ToastColor.Blue);
                 })
-                .catch(() => { })
+                .catch(() => {
+                    $('#preview-image, .header-profile-image img').attr('src', previousImage)
+                })
                 .finally(() => {
                     isUploading = false;
                     $('.user-profile-loading').hide();

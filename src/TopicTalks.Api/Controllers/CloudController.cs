@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Extensions;
@@ -7,13 +8,21 @@ using TopicTalks.Application.Interfaces;
 namespace TopicTalks.Api.Controllers;
 
 [AllowAnonymous]
-public class CloudController(ICloudService cloudService) : ApiController
+public class CloudController(ICloudService cloudService, IValidator<IFormFile> validator) : ApiController
 {
     private readonly ICloudService _cloudService = cloudService;
+    private readonly IValidator<IFormFile> _validator = validator;
 
     [HttpPost]
     public async Task<IActionResult> UploadFile(IFormFile file)
     {
+        var validationResult = await _validator.ValidateAsync(file);
+
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.ToDto());
+        }
+
         long? userId = User.Identity is { IsAuthenticated: true } ? User.GetUserId() : null;
 
         await using var stream = file.OpenReadStream();

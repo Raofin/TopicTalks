@@ -224,11 +224,11 @@
                         } else {
                             toastMessage("Internal server error. Please try again later.");
                         }
+
+                        $('#register').css({ "pointer-events": "auto" });
+                        $('.btn-loading').hide();
                     }
                 });
-
-                $('#register').css({ "pointer-events": "auto" });
-                $('.btn-loading').hide();
             }
         });
 

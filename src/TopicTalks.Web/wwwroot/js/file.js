@@ -18,6 +18,8 @@
                 },
                 error: () => {
                     toastMessage('Error uploading image');
+                    $(imageElement).val('');
+                    removePreviewImage(previewElement);
                     reject('Error uploading image');
                 }
             });

@@ -13,7 +13,7 @@ builder.Host.UseSerilogSqlServer(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 
-app.UseInfrastructure();
+app.UseInfrastructure(builder.Environment);
 
 app.UseSwagger();
 app.UseSwaggerUI();
