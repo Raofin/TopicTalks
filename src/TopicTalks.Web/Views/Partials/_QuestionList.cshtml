@@ -11,8 +11,9 @@ else
 {
     foreach (var question in Model)
     {
-        var username = question.UserInfo is not null ? "@" + question.UserInfo?.Username : "Delete User";
-        var imageUrl = question.UserInfo?.ProfileImageUrl != null ? question.UserInfo.ProfileImageUrl + "=s256" : "/img/user.svg";
+        var username = question.UserInfo is not null ? "@" + question.UserInfo.Username : "Delete User";
+        var joined = question.UserInfo is not null ? "Joined " + question.UserInfo.CreatedAt.TimeAgo() : "";
+        var imageUrl = question.UserInfo?.ProfileImageUrl is not null ? question.UserInfo.ProfileImageUrl + "=s256" : "/img/user.svg";
 
         <div id="question-@question.QuestionId" class="content-container question-container mb-4">
             @if (question.ImageFile is not null)
@@ -31,7 +32,7 @@ else
                                     <img src="@imageUrl" alt="" />
                                 </span>
                                 <p class="text-center mb-0">
-                                    <strong>@username</strong><br>Joined @question.CreatedAt.TimeAgo()
+                                    <strong>@username</strong><br>@joined
                                 </p>
                             </div>
                         </div>

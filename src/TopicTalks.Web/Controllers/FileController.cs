@@ -41,7 +41,7 @@ public class FileController(IHttpService httpService, IHttpContextAccessor httpC
 
         var uploadedFile = JsonConvert.DeserializeObject<CloudFileViewModel>(response.ToJson())!;
         var cookieValue = _httpAccessor.HttpContext!.Request.Cookies["UserInfo"]!;
-        var userInfo = JsonConvert.DeserializeObject<dynamic>(cookieValue)!;
+        var userInfo = JsonConvert.DeserializeObject<UserInfoCookies>(cookieValue)!;
 
         userInfo.ImageFile = uploadedFile;
 

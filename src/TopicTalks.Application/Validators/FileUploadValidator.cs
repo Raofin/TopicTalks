@@ -16,9 +16,9 @@ public class FileUploadValidator : AbstractValidator<IFormFile>
             .LessThanOrEqualTo(2097152) // 2MB
             .WithMessage("File size cannot exceed 2MB.");
 
-        RuleFor(x => x.ContentType)
-            .Must(BeAnImage)
-            .WithMessage("Only image files are allowed.");
+        //RuleFor(x => x.ContentType)
+        //    .Must(BeAnImage)
+        //    .WithMessage("Only image files are allowed.");
     }
 
     private static bool BeAnImage(string contentType)
