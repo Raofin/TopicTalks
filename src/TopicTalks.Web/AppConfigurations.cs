@@ -123,25 +123,25 @@ public static class AppConfigurations
 
     private static IServiceCollection AddWebOptimizer(this IServiceCollection services, IHostEnvironment environment)
     {
-        if (!environment.IsDevelopment())
-        {
-            services.AddWebOptimizer(pipeline => {
-                pipeline.AddCssBundle("/css/bundle.css", new CssSettings { MinifyExpressions = false }, "css/*.css");
-                pipeline.AddJavaScriptBundle("/js/bundle.js", new CodeSettings { MinifyCode = false }, "js/*.js");
-            }, option => {
+        services.AddWebOptimizer(
+            pipeline => {
+                if (environment.IsDevelopment())
+                {
+                    pipeline.AddCssBundle("/css/bundle.css", CssSettings.Pretty(), "css/*.css");
+                    pipeline.AddJavaScriptBundle("/js/bundle.js", CodeSettings.Pretty(), "js/*.js");
+                }
+                else
+                {
+                    pipeline.AddCssBundle("/css/bundle.css", "css/*.css");
+                    pipeline.AddJavaScriptBundle("/js/bundle.js", "js/*.js");
+                }
+            },
+            option => {
                 option.EnableCaching = false;
                 option.EnableDiskCache = false;
                 option.EnableMemoryCache = false;
-            });
-        }
-        else
-        {
-            services.AddWebOptimizer(pipeline => {
-                pipeline.AddCssBundle("/css/bundle.css", "css/*.css");
-                pipeline.AddJavaScriptBundle("/js/bundle.js", "js/*.js");
-            });
-
-        }
+            }
+        );
 
         return services;
     }
