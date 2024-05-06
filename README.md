@@ -107,6 +107,19 @@ Update-Database -Migration Init -Context AppDbContext -Project TopicTalks.Infras
 ```
 </details>  
 
+#### 4. Configure Email Settings via User Secrets 📬
+To use Gmail's smtp server, you will need to use an [app password](https://myaccount.google.com/apppasswords). Note that this requires having [2-step verification](https://myaccount.google.com/signinoptions/two-step-verification/enroll-welcome) enabled in your account.
+
+Use the following Commands to store the crediantials in user secrets 👇
+
+```powershell
+dotnet user-secrets --project src/TopicTalks.Api set EmailSettings:Email you@gmail.com
+dotnet user-secrets --project src/TopicTalks.Api set EmailSettings:Password your-password
+```
+
+> If you are using a different server, set the [server and port](src/TopicTalks.Api/appsettings.json#L11-L17) as well accordingly.
+
+
 #### 4. Build the Projects
   ```powershell
   cd TopicTalks/src
@@ -123,7 +136,10 @@ Update-Database -Migration Init -Context AppDbContext -Project TopicTalks.Infras
   dotnet run --project TopicTalks.Web/TopicTalks.Web.csproj --urls "https://localhost:9999"
   ```
 
-<img src="assets/00.jpg">
+<p align= "center">
+  <img src="assets/17.jpg" width="40%">
+  <img src="assets/18.jpg" width="40%">
+</p>
 
 #### 6. Access the Projects 🌐
 * API: https://localhost:9998
@@ -188,8 +204,13 @@ View at 👉 [be.net/TopicTalks](https://www.be.net/gallery/195808869/TopicTalks
     <img src="assets/08.jpg">
     <img src="assets/09.jpg">
     <img src="assets/10.jpg">
+    <img src="assets/11.jpg">
+    <img src="assets/12.jpg">
+    <img src="assets/13.jpg">
+    <img src="assets/14.jpg">
+    <img src="assets/15.jpg">
+    <img src="assets/16.jpg">
 <p/>
-
 
 ## 🪪 License
 
