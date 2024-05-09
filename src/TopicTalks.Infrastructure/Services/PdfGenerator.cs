@@ -1,15 +1,19 @@
 ﻿using DinkToPdf;
 using DinkToPdf.Contracts;
-using Microsoft.AspNetCore.Hosting;
+using TopicTalks.Application.Extensions;
 using TopicTalks.Domain.Interfaces.Core;
 
 namespace TopicTalks.Infrastructure.Services;
 
-internal class PdfGenerator(IConverter converter, IWebHostEnvironment hostEnvironment) : IPdfGenerator
+internal class PdfGenerator(
+    IConverter converter, 
+    IWwwootService wwwootService, 
+    IUserInfoProvider userInfoProvider) : IPdfGenerator
 {
     private readonly IConverter _converter = converter;
-    private readonly string _wwwroot = hostEnvironment.ContentRootPath + "/wwwroot";
-
+    private readonly IWwwootService _wwwoot = wwwootService;
+    private readonly IUserInfoProvider _userInfoProvider = userInfoProvider;
+    
     public byte[] GeneratePdf(string htmlContent)
     {
         var pdf = CreatePdfObject(htmlContent);
@@ -18,7 +22,10 @@ internal class PdfGenerator(IConverter converter, IWebHostEnvironment hostEnviro
 
     private HtmlToPdfDocument CreatePdfObject(string htmlContent)
     {
-        return new HtmlToPdfDocument
+        var userLocalTime = _userInfoProvider.UserLocalTimeNow();
+        var printTime = $"Printed on {userLocalTime.Format3()} at {userLocalTime.Format1()}";
+        
+        var pdfDocument = new HtmlToPdfDocument
         {
             GlobalSettings = new GlobalSettings
             {
@@ -34,18 +41,26 @@ internal class PdfGenerator(IConverter converter, IWebHostEnvironment hostEnviro
                 {
                     PagesCount = true,
                     HtmlContent = htmlContent,
-                    WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = $"{_wwwroot}/pdf-styles.css" },
+                    WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = _wwwoot.GetPath("pdf-styles.css") },
                     HeaderSettings = { Line = false },
                     FooterSettings =
                     {
                         FontName = "Arial",
                         FontSize = 7,
                         Line = false,
+                        Left = printTime,
                         Right = "Page [page] of [toPage]",
-                        Center = "Printed on " + DateTime.UtcNow.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 }
             }
         };
+
+        if (_userInfoProvider.Username() is not null)
+        {
+            pdfDocument.Objects[0].FooterSettings.Left = $"Printed by {_userInfoProvider.Username()}";
+            pdfDocument.Objects[0].FooterSettings.Center = printTime;
+        }
+
+        return pdfDocument;
     }
 }

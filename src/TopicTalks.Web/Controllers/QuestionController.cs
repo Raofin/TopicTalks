@@ -46,7 +46,16 @@ public class QuestionController(IHttpService httpService) : Controller
     [HttpGet("pdf/{questionId}")]
     public async Task<IActionResult> GetPdf(long questionId)
     {
-        var response = await _httpService.Client.GetAsync($"api/question/pdf/{questionId}");
+        var userTimeZone = HttpContext.UserTimeZone();
+        
+        var client = _httpService.Client;
+        
+        if (userTimeZone is not null)
+        {
+            client.DefaultRequestHeaders.Add("TimeZone", userTimeZone);
+        }
+        
+        var response = await client.GetAsync($"api/question/pdf/{questionId}");
 
         return response.IsSuccessStatusCode
             ? File(await response.Content.ReadAsByteArrayAsync(), "application/pdf")
