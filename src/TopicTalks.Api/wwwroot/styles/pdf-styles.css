@@ -1,0 +1,53 @@
+﻿
+@font-face {
+  font-family: 'TiltWarp';
+  src: url('../fonts/TiltWarp-Regular.ttf') format('truetype');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'DejaVuSans';
+  src: url('../fonts/DejaVuSans.ttf') format('truetype');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'DejaVuSans';
+  src: url('../fonts/DejaVuSans-Bold.ttf') format('truetype');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  padding: 5px 0;
+}

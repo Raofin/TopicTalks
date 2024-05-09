@@ -4,5 +4,5 @@ namespace TopicTalks.Application.Interfaces;
 
 public interface IPdfService
 {
-    byte[] GenerateQuestionPdf(QuestionWithAnswersDto dto);
+    Task<byte[]> GenerateQuestionPdf(QuestionWithAnswersDto dto);
 }

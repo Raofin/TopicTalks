@@ -8,20 +8,21 @@ public class WwwootService(IHostEnvironment hostEnvironment) : IWwwootService
 {
     private readonly IHostEnvironment _hostEnvironment = hostEnvironment;
 
-    public string GetPath(string fileName)
+    public string GetPath(params string[] paths)
     {
-        return Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", fileName);
+        var basePaths = new[] { _hostEnvironment.ContentRootPath, "wwwroot"};
+        return Path.Combine(basePaths.Concat(paths).ToArray());
     }
     
-    public byte[] GetBytes(string fileName)
+    public byte[] GetBytes(params string[] paths)
     {
-        return File.ReadAllBytes(GetPath(fileName));
+        return File.ReadAllBytes(GetPath(paths));
     }
     
-    public string GetDataUri(string fileName)
+    public string GetDataUri(params string[] paths)
     {
-        var mimeType = GetMimeTypeForFileExtension(GetPath(fileName));
-        var base64 = Convert.ToBase64String(GetBytes(fileName));
+        var mimeType = GetMimeTypeForFileExtension(GetPath(paths));
+        var base64 = Convert.ToBase64String(GetBytes(paths));
         return $"data:{mimeType};base64,{base64}";
     }
 

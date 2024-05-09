@@ -2,7 +2,7 @@ namespace TopicTalks.Domain.Interfaces.Core;
 
 public interface IWwwootService
 {
-    string GetPath(string fileName);
-    byte[] GetBytes(string fileName);
-    string GetDataUri(string fileName);
+    string GetPath(params string[] paths);
+    byte[] GetBytes(params string[] paths);
+    string GetDataUri(params string[] paths);
 }

@@ -1,0 +1,155 @@
+@using TopicTalks.Domain.Interfaces.Core
+@using TopicTalks.Application.Dtos
+@using TopicTalks.Application.Extensions
+@model TopicTalks.Application.Dtos.QuestionWithAnswersDto
+@inject IWwwootService Wwwoot
+@inject IUserInfoProvider UserInfoProvider
+
+<body>
+    <div class="header">
+        <a href="https://github.com/Raofin/TopicTalks">
+            <img src="@Wwwoot.GetDataUri("img", "logo.svg")" alt=""/>
+        </a>
+    </div>
+    <div class="container">
+        @if (Model.ImageFile is not null)
+        {
+            <div class="cover">
+                <img src="@Model.ImageFile.DirectLink" alt=""/>
+            </div>
+        }
+        <div class="question avoid-page-break">
+            <div class="content-header">
+                <div class="author">
+                    <div class="image">
+                        <img src="@(Model.UserInfo?.ProfileImageUrl ?? Wwwoot.GetDataUri("img", "user.svg"))" alt=""/>
+                    </div>
+                    <div>
+                        <strong>@(Model.UserInfo?.Username ?? "Deleted User")</strong>
+                    </div>
+                    @if (Model.UpdatedAt is not null)
+                    {
+                        <div style="font-size: 15px">@("\u2004(Edited"))</div>
+                    }
+                </div>
+                <div>@UserInfoProvider.UtcToUserLocalTime(Model.CreatedAt).Format4() (@Model.CreatedAt.ToTimeAgo())</div>
+            </div>
+            <div class="justify" style="margin-bottom: 8px">
+                <strong>Question: </strong>@Model.Explanation
+            </div>
+            <div>
+                <strong>Topics: </strong>@Model.Topic
+            </div>
+        </div>
+    </div>
+    @if (Model.Answers is not null)
+    {
+        RenderAnswers(Model.Answers);
+    }
+</body>
+
+@{
+    void RenderAnswers(List<AnswerWithRepliesDto> answers, int marginLeft = 40)
+    {
+        foreach (var answer in answers)
+        {
+            <div class='container answer' style='margin-left: @(marginLeft)px'>
+                <div class='content-header'>
+                    <div class='author'>
+                        <div class='image'>
+                            <img src='@(answer.UserInfo?.ProfileImageUrl ?? Wwwoot.GetDataUri("img", "user.svg"))' alt=""/>
+                        </div>
+                        <div>
+                            <strong>@(answer.UserInfo?.Username ?? "Deleted User")</strong>
+                        </div>
+                    </div>
+                    <div>@UserInfoProvider.UtcToUserLocalTime(answer.CreatedAt).Format4() (@answer.CreatedAt.ToTimeAgo())</div>
+                </div>
+                <div class="justify">@answer.Explanation</div>
+            </div>
+
+            if (answer.Answers is not null)
+            {
+                RenderAnswers(answer.Answers, marginLeft + 20);
+            }
+        }
+    }
+}
+
+<style>
+    body {
+        font-size: 18px;
+        font-weight: normal;
+    }
+
+    .header {
+        text-align: center;
+    }
+
+    .header img {
+        height: 80px;
+    }
+
+    .container {
+        background-color: #f4f4f4;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+    }
+
+    .question {
+        padding: 20px;
+    }
+
+    .answer {
+        padding: 17px 17px;
+        margin-bottom: 20px;
+    }
+
+    .justify {
+        text-align: justify;
+        text-justify: inter-word;
+    }
+
+    .content-header {
+        margin-bottom: 6px;
+        display: -webkit-box;
+        -webkit-box-pack: justify;
+    }
+
+    .author {
+        font-size: 20px;
+        display: -webkit-box;
+        -webkit-box-align: center;
+    }
+
+    .image {
+        width: 23px;
+        height: 23px;
+        margin-right: 5px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    .image img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .cover {
+        margin-bottom: -5px;
+        text-align: center;
+        max-height: 200px;
+        display: -webkit-box;
+        -webkit-box-align: center;
+        overflow: hidden;
+    }
+
+    .cover img {
+        max-width: 100%;
+        margin-top: -15%;
+    }
+</style>

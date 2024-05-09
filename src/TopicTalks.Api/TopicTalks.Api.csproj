@@ -23,4 +23,8 @@
 		<ProjectReference Include="..\TopicTalks.Infrastructure\TopicTalks.Infrastructure.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Page Include="Templates\Discussion.cshtml" />
+	</ItemGroup>
+
 </Project>

@@ -6,14 +6,14 @@ using TopicTalks.Domain.Interfaces.Core;
 namespace TopicTalks.Infrastructure.Services;
 
 internal class PdfGenerator(
-    IConverter converter, 
-    IWwwootService wwwootService, 
+    IConverter converter,
+    IWwwootService wwwootService,
     IUserInfoProvider userInfoProvider) : IPdfGenerator
 {
     private readonly IConverter _converter = converter;
     private readonly IWwwootService _wwwoot = wwwootService;
     private readonly IUserInfoProvider _userInfoProvider = userInfoProvider;
-    
+
     public byte[] GeneratePdf(string htmlContent)
     {
         var pdf = CreatePdfObject(htmlContent);
@@ -24,7 +24,7 @@ internal class PdfGenerator(
     {
         var userLocalTime = _userInfoProvider.UserLocalTimeNow();
         var printTime = $"Printed on {userLocalTime.Format3()} at {userLocalTime.Format1()}";
-        
+
         var pdfDocument = new HtmlToPdfDocument
         {
             GlobalSettings = new GlobalSettings
@@ -41,7 +41,7 @@ internal class PdfGenerator(
                 {
                     PagesCount = true,
                     HtmlContent = htmlContent,
-                    WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = _wwwoot.GetPath("pdf-styles.css") },
+                    WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = _wwwoot.GetPath("styles", "pdf-styles.css") },
                     HeaderSettings = { Line = false },
                     FooterSettings =
                     {

@@ -153,7 +153,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
 
         return question.IsError 
             ? question.Errors 
-            : _pdfService.GenerateQuestionPdf(question.Value);
+            : await _pdfService.GenerateQuestionPdf(question.Value);
     }
 
     public async Task<ErrorOr<Success>> UpdateNotificationAsync(long questionId, long userId)
