@@ -1,7 +1,7 @@
 <p align= "center">
     <img src="src\TopicTalks.Web\wwwroot\img\logo.svg" title="TopicTalks Logo" alt="TopicTalks Logo" width="500px">
     <br/>
-    <b>TopicTalks</b> is an educational discussion platform where students can ask questions and receive answers from teachers or fellow students. It features dynamic answers with recursive reply functionalities, email notifications, PDF and Excel export options, role-based authorization, a highly interactive frontend with <b>pixel-perfect</b> UI/UX design, and much more 🤓
+    Talk about it. Learn about it.
 </p>
 
 ## 🔴 Live Demo
@@ -12,15 +12,17 @@
 
 ## 📚 Table of Contents
 
+- 💎 [Features](#-features)
 - 🚀 [Getting Started](#-getting-started)
   - I. 📝 [Requirements](#i-requirements-)
   - II. ⚙️ [Installation](#ii-installation-%EF%B8%8F)
       - [Clone the Repository](#1-clone-the-repository)
-      - [Setup Google Cloud API Credentials (Optional) ☁️](#2-setup-google-cloud-api-credentials-optional-%EF%B8%8F)
+      - [Setup Google Cloud API Credentials (Optional)️](#2-setup-google-cloud-api-credentials-optional-%EF%B8%8F)
       - [Database Migration](#3-database-migration)
-      - [Build the Projects](#4-build-the-projects)
-      - [Run the Projects](#5-run-the-projects-seperately)
-      - [Access the Projects](#6-access-the-projects-) 🌐
+      - [Configure Email Settings](#4-configure-email-settings-via-user-secrets-)
+      - [Build the Projects](#5-build-the-projects)
+      - [Run the Projects](#6-run-the-projects-seperately)
+      - [Access the Projects](#7-access-the-projects-)
 - 🛠️ [Technologies and Design Patterns](#%EF%B8%8F-technologies-and-design-patterns)
 - 📦 [Nuget Packages](#-nuget-packages)
 - 📊 [ER Diagram](#-er-diagram)
@@ -33,6 +35,19 @@
 If you find this project useful or interesting, please consider giving it a star. Thank you! 🤗
 
 [![GitHub stars](https://img.shields.io/github/stars/Raofin/TopicTalks?style=social)](https://github.com/Raofin/TopicTalks/stargazers)
+
+
+## 💎 Features
+TopicTalks is an educational discussion platform designed to foster knowledge sharing between students and teachers. Here's a look at its key features:
+
+* **Q&A at its finest:** Ask questions, receive answers from teachers or peers, and engage in threaded discussions for in-depth exploration.
+* **Always informed:** Stay up-to-date with email notifications for new replies and discussion thread activity.
+* **Offline access:** Export discussions with question and user details as PDFs for easy offline reference.
+* **Data in your hands:** Export user lists with details in Excel format.
+* **Secured and permissioned:** Role-based authorization ensures a safe and controlled environment for all users.
+* **A joy to use:** Experience a user-friendly interface with a pixel-perfect design that prioritizes both form and function. 
+
+And much more! Explore additional functionalities designed to enrich educational discussions and learning experience.
 
 
 ## 🚀 Getting Started
@@ -80,7 +95,7 @@ However, in order for the project to run with full functionality, you'll need to
 </details>
 
 #### 3. Database Migration
-  The project is configured to automatically apply migrations to the [default localhost server](src/TopicTalks.Api/appsettings.Development.json#L4) on the **first run**. However, you can also apply migrations manually using the following commands:
+  The project is configured to automatically apply migrations with some seed data on its **first run**. To create a database with more data, including the beautiful [user portraits](assets/portraits) and question covers, execute the [TopicTalks.sql](src/TopicTalks.Infrastructure/Persistence/DatabaseScripts/TopicTalks.sql) script. You can manually apply migrations using the following commands:
   * For Package Manager 👇
       ```powershell
       Update-Database -Context AppDbContext -Project TopicTalks.Infrastructure -StartupProject TopicTalks.Api
@@ -120,7 +135,7 @@ dotnet user-secrets --project src/TopicTalks.Api set EmailSettings:Password your
 > If you are using a different server, set the [server and port](src/TopicTalks.Api/appsettings.json#L11-L17) as well accordingly.
 
 
-#### 4. Build the Projects
+#### 5. Build the Projects
   ```powershell
   cd TopicTalks/src
   dotnet build TopicTalks.Api/TopicTalks.Api.csproj
@@ -128,7 +143,7 @@ dotnet user-secrets --project src/TopicTalks.Api set EmailSettings:Password your
 
   ```
 
-#### 5. Run the Projects (Seperately)
+#### 6. Run the Projects (Seperately)
   ```powershell
   dotnet run --project TopicTalks.Api/TopicTalks.Api.csproj --urls "https://localhost:9998"
   ```
@@ -137,11 +152,11 @@ dotnet user-secrets --project src/TopicTalks.Api set EmailSettings:Password your
   ```
 
 <p align= "center">
-  <img src="assets/17.jpg" width="40%">
-  <img src="assets/18.jpg" width="40%">
+  <img src="assets/17.jpg" width="49%">
+  <img src="assets/18.jpg" width="49%">
 </p>
 
-#### 6. Access the Projects 🌐
+#### 7. Access the Projects 🌐
 * API: https://localhost:9998
 * Web: https://localhost:9999
 
