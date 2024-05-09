@@ -21,14 +21,15 @@ internal static class Dependencies
         services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         services.AddSingleton<IPasswordHasher<IdentityUser>, PasswordHasher<IdentityUser>>();
 
-        services.AddSingleton<IPdfGenerator, PdfGenerator>();
         services.AddSingleton<IHashPassword, HashPassword>();
         services.AddSingleton<IJwtGenerator, JwtGenerator>();
         services.AddSingleton<IExcelGenerator, ExcelGenerator>();
 
+        services.AddScoped<IPdfGenerator, PdfGenerator>();
         services.AddScoped<IGoogleCloud, GoogleCloud>();
         services.AddScoped<IEmailSender, EmailSender>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IWwwootService, WwwootService>();
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IQuestionRepository, QuestionRepository>();
