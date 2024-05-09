@@ -8,20 +8,13 @@ internal class TimeZoneService(IHttpContextAccessor httpContextAccessor) : ITime
 
     public DateTime ConvertUtcToUserLocalTime(DateTime utcDateTime)
     {
-        string? timeZoneId = null;
-        if (_httpContextAccessor.HttpContext?.Request.Cookies["TimeZone"] != null)
+        if (_httpContextAccessor.HttpContext?.Request.Cookies.TryGetValue("TimeZone", out var timeZoneId) is true)
         {
-            timeZoneId = _httpContextAccessor.HttpContext.Request.Cookies["TimeZone"]!;
+            var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+            var localTime = TimeZoneInfo.ConvertTimeFromUtc(utcDateTime, localTimeZone);
+            return localTime;
         }
 
-        if (string.IsNullOrEmpty(timeZoneId))
-        {
-            return utcDateTime;
-        }
-
-        var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-        var localTime = TimeZoneInfo.ConvertTimeFromUtc(utcDateTime, localTimeZone);
-
-        return localTime;
+        return utcDateTime;
     }
 }

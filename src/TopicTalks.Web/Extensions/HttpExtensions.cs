@@ -53,6 +53,11 @@ public static class HttpExtensions
     {
         return httpContext.User.FindFirst("Username")?.Value;
     }
+    
+    public static string? UserTimeZone(this HttpContext httpContext)
+    {
+        return httpContext.Request.Cookies["TimeZone"];
+    }
 
     public static bool IsUserVerified(this HttpContext httpContext)
     {

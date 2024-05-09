@@ -30,6 +30,7 @@ internal static class Dependencies
         services.AddScoped<IEmailSender, EmailSender>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IWwwootService, WwwootService>();
+        services.AddScoped<IUserInfoProvider, UserInfoProvider>();
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IQuestionRepository, QuestionRepository>();
