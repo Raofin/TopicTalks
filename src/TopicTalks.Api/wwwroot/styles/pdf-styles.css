@@ -45,6 +45,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Mayestica';
+  src: url('../fonts/Mayestica-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   font-kerning: normal;

@@ -13,13 +13,15 @@ internal class AccountService(
     IHashPassword passwordService,
     IJwtGenerator tokenService,
     IEmailSender emailService,
-    ICloudService cloudService) : IAccountService
+    ICloudService cloudService,
+    IPdfService pdfService) : IAccountService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IHashPassword _passwordService = passwordService;
     private readonly IJwtGenerator _tokenService = tokenService;
     private readonly IEmailSender _emailService = emailService;
     private readonly ICloudService _cloudService = cloudService;
+    private readonly IPdfService _pdfService = pdfService;
 
     public async Task<bool> IsUserExistsAsync(string? username, string? email)
     {
@@ -145,6 +147,13 @@ internal class AccountService(
         await _unitOfWork.CommitAsync();
 
         return cloudFile.ToDto()!;
+    }
+
+    public async Task<byte[]> GenerateUserListPdfAsync()
+    {
+        var users = await _unitOfWork.User.GetWithDetailsAsync();
+        
+        return await _pdfService.GenerateUserListPdf(users);
     }
 
     #region ### OTP ###

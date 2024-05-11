@@ -136,4 +136,13 @@ public class AccountController(IAccountService accountService, IExcelService exc
             ? BadRequest("Invalid Otp.")
             : Ok(verification.Value);
     }
+    
+    [AuthorizeModerator]
+    [HttpGet("pdf/users")]
+    public async Task<IActionResult> GetPdf()
+    {
+        var pdf = await _userService.GenerateUserListPdfAsync();
+
+        return File(pdf, "application/pdf");
+    }
 }

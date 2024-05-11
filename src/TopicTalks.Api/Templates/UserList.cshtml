@@ -1,0 +1,132 @@
+@using TopicTalks.Application.Extensions
+@using TopicTalks.Domain.Enums
+@using TopicTalks.Domain.Interfaces.Core
+@inject IWwwootService Wwwoot
+@inject IUserInfoProvider UserInfoProvider
+
+@model List<TopicTalks.Domain.Entities.User>
+
+<body>
+    <div style="min-height: 90%">
+        <div class="header">
+            <a href="https://github.com/Raofin/TopicTalks">
+                <img src="@Wwwoot.GetDataUri("img", "logo.svg")" alt=""/>
+            </a>
+        </div>
+        <div>
+            <p class="text">
+                This report provides a list of all registered users as of <strong>@UserInfoProvider.UserLocalTimeNow().Format2()</strong>. 
+                This document serves as a record of all users currently on the system. There are currently <strong>@Model.Count</strong> users registered.
+            </p>
+            <p class="text-header">User List Report (@UserInfoProvider.UserLocalTimeNow().Format2())</p>
+            <table>
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Full Name</th>
+                    <th>Institute</th>
+                    <th>Card Number</th>
+                    <th>Roles</th>
+                    <th>Joining Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.UserId</td>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
+                        <td>@(user.UserDetails?.FullName ?? "-")</td>
+                        <td>@(user.UserDetails?.InstituteName ?? "-")</td>
+                        <td>@(user.UserDetails?.IdCardNumber ?? "-")</td>
+                        <td>@(string.Join(", ", user.UserRoles.Select(ur => (RoleType)ur.RoleId).ToList()))</td>
+                        <td>@user.CreatedAt.ToLocalTime().Format2()</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="signatures">
+        <div>
+            <div class="sign-font">Rawfin</div>
+            <div class="sign-label">Signature of <strong>Rawfin</strong></div>
+        </div>
+        <div class="sign-holder">
+            <div class="sign-label">
+                Signature of <strong>@UserInfoProvider.Username()</strong>
+            </div>
+        </div>
+    </div>
+</body>
+
+<style>
+    body {
+        font-size: 20px;
+        font-weight: normal;
+    }
+
+    .header {
+        text-align: center;
+    }
+    .header img {
+        height: 80px;
+    }
+
+    .text-header {
+        text-align: center;
+        margin-bottom: 8px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .text {
+        font-size: 20px;
+        text-align: justify;
+        text-justify: inter-word;
+        margin: 0;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th,
+    td {
+        border: 1px solid #939393;
+        padding: 8px;
+        font-size: 14px;
+        text-align: center;
+    }
+    th {
+        background-color: #e5f0fc;
+    }
+
+    .signatures {
+        display: -webkit-box;
+        -webkit-box-pack: justify;
+        margin: 50px 70px 5px;
+        page-break-inside: avoid;
+    }
+    .sign-label {
+        border-top: 1px solid #000;
+        font-size: 12px;
+    }
+    .signatures div {
+        width: 200px;
+        margin: 5px;
+        padding-top: 4px;
+        text-align: center;
+    }
+    .sign-holder {
+        display: -webkit-box;
+        -webkit-box-pack: center;
+        -webkit-box-align: end;
+    }
+    .sign-font {
+        font-family: 'Mayestica', serif;
+        font-size: 50px;
+        margin-bottom: -20px !important;
+    }
+</style>

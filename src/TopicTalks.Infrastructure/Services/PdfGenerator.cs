@@ -14,13 +14,7 @@ internal class PdfGenerator(
     private readonly IWwwootService _wwwoot = wwwootService;
     private readonly IUserInfoProvider _userInfoProvider = userInfoProvider;
 
-    public byte[] GeneratePdf(string htmlContent)
-    {
-        var pdf = CreatePdfObject(htmlContent);
-        return _converter.Convert(pdf);
-    }
-
-    private HtmlToPdfDocument CreatePdfObject(string htmlContent)
+    public byte[] GeneratePdf(string htmlContent, bool footerDisable = false, bool showPageNumbers = false)
     {
         var userLocalTime = _userInfoProvider.UserLocalTimeNow();
         var printTime = $"Printed on {userLocalTime.Format3()} at {userLocalTime.Format1()}";
@@ -41,26 +35,42 @@ internal class PdfGenerator(
                 {
                     PagesCount = true,
                     HtmlContent = htmlContent,
-                    WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = _wwwoot.GetPath("styles", "pdf-styles.css") },
+                    WebSettings =
+                    {
+                        DefaultEncoding = "utf-8",
+                        UserStyleSheet = _wwwoot.GetPath("styles", "pdf-styles.css")
+                    },
                     HeaderSettings = { Line = false },
                     FooterSettings =
                     {
                         FontName = "Arial",
                         FontSize = 7,
-                        Line = false,
-                        Left = printTime,
-                        Right = "Page [page] of [toPage]",
+                        Line = false
                     }
                 }
             }
         };
 
-        if (_userInfoProvider.Username() is not null)
+        if (footerDisable)
+        {
+            pdfDocument.Objects[0].FooterSettings = null;
+        }
+        else if (showPageNumbers)
+        {
+            pdfDocument.Objects[0].FooterSettings.Center = "Page [page] of [toPage]";
+        }
+        else if (_userInfoProvider.Username() is not null)
         {
             pdfDocument.Objects[0].FooterSettings.Left = $"Printed by {_userInfoProvider.Username()}";
             pdfDocument.Objects[0].FooterSettings.Center = printTime;
+            pdfDocument.Objects[0].FooterSettings.Right = "Page [page] of [toPage]";
+        }
+        else
+        {
+            pdfDocument.Objects[0].FooterSettings.Left = printTime;
+            pdfDocument.Objects[0].FooterSettings.Right = "Page [page] of [toPage]";
         }
 
-        return pdfDocument;
+        return _converter.Convert(pdfDocument);
     }
 }

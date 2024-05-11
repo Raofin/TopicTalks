@@ -2,5 +2,5 @@
 
 public interface IPdfGenerator
 {
-    byte[] GeneratePdf(string htmlContent);
+    byte[] GeneratePdf(string htmlContent, bool footerDisable = false, bool showPageNumbers = false);
 }

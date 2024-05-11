@@ -37,7 +37,7 @@ public static class DateTimeExtensions
     
     public static string Format2(this DateTime dateTime)
     {
-        return dateTime.ToString("dd-MMM-yy");
+        return dateTime.ToString("dd-MMM-yyyy");
     }
 
     public static string Format3(this DateTime dateTime)
