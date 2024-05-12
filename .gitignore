@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # Client Libraries
 src/TopicTalks.Web/wwwroot/lib
+
+# JetBrains Rider Configuration Files
+.idea/
