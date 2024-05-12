@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopicTalks.Infrastructure",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopicTalks.Web", "src\TopicTalks.Web\TopicTalks.Web.csproj", "{83F1E0FB-8B0E-479C-BCC1-6B24C545B226}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopicTalks.Razor", "src\TopicTalks.Razor\TopicTalks.Razor.csproj", "{C488FA78-C278-44F6-975F-AE74C3F7210F}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BCDFFA98-1E11-4235-A816-4D6BB2FB207E}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -49,6 +51,10 @@ Global
 		{83F1E0FB-8B0E-479C-BCC1-6B24C545B226}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83F1E0FB-8B0E-479C-BCC1-6B24C545B226}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83F1E0FB-8B0E-479C-BCC1-6B24C545B226}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C488FA78-C278-44F6-975F-AE74C3F7210F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C488FA78-C278-44F6-975F-AE74C3F7210F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C488FA78-C278-44F6-975F-AE74C3F7210F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C488FA78-C278-44F6-975F-AE74C3F7210F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,5 +65,6 @@ Global
 		{02F8020F-CD04-4739-86E8-44E5DB3B7E6C} = {B0FE4A8A-F5F5-4010-A8B9-889892B6537C}
 		{866531B5-BA6F-4DB4-BA76-AC2215DB2501} = {B0FE4A8A-F5F5-4010-A8B9-889892B6537C}
 		{83F1E0FB-8B0E-479C-BCC1-6B24C545B226} = {B0FE4A8A-F5F5-4010-A8B9-889892B6537C}
+		{C488FA78-C278-44F6-975F-AE74C3F7210F} = {B0FE4A8A-F5F5-4010-A8B9-889892B6537C}
 	EndGlobalSection
 EndGlobal

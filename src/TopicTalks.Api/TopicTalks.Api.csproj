@@ -21,10 +21,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\TopicTalks.Application\TopicTalks.Application.csproj" />
 		<ProjectReference Include="..\TopicTalks.Infrastructure\TopicTalks.Infrastructure.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Page Include="Templates\Discussion.cshtml" />
+		<ProjectReference Include="..\TopicTalks.Razor\TopicTalks.Razor.csproj" />
 	</ItemGroup>
 
 </Project>
