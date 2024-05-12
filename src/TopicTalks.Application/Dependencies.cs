@@ -12,7 +12,6 @@ public static class Dependencies
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<IAnswerService, AnswerService>();
-        services.AddScoped<IPdfService, PdfService>();
         services.AddScoped<IExcelService, ExcelService>();
         services.AddScoped<ICloudService, CloudService>();
 

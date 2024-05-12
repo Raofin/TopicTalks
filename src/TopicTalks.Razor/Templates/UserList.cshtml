@@ -18,7 +18,7 @@
                 This report provides a list of all registered users as of <strong>@UserInfoProvider.UserLocalTimeNow().Format2()</strong>. 
                 This document serves as a record of all users currently on the system. There are currently <strong>@Model.Count</strong> users registered.
             </p>
-            <p class="text-header">User List Report (@UserInfoProvider.UserLocalTimeNow().Format2())</p>
+            <p class="table-title">User List Report (@UserInfoProvider.UserLocalTimeNow().Format2())</p>
             <table>
                 <thead>
                 <tr>
@@ -50,12 +50,12 @@
             </table>
         </div>
     </div>
-    <div class="signatures">
+    <div class="sign">
         <div>
             <div class="sign-font">Rawfin</div>
             <div class="sign-label">Signature of <strong>Rawfin</strong></div>
         </div>
-        <div class="sign-holder">
+        <div class="sign-holder" style="margin-bottom: -1px;">
             <div class="sign-label">
                 Signature of <strong>@UserInfoProvider.Username()</strong>
             </div>
@@ -65,33 +65,37 @@
 
 <style>
     body {
-        font-size: 20px;
         font-weight: normal;
+        font-size: 20px;
     }
 
     .header {
         text-align: center;
     }
+
     .header img {
         height: 80px;
     }
 
-    .text-header {
-        text-align: center;
-        margin-bottom: 8px;
-        font-size: 20px;
-        font-weight: bold;
-    }
     .text {
+        margin: 0;
         font-size: 20px;
         text-align: justify;
         text-justify: inter-word;
-        margin: 0;
     }
+
+    .table-title {
+        margin-bottom: 8px;
+        font-weight: bold;
+        font-size: 20px;
+        text-align: center;
+    }
+
     table {
-        width: 100%;
         border-collapse: collapse;
+        width: 100%;
     }
+
     th,
     td {
         border: 1px solid #939393;
@@ -103,30 +107,34 @@
         background-color: #e5f0fc;
     }
 
-    .signatures {
-        display: -webkit-box;
+    .sign {
         -webkit-box-pack: justify;
-        margin: 50px 70px 5px;
+        display: -webkit-box;
         page-break-inside: avoid;
+        margin: 50px 70px 5px;
     }
+
     .sign-label {
         border-top: 1px solid #000;
         font-size: 12px;
     }
-    .signatures div {
-        width: 200px;
+
+    .sign div {
         margin: 5px;
         padding-top: 4px;
+        width: 200px;
         text-align: center;
     }
+
     .sign-holder {
-        display: -webkit-box;
         -webkit-box-pack: center;
         -webkit-box-align: end;
+        display: -webkit-box;
     }
+
     .sign-font {
-        font-family: 'Mayestica', serif;
-        font-size: 50px;
         margin-bottom: -20px !important;
+        font-size: 50px;
+        font-family: 'Mayestica', serif;
     }
 </style>

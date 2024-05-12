@@ -10,6 +10,7 @@ using TopicTalks.Domain.Interfaces.Repositories;
 using TopicTalks.Domain.Interfaces.Core;
 using TopicTalks.Infrastructure.Services.Cloud;
 using TopicTalks.Infrastructure.Services.Email;
+using TopicTalks.Infrastructure.Services.Pdf;
 using TopicTalks.Infrastructure.Services.Token;
 
 namespace TopicTalks.Infrastructure;

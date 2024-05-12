@@ -1,6 +1,9 @@
-﻿namespace TopicTalks.Domain.Interfaces.Core;
+using TopicTalks.Domain.Entities;
+
+namespace TopicTalks.Domain.Interfaces.Core;
 
 public interface IPdfGenerator
 {
-    byte[] GeneratePdf(string htmlContent, bool footerDisable = false, bool showPageNumbers = false);
+    Task<byte[]> QuestionPdf(dynamic questionWithAnswersDto);
+    Task<byte[]> UserListPdf(List<User> users);
 }

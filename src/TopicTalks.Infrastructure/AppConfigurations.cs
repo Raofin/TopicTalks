@@ -42,8 +42,6 @@ public static class AppConfigurations
             .AddDependencies()
             .AddHealthChecks();
 
-        services.AddRazorTemplating();
-
         return services;
     }
 

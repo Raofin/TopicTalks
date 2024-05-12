@@ -1,13 +1,15 @@
 using TopicTalks.Application;
 using TopicTalks.Infrastructure;
 using TopicTalks.Api;
+using TopicTalks.Razor;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddPresentation()
     .AddApplication()
-    .AddInfrastructure(builder.Configuration);
+    .AddInfrastructure(builder.Configuration)
+    .AddRazor(builder.Environment);
 
 builder.Host.UseSerilogSqlServer(builder.Configuration, builder.Environment);
 

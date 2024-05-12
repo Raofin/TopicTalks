@@ -1,9 +1,10 @@
-@using TopicTalks.Domain.Interfaces.Core
-@using TopicTalks.Application.Dtos
 @using TopicTalks.Application.Extensions
-@model TopicTalks.Application.Dtos.QuestionWithAnswersDto
+@using TopicTalks.Application.Dtos
+@using TopicTalks.Domain.Interfaces.Core
 @inject IWwwootService Wwwoot
 @inject IUserInfoProvider UserInfoProvider
+
+@model TopicTalks.Application.Dtos.QuestionWithAnswersDto
 
 <body>
     <div class="header">
@@ -42,9 +43,13 @@
             </div>
         </div>
     </div>
-    @if (Model.Answers is not null)
+    @if (Model.Answers?.Count > 0)
     {
         RenderAnswers(Model.Answers);
+    }
+    else
+    {
+        <h2 style="text-align: center">No answers yet.</h2>
     }
 </body>
 
@@ -78,8 +83,8 @@
 
 <style>
     body {
-        font-size: 18px;
         font-weight: normal;
+        font-size: 18px;
     }
 
     .header {
@@ -91,11 +96,11 @@
     }
 
     .container {
-        background-color: #f4f4f4;
-        border-radius: 10px;
-        overflow: hidden;
-        margin-bottom: 20px;
         page-break-inside: avoid;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        background-color: #f4f4f4;
+        overflow: hidden;
     }
 
     .question {
@@ -103,8 +108,8 @@
     }
 
     .answer {
-        padding: 17px 17px;
         margin-bottom: 20px;
+        padding: 17px 17px;
     }
 
     .justify {
@@ -113,43 +118,43 @@
     }
 
     .content-header {
-        margin-bottom: 6px;
-        display: -webkit-box;
         -webkit-box-pack: justify;
+        display: -webkit-box;
+        margin-bottom: 6px;
     }
 
     .author {
-        font-size: 20px;
-        display: -webkit-box;
         -webkit-box-align: center;
+        display: -webkit-box;
+        font-size: 20px;
     }
 
     .image {
-        width: 23px;
-        height: 23px;
+        display: inline-block;
         margin-right: 5px;
         border-radius: 50%;
+        width: 23px;
+        height: 23px;
         overflow: hidden;
-        display: inline-block;
     }
 
     .image img {
+        display: block;
         width: 100%;
         height: auto;
-        display: block;
     }
 
     .cover {
-        margin-bottom: -5px;
-        text-align: center;
-        max-height: 200px;
-        display: -webkit-box;
         -webkit-box-align: center;
+        display: -webkit-box;
+        margin-bottom: -5px;
+        max-height: 200px;
         overflow: hidden;
+        text-align: center;
     }
 
     .cover img {
-        max-width: 100%;
         margin-top: -15%;
+        max-width: 100%;
     }
 </style>

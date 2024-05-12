@@ -3,22 +3,29 @@ using DinkToPdf.Contracts;
 using TopicTalks.Application.Extensions;
 using TopicTalks.Domain.Interfaces.Core;
 
-namespace TopicTalks.Infrastructure.Services;
+namespace TopicTalks.Infrastructure.Services.Pdf;
 
-internal class PdfGenerator(
-    IConverter converter,
-    IWwwootService wwwootService,
-    IUserInfoProvider userInfoProvider) : IPdfGenerator
+public class PdfDocument(IWwwootService wwwootService, IUserInfoProvider userInfoProvider, IConverter converter)
 {
-    private readonly IConverter _converter = converter;
     private readonly IWwwootService _wwwoot = wwwootService;
     private readonly IUserInfoProvider _userInfoProvider = userInfoProvider;
+    private readonly IConverter _converter = converter;
 
-    public byte[] GeneratePdf(string htmlContent, bool footerDisable = false, bool showPageNumbers = false)
+    protected string PrintBy => $"Printed by {_userInfoProvider.Username()}";
+
+    protected string PageNumber => "Page [page] of [toPage]";
+
+    protected string PrintTime
     {
-        var userLocalTime = _userInfoProvider.UserLocalTimeNow();
-        var printTime = $"Printed on {userLocalTime.Format3()} at {userLocalTime.Format1()}";
+        get
+        {
+            var userLocalTime = _userInfoProvider.UserLocalTimeNow();
+            return $"Printed on {userLocalTime.Format3()} at {userLocalTime.Format1()}";
+        }
+    }
 
+    protected HtmlToPdfDocument CreatePdfDocument(string htmlContent, bool footerDisable = false)
+    {
         var pdfDocument = new HtmlToPdfDocument
         {
             GlobalSettings = new GlobalSettings
@@ -55,22 +62,23 @@ internal class PdfGenerator(
         {
             pdfDocument.Objects[0].FooterSettings = null;
         }
-        else if (showPageNumbers)
-        {
-            pdfDocument.Objects[0].FooterSettings.Center = "Page [page] of [toPage]";
-        }
         else if (_userInfoProvider.Username() is not null)
         {
-            pdfDocument.Objects[0].FooterSettings.Left = $"Printed by {_userInfoProvider.Username()}";
-            pdfDocument.Objects[0].FooterSettings.Center = printTime;
-            pdfDocument.Objects[0].FooterSettings.Right = "Page [page] of [toPage]";
+            pdfDocument.Objects[0].FooterSettings.Left = PrintBy;
+            pdfDocument.Objects[0].FooterSettings.Center = PrintTime;
+            pdfDocument.Objects[0].FooterSettings.Right = PageNumber;
         }
         else
         {
-            pdfDocument.Objects[0].FooterSettings.Left = printTime;
-            pdfDocument.Objects[0].FooterSettings.Right = "Page [page] of [toPage]";
+            pdfDocument.Objects[0].FooterSettings.Left = PrintTime;
+            pdfDocument.Objects[0].FooterSettings.Right = PageNumber;
         }
 
+        return pdfDocument;
+    }
+    
+    protected byte[] GeneratePdf(HtmlToPdfDocument pdfDocument)
+    {
         return _converter.Convert(pdfDocument);
     }
 }

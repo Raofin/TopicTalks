@@ -5,14 +5,15 @@ using TopicTalks.Application.Interfaces;
 using TopicTalks.Domain;
 using TopicTalks.Domain.Entities;
 using TopicTalks.Domain.Enums;
+using TopicTalks.Domain.Interfaces.Core;
 
 namespace TopicTalks.Application.Services;
 
-internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerService, IPdfService pdfService) : IQuestionService
+internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerService, IPdfGenerator pdfGenerator) : IQuestionService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IAnswerService _answerService = answerService;
-    private readonly IPdfService _pdfService = pdfService;
+    private readonly IPdfGenerator _pdfGenerator = pdfGenerator;
 
     public async Task<QuestionResponseDto> CreateAsync(QuestionCreateDto dto, long userId)
     {
@@ -153,7 +154,7 @@ internal class QuestionService(IUnitOfWork unitOfWork, IAnswerService answerServ
 
         return question.IsError 
             ? question.Errors 
-            : await _pdfService.GenerateQuestionPdf(question.Value);
+            : await _pdfGenerator.QuestionPdf(question.Value);
     }
 
     public async Task<ErrorOr<Success>> UpdateNotificationAsync(long questionId, long userId)
