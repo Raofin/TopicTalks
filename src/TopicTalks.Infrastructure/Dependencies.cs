@@ -1,7 +1,4 @@
-﻿using DinkToPdf.Contracts;
-using DinkToPdf;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using TopicTalks.Domain;
 using TopicTalks.Infrastructure.Persistence;
 using TopicTalks.Infrastructure.Persistence.Repositories;
@@ -19,9 +16,6 @@ internal static class Dependencies
 {
     public static IServiceCollection AddDependencies(this IServiceCollection services)
     {
-        services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
-        services.AddSingleton<IPasswordHasher<IdentityUser>, PasswordHasher<IdentityUser>>();
-
         services.AddSingleton<IHashPassword, HashPassword>();
         services.AddSingleton<IJwtGenerator, JwtGenerator>();
         services.AddSingleton<IExcelGenerator, ExcelGenerator>();
