@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using TopicTalks.Application.Dtos;
+﻿using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
 using TopicTalks.Domain;

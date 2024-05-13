@@ -6,14 +6,12 @@ using TopicTalks.Application.Attributes;
 using TopicTalks.Application.Dtos;
 using TopicTalks.Application.Extensions;
 using TopicTalks.Application.Interfaces;
-using TopicTalks.Application.Services;
 
 namespace TopicTalks.Api.Controllers;
 
-public class AccountController(IAccountService accountService, IExcelService excelService, IValidator<IFormFile> validator) : ApiController
+public class AccountController(IAccountService accountService, IValidator<IFormFile> validator) : ApiController
 {
     private readonly IAccountService _userService = accountService;
-    private readonly IExcelService _excelService = excelService;
     private readonly IValidator<IFormFile> _validator = validator;
 
     [AllowAnonymous]
@@ -111,15 +109,6 @@ public class AccountController(IAccountService accountService, IExcelService exc
             };
     }
 
-    [AuthorizeModerator]
-    [HttpGet("excel/users")]
-    public async Task<IActionResult> GetExcel()
-    {
-        var excelFile = await _excelService.GenerateUserListExcelAsync();
-
-        return File(excelFile.Bytes, excelFile.ContentType, excelFile.Name);
-    }
-
     [HttpPost("verify")]
     public async Task<IActionResult> VerifyOtp(VerifyRequest? verify)
     {
@@ -135,14 +124,5 @@ public class AccountController(IAccountService accountService, IExcelService exc
         return verification.IsError
             ? BadRequest("Invalid Otp.")
             : Ok(verification.Value);
-    }
-    
-    [AuthorizeModerator]
-    [HttpGet("pdf/users")]
-    public async Task<IActionResult> GetPdf()
-    {
-        var pdf = await _userService.GenerateUserListPdfAsync();
-
-        return File(pdf, "application/pdf");
     }
 }

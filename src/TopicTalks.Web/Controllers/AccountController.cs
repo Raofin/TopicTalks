@@ -152,7 +152,7 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     [HttpGet("excel/users")]
     public async Task<IActionResult> GetExcel()
     {
-        var response = await _httpService.Client.GetAsync("api/account/excel/users");
+        var response = await _httpService.Client.GetAsync("api/report/excel/users");
 
         if (response.StatusCode == HttpStatusCode.OK)
         {

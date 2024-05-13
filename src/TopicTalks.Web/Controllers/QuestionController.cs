@@ -55,7 +55,7 @@ public class QuestionController(IHttpService httpService) : Controller
             client.DefaultRequestHeaders.Add("TimeZone", userTimeZone);
         }
         
-        var response = await client.GetAsync($"api/question/pdf/{questionId}");
+        var response = await client.GetAsync($"api/report/pdf/question/{questionId}");
 
         return response.IsSuccessStatusCode
             ? File(await response.Content.ReadAsByteArrayAsync(), "application/pdf")

@@ -12,7 +12,7 @@ public static class Dependencies
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<IAnswerService, AnswerService>();
-        services.AddScoped<IExcelService, ExcelService>();
+        services.AddScoped<IReportService, ReportService>();
         services.AddScoped<ICloudService, CloudService>();
 
         services.AddHostedService<OtpCleanupService>();

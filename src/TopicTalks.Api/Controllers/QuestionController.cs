@@ -117,20 +117,6 @@ public class QuestionController(IQuestionService questionService) : ApiControlle
         return Ok(questionDtos);
     }
 
-    [AllowAnonymous]
-    [HttpGet("pdf/{questionId}")]
-    public async Task<IActionResult> GetPdf(long questionId)
-    {
-        var pdf = await _questionService.GeneratePdfAsync(questionId);
-
-        return !pdf.IsError
-            ? File(pdf.Value, "application/pdf")
-            : pdf.FirstError.Type switch {
-                ErrorType.NotFound => NotFound("Question was not found."),
-                _ => Problem("An unexpected error occurred.")
-            };
-    }
-
     [HttpPatch("{questionId}/notification")]
     public async Task<IActionResult> UpdateNotification(long questionId)
     {
