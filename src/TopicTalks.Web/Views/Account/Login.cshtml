@@ -18,7 +18,10 @@
             </div>
 
             <div class="text-center pt-2">
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-primary">
+                    <img src="img/rolling-white.svg" class="btn-loading" alt="" />
+                    Login
+                </button>
                 <div class="mt-3">
                     New here? <a asp-action="Register" class="link">Register</a>
                 </div>
@@ -43,38 +46,44 @@
             },
             messages: {
                 UsernameOrEmail: {
-                    required: "Please enter your username or email address",
-                    minlength: "Invalid username or password"
+                    required: 'Please enter your username or email address',
+                    minlength: 'Invalid username or password'
                 },
                 Password: {
-                    required: "Please enter your password",
-                    minlength: "Invalid password"
+                    required: 'Please enter your password',
+                    minlength: 'Invalid password'
                 }
             },
-            submitHandler: (form) => {
+            submitHandler: form => {
+                $('.btn-loading').show()
+                $('#image').css({ 'pointer-events': 'none' })
+
                 $.ajax({
                     url: '@Url.Action("Login", "Account")',
                     type: 'POST',
                     data: $(form).serialize(),
                     success: () => {
-                        toastMessageNext("Login Successful!", ToastColor.Green);
-                        var returnUrl = new URLSearchParams(window.location.search).get('ReturnUrl');
+                        toastMessageNext('Login Successful!', ToastColor.Green)
+                        let returnUrl = new URLSearchParams(window.location.search).get('ReturnUrl')
 
                         if (returnUrl && returnUrl.startsWith('/')) {
-                            window.location.href = returnUrl;
+                            window.location.href = returnUrl
                         } else {
-                            window.location.href = '@Url.Action("Dashboard", "Home")';
+                            window.location.href = '@Url.Action("Dashboard", "Home")'
                         }
                     },
-                    error: (xhr) => {
+                    error: xhr => {
                         if (xhr.status === 401) {
-                            toastMessage("Login failed. Please check your credentials and try again.");
+                            toastMessage('Login failed. Please check your credentials and try again.')
                         } else {
-                            toastMessage("Internal server error. Please try again later.");
+                            toastMessage('Internal server error. Please try again later.')
                         }
+
+                        $('#register').css({ 'pointer-events': 'auto' })
+                        $('.btn-loading').hide()
                     }
-                });
+                })
             }
-        });
+        })
     </script>
 }

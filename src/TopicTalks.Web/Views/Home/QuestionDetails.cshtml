@@ -3,10 +3,131 @@
 @using TopicTalks.Web.ViewModels
 @model TopicTalks.Web.ViewModels.QuestionWithAnswersViewModel
 
-@{
-    var authorUsername = Model.UserInfo?.Username ?? "Delete User";
-    var authorId = Model.UserInfo?.UserId.ToString() ?? "0";
+<div class="container mt-5">
+    <div id="question-details" class="content-container question-container">
+        @{
+            var authorUsername = Model.UserInfo?.Username ?? "Delete User";
+            var authorId = Model.UserInfo?.UserId.ToString() ?? "0";
+            
+            if (Model.ImageFile is not null)
+            {
+                <div class="cover">
+                    <img src="@Model.ImageFile?.DirectLink" alt="" class="pointer" onclick="window.location.href='@Model.ImageFile?.DirectLink'" />
+                </div>
+            }
+        }
+        <div style="padding: 2rem">
+            <div id="question-container" question="@Model.QuestionId">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex user-preview">
+                        <div class="user-info user-preview" style="display: none">
+                            <div class="d-flex flex-column justify-content-center align-items-center">
+                                <span class="user-image mb-1" style="width: 6.5rem; height: 6.5rem;">
+                                    <img src="@(Model.UserInfo?.ProfileImageUrl ?? "/img/user.svg")" alt="" />
+                                </span>
+                                <p class="text-center mb-0">
+                                    <strong>@authorUsername</strong><br>
+                                    @(Model.UserInfo is not null ? "Joined " + Model.UserInfo.CreatedAt.TimeAgo() : "")
+                                </p>
+                            </div>
+                        </div>
+                        <span class="user-image" style="margin-right: 0.3rem">
+                            <img src="@(Model.UserInfo?.ProfileImageUrl ?? "/img/user.svg")" alt="" />
+                        </span>
+                        <strong>@(authorUsername)</strong>
+                        <span id="edited-at" class="edited">
+                            @{
+                                if (Model.UpdatedAt is not null)
+                                {
+                                    <span>(Edited)</span>
+                                }
+                            }
+                        </span>
+                    </div>
+                    <p>
+                        <local-time utc-datetime="@Model.CreatedAt" format="3" time-ago="true"></local-time>
+                    </p>
+                </div>
+                <div class="form-group row">
+                    <p id="explanation" class="text-justify">@Model.Explanation</p>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div id="topics" class="d-flex align-items-end gap-2 topic">
+                        @foreach (var topic in Model.Topic.SplitAndTrim())
+                        {
+                            <p onclick="searchTag('@topic')">@topic</p>
+                        }
+                    </div>
+                    <div class="d-flex gap-2">
+                        @if (Context.UserRole().Contains(RoleType.Moderator) || (authorId == Context.UserId() && !Model.HasTeachersResponse))
+                        {
+                            <span class="link text-danger" onclick="deleteQuestion(@Model.QuestionId)" pop="Delete" data-tippy-theme="red">
+                                <i class="fi i-delete"></i>
+                            </span>
+                        }
+                        else if (authorId == Context.UserId() && Model.HasTeachersResponse)
+                        {
+                            <span class="link text-danger" pop="This question has been answered by teacher" style="cursor: no-drop">
+                                <i class="fi i-delete"></i>
+                            </span>
+                        }
+                        @if (Context.UserRole().Contains(RoleType.Moderator) || authorId == Context.UserId())
+                        {
+                            <span id="edit-question" class="link text-success blue-hover" pop="Edit">
+                                <i class="fi i-edit-2"></i>
+                            </span>
+                        }
+                        @if (string.Equals(Model.UserInfo?.UserId.ToString(), Context.UserId(), StringComparison.Ordinal))
+                        {
+                            <span>
+                                @if (Model.IsNotified)
+                                {
+                                    <i id="notification" class="fi i-notification-on color-blue red-hover" pop="Notification turned on"></i>
+                                }
+                                else
+                                {
+                                    <i id="notification" class="fi i-notification blue-hover" pop="Notification turned off"></i>
+                                }
+                            </span>
+                        }
+                        <span onclick="getPdf()" class="link blue-hover" pop="Print" style="color: indigo">
+                            <i class="fi i-printer"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div id="answer-container">
+                @{
+                    await RenderAnswers(Model.Answers);
+                }
+            </div>
+            @if (Context.IsAuthenticated() && !Context.UserRole().Contains(RoleType.Moderator))
+            {
+                <div id="answer-input" class="col-sm-9 w-100">
+                    <form id="answer-form" asp-action="PostAnswer" asp-controller="Answer" method="post">
+                        <input type="hidden" name="questionId" value="@(Model.QuestionId)" />
+                        <div class="text-center w-100">
+                            <textarea id="reply-text" class="form-control mb-2" rows="3"
+                                  placeholder="Write your answer here" name="explanation"></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Post Answer</button>
+                        </div>
+                    </form>
+                </div>
+            }
+            else if (!Context.IsAuthenticated())
+            {
+                <div class="text-center">
+                    <a href="@Url.Action("Login", "Account")" class="btn btn-primary">Login to post an answer</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
 
+@{
     async Task RenderAnswers(List<AnswerWithRepliesViewModel> answers, int marginLeft = 0)
     {
         foreach (var answer in answers)
@@ -58,11 +179,11 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <p id="explanation-@(answer.AnswerId)">@answer.Explanation</p>
+                    <p id="explanation-@(answer.AnswerId)" class="mb-0 text-justify">@answer.Explanation</p>
                 </div>
             </div>
 
-            @if (answer?.Answers != null)
+            @if (answer.Answers.Count > 0)
             {
                 await RenderAnswers(answer.Answers, marginLeft + 50);
             }
@@ -74,161 +195,43 @@
     }
 }
 
-<div class="container mt-5">
-    <div id="question-details" class="content-container question-container">
-        @{
-            if (Model.ImageFile is not null)
-            {
-                <div class="cover">
-                    <img src="@Model.ImageFile?.DirectLink" alt=""
-                         class="pointer" onclick="window.location.href='@Model.ImageFile?.DirectLink'" />
-                </div>
-            }
-        }
-        <div style="padding: 2rem">
-            <div id="question-container" question="@Model.QuestionId">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex user-preview">
-                        <div class="user-info user-preview" style="display: none">
-                            <div class="d-flex flex-column justify-content-center align-items-center">
-                                <span class="user-image mb-1" style="width: 6.5rem; height: 6.5rem;">
-                                    <img src="@(Model.UserInfo?.ProfileImageUrl ?? "/img/user.svg")" alt="" />
-                                </span>
-                                <p class="text-center mb-0">
-                                    <strong>@authorUsername</strong><br>
-                                    @(Model.UserInfo is not null ? "Joined " + Model.UserInfo.CreatedAt.TimeAgo() : "")
-                                </p>
-                            </div>
-                        </div>
-                        <span class="user-image" style="margin-right: 0.3rem">
-                            <img src="@(Model.UserInfo?.ProfileImageUrl ?? "/img/user.svg")" alt="" />
-                        </span>
-                        <strong>@(authorUsername)</strong>
-                        <i id="edited-at">
-                            @{
-                                if (Model.UpdatedAt is not null)
-                                {
-                                    <span>Edited <local-time utc-datetime="@Model.UpdatedAt.Value" format="" time-ago="true"></local-time></span>
-                                }
-                            }
-                        </i>
-                    </div>
-                    <p><local-time utc-datetime="@Model.CreatedAt" format="3" time-ago="true"></local-time></p>
-                </div>
-                <div class="form-group row">
-                    <p id="explanation">@Model.Explanation</p>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <div id="topics" class="d-flex gap-2 topic">
-                        @foreach (var topic in Model.Topic.SplitAndTrim())
-                        {
-                            <p onclick="searchTag('@topic')">@topic</p>
-                        }
-                    </div>
-                    <div class="d-flex gap-2">
-                        @if (Context.UserRole().Contains(RoleType.Moderator) || (authorId == Context.UserId() && !Model.HasTeachersResponse))
-                        {
-                            <span class="link text-danger" onclick="deleteQuestion(@Model.QuestionId)" pop="Delete" data-tippy-theme="red">
-                                <i class="fi i-delete"></i>
-                            </span>
-                        }
-                        else if (authorId == Context.UserId() && Model.HasTeachersResponse)
-                        {
-                            <span class="link text-danger" pop="This question has been answerd by teacher" style="cursor: no-drop">
-                                <i class="fi i-delete"></i>
-                            </span>
-                        }
-                        @if (Context.UserRole().Contains(RoleType.Moderator) || authorId == Context.UserId())
-                        {
-                            <span id="edit-question" class="link text-success blue-hover" pop="Edit">
-                                <i class="fi i-edit-2"></i>
-                            </span>
-                        }
-                        @if (string.Equals(Model.UserInfo?.UserId.ToString(), Context.UserId(), StringComparison.Ordinal))
-                        {
-                            <span>
-                                @if (Model.IsNotified)
-                                {
-                                    <i id="notification" class="fi i-notification-on color-blue red-hover" pop="Notification turned on"></i>
-                                }
-                                else
-                                {
-                                    <i id="notification" class="fi i-notification blue-hover" pop="Notification turned off"></i>
-                                }
-                            </span>
-                        }
-                        <span onclick="getPdf()" class="link blue-hover" pop="Print" style="color: indigo">
-                            <i class="fi i-printer"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <hr />
-            <div id="answer-container">
-                @{
-                    await RenderAnswers(Model.Answers);
-                }
-            </div>
-            @if (Context.IsAuthenticated() && !Context.UserRole().Contains(RoleType.Moderator))
-            {
-                <div id="answer-input" class="col-sm-9 w-100">
-                    <form id="answer-form" asp-action="PostAnswer" asp-controller="Answer" method="post">
-                        <input type="hidden" name="questionId" value="@(Model.QuestionId)" />
-                        <div class="text-center w-100">
-                            <textarea id="reply-text" class="form-control mb-2" rows="3" placeholder="Write your answer here" name="explanation"></textarea>
-                        </div>
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary">Post Answer</button>
-                        </div>
-                    </form>
-                </div>
-            }
-            else if (!Context.IsAuthenticated())
-            {
-                <div class="text-center">
-                    <a href="@Url.Action("Login", "Account")" class="btn btn-primary">Login to post an answer</a>
-                </div>
-            }
-        </div>
-    </div>
-</div>
 @section Scripts
 {
     <script>
         function getPdf() {
-            window.open('@Url.Action("GetPdf", "Question", new { questionId = Model.QuestionId })', '_blank');
+            window.open('@Url.Action("GetPdf", "Question", new { questionId = Model.QuestionId })', '_blank')
         }
 
-        $('#notification').on("click", () => {
+        $('#notification').on('click', () => {
             $.ajax({
                 url: '@Url.Action("UpdateNotification", "Question", new { questionId = Model.QuestionId })',
                 type: 'PATCH',
                 contentType: 'application/json',
                 success: () => {
-                    var element = $('#notification')
+                    let element = $('#notification')
 
                     if (element.hasClass('i-notification')) {
-                        element.removeClass('i-notification blue-hover').addClass('i-notification-on color-blue red-hover');
-                        toastMessage("Notification turned on", ToastColor.Blue);
+                        element.removeClass('i-notification blue-hover').addClass('i-notification-on color-blue red-hover')
+                        toastMessage('Notification turned on', ToastColor.Blue)
                     } else if (element.hasClass('i-notification-on')) {
-                        element.removeClass('i-notification-on color-blue red-hover').addClass('i-notification blue-hover');
-                        toastMessage("Notification turned off", ToastColor.Red)
+                        element.removeClass('i-notification-on color-blue red-hover').addClass('i-notification blue-hover')
+                        toastMessage('Notification turned off', ToastColor.Red)
                     }
                 },
-                error: () => toastMessage("Internal server error. Please try again later.")
-            });
+                error: () => toastMessage('Internal server error. Please try again later.')
+            })
         })
 
-        $("#edit-question").on("click", function () {
-            var questionId = $("#question-container").attr("question")
-            var editedQuestion = appendQuestionEditInput(questionId)
-        });
+        $('#edit-question').on('click', function () {
+            let questionId = $('#question-container').attr('question')
+            appendQuestionEditInput(questionId)
+        })
 
         function appendQuestionEditInput(questionId) {
-            closeReplyInput();
+            closeReplyInput()
 
-            if (!$("#reply-input").length) {
-                $("#question-container").append(`
+            if (!$('#reply-input').length) {
+                $('#question-container').append(`
                     <div id="reply-input">
                         <form id="reply-form" class="col-sm-9 w-100 d-flex">
                             <input type="hidden" name="questionId" value="${questionId}" />
@@ -255,8 +258,8 @@
                     },
                     messages: {
                         explanation: {
-                            required: "Please enter your question explanation",
-                            minlength: "Question must be at least 10 characters"
+                            required: 'Please enter your question explanation',
+                            minlength: 'Question must be at least 10 characters'
                         }
                     },
                     submitHandler: (form) => {
@@ -265,14 +268,14 @@
                             type: 'PATCH',
                             data: $(form).serialize(),
                             success: (response) => {
-                                $("#explanation").text(response.explanation)
-                                $("#topics").html(formatTopics(response.topic))
-                                $("#edited-at").text(" Edited (0 second ago)")
-                                toastMessage("Edit Successful!", ToastColor.Green)
+                                $('#explanation').text(response.explanation)
+                                $('#topics').html(formatTopics(response.topic))
+                                $('#edited-at').text('(Edited)')
+                                toastMessage('Edit Successful!', ToastColor.Green)
                                 closeReplyInput()
                             },
-                            error: (xhr) => {
-                                toastMessage('Internal server error. Please try again later.');
+                            error: () => {
+                                toastMessage('Internal server error. Please try again later.')
                             }
                         })
                     }
@@ -288,8 +291,8 @@
         }
 
         function searchTag(searchText) {
-            $('#questionContainer').empty();
-            window.location.href = '@Url.Action("Dashboard", "Home")?searchQuery=' + searchText;
+            $('#questionContainer').empty()
+            window.location.href = '@Url.Action("Dashboard", "Home")?searchQuery=' + searchText
         }
     </script>
 }

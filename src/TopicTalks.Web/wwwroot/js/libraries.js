@@ -1,13 +1,13 @@
 ﻿// Bootstrap toast message
 const ToastColor = {
-    Red: "danger",
-    Green: "success",
-    Yellow: "warning",
-    Blue: "primary"
+    Red: 'danger',
+    Green: 'success',
+    Yellow: 'warning',
+    Blue: 'primary'
 }
 
 function toastMessage(message, type = ToastColor.Red, timer = 6000) {
-    var container = $('#toast-container');
+    let container = $('#toast-container')
     if (container.length === 0) {
         container = $('<div>').attr('id', 'toast-container').css({
             'position': 'fixed',
@@ -15,10 +15,10 @@ function toastMessage(message, type = ToastColor.Red, timer = 6000) {
             'bottom': '40px',
             'right': '0',
             'margin-right': '0.5rem'
-        }).appendTo('body');
+        }).appendTo('body')
     }
 
-    var toastDiv = $('<div>').addClass('toast align-items-center text-bg-' + type + ' border-0 mb-2')
+    let toastDiv = $('<div>').addClass('toast align-items-center text-bg-' + type + ' border-0 mb-2')
         .attr({
             'role': 'alert',
             'aria-live': 'assertive',
@@ -32,40 +32,40 @@ function toastMessage(message, type = ToastColor.Red, timer = 6000) {
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
-        `);
+        `)
 
-    container.append(toastDiv);
-    new bootstrap.Toast(toastDiv[0]).show();
+    container.append(toastDiv)
+    new bootstrap.Toast(toastDiv[0]).show()
 }
 
 function toastMessageNext(message, type = ToastColor.Red, timer = 6000) {
-    var toastMessage = {
+    let toastMessage = {
         message: message,
         type: type,
         timer: timer
-    };
+    }
 
-    sessionStorage.setItem('toastMessage', JSON.stringify(toastMessage));
+    sessionStorage.setItem('toastMessage', JSON.stringify(toastMessage))
 }
 
 $(() => {
-    var message = sessionStorage.getItem('toastMessage');
+    let message = sessionStorage.getItem('toastMessage')
 
     if (message) {
-        var toastData = JSON.parse(message);
-        toastMessage(toastData.message, toastData.type);
+        let toastData = JSON.parse(message)
+        toastMessage(toastData.message, toastData.type)
 
-        sessionStorage.removeItem('toastMessage');
+        sessionStorage.removeItem('toastMessage')
     }
-});
+})
 
 
 // Override the default email validation method in jQuery Validate
-var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
-$.validator.addMethod("email", function (value, element) {
-    return this.optional(element) || emailRegex.test(value);
-}, "Please enter a valid email address");
+$.validator.addMethod('email', function (value, element) {
+    return this.optional(element) || emailRegex.test(value)
+}, 'Please enter a valid email address')
 
 
 // Load icon fonts with FontFace Observer
@@ -78,12 +78,12 @@ new FontFaceObserver('RawfinIcons')
 tippy.setDefaultProps({
     delayanimation: 'perspective-subtle',
     theme: 'light'
-});
+})
 
 function setTippyContent() {
     tippy('[pop]', {
         content: (reference) => reference.getAttribute('pop')
-    });
+    })
 }
 
 setTippyContent()

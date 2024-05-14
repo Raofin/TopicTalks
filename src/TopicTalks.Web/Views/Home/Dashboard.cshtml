@@ -14,46 +14,46 @@
 {
     <script>
         $('#searchInput').on('input', function () {
-            var searchText = $(this).val();
-            fetchQuestions(searchText);
-        });
+            let searchText = $(this).val()
+            fetchQuestions(searchText)
+        })
 
         function searchTag(searchText) {
-            $('#question-container').empty();
-            fetchQuestions(searchText);
-            $('#searchInput').val(searchText).focus();
+            $('#question-container').empty()
+            fetchQuestions(searchText)
+            $('#searchInput').val(searchText).focus()
         }
 
         function fetchQuestions(searchText) {
-            $('#question-container').addClass('loading');
+            $('#question-container').addClass('loading')
             $.ajax({
                 url: '@Url.Action("LoadQuestionList", "Home")?searchQuery=' + searchText,
                 method: 'GET',
-                success: function (questions) {
-                    $('#question-container').empty();
-                    $('#question-container').html(questions);
-                    $('#question-container').removeClass('loading');
+                success: questions => {
+                    $('#question-container').empty()
+                    $('#question-container').html(questions)
+                    $('#question-container').removeClass('loading')
                 },
-                error: function (error) {
-                    toastMessage('Internal server error. Please try again later.');
-                    $('#question-container').removeClass('loading');
+                error: () => {
+                    toastMessage('Internal server error. Please try again later.')
+                    $('#question-container').removeClass('loading')
                 }
-            });
+            })
         }
 
         function getURLParameter(name) {
-            var urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
+            let urlParams = new URLSearchParams(window.location.search)
+            return urlParams.get(name)
         }
 
-        var searchQuery = getURLParameter('searchQuery');
+        let searchQuery = getURLParameter('searchQuery')
 
         if (searchQuery) {
-            $('#searchInput').val(searchQuery);
+            $('#searchInput').val(searchQuery)
 
-            var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-            window.history.pushState({ path: newUrl }, '', newUrl);
-            $('#searchInput').focus();
+            let newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname
+            window.history.pushState({ path: newUrl }, '', newUrl)
+            $('#searchInput').focus()
         }
     </script>
 }

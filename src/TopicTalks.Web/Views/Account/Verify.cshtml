@@ -27,133 +27,133 @@
 @section Scripts
 {
     <script>
-        var lastOtpSentTime = 0;
-        var urlParams = new URLSearchParams(window.location.search);
+        let lastOtpSentTime = 0
+        let urlParams = new URLSearchParams(window.location.search)
 
         if (urlParams.has('otpSent')) {
-            window.history.replaceState(null, '', window.location.pathname);
+            window.history.replaceState(null, '', window.location.pathname)
         } else {
-            lastOtpSentTime = new Date().getTime();
-            toastMessage("Verification code has been sent to your email address. Please use it within 5 minutes.", ToastColor.Blue);
+            lastOtpSentTime = new Date().getTime()
+            toastMessage('Verification code has been sent to your email address. Please use it within 5 minutes.', ToastColor.Blue)
         }
 
         function resendCode() {
-            var currentTime = new Date().getTime();
-            var timeDifference = currentTime - lastOtpSentTime;
+            let currentTime = new Date().getTime()
+            let timeDifference = currentTime - lastOtpSentTime
 
             if (timeDifference < 30000) { // 30 seconds
-                var secondsLeft = Math.ceil((30000 - timeDifference) / 1000);
-                toastMessage("Please wait " + secondsLeft + " seconds before sending the next code.");
+                let secondsLeft = Math.ceil((30000 - timeDifference) / 1000)
+                toastMessage('Please wait ' + secondsLeft + ' seconds before sending the next code.')
             } else {
                 $.ajax({
                     url: '@Url.Action("Verify", "Account")',
                     type: 'POST',
                     success: () => {
-                        toastMessage("Verification code has been sent to your email address. Please use it within 5 minutes.", ToastColor.Blue);
-                        lastOtpSentTime = currentTime;
+                        toastMessage('Verification code has been sent to your email address. Please use it within 5 minutes.', ToastColor.Blue)
+                        lastOtpSentTime = currentTime
                     },
                     error: () => {
-                        toastMessage("Failed to resend code. Please try again later.");
+                        toastMessage('Failed to resend code. Please try again later.')
                     }
-                });
+                })
             }
         }
 
         $('#otp-form').submit(function (e) {
-            e.preventDefault();
+            e.preventDefault()
 
-            var inputs = $('.otp-code input[type="text"]');
-            var allFilled = true;
+            let inputs = $('.otp-code input[type="text"]')
+            let allFilled = true
 
             inputs.each(function () {
                 if ($(this).val().length !== 1 || isNaN($(this).val())) {
-                    allFilled = false;
-                    return false;
+                    allFilled = false
+                    return false
                 }
-            });
+            })
 
             if (allFilled) {
-                var code = inputs.map(function () {
-                    return $(this).val();
-                }).get().join('');
+                let code = inputs.map(function () {
+                    return $(this).val()
+                }).get().join('')
 
                 $.ajax({
                     url: '@Url.Action("Verify", "Account")',
                     type: 'POST',
                     data: { Code: code },
-                    success: function (response) {
-                        toastMessageNext("Verification Successful!", ToastColor.Green);
-                        window.location.href = '@Url.Action("Dashboard", "Home")';
+                    success: () => {
+                        toastMessageNext('Verification Successful!', ToastColor.Green)
+                        window.location.href = '@Url.Action("Dashboard", "Home")'
                     },
-                    error: function (xhr) {
+                    error: xhr => {
                         if (xhr.status === 400) {
-                            toastMessage("Invalid verification code. Please try again.");
+                            toastMessage('Invalid verification code. Please try again.')
                         } else {
-                            toastMessage("Internal server error. Please try again later.");
+                            toastMessage('Internal server error. Please try again later.')
                         }
                     }
-                });
+                })
             } else {
-                toastMessage("Please fill out all the fields.");
+                toastMessage('Please fill out all the fields.')
             }
-        });
-
+        })
 
         $('.otp-code input[type="text"]').attr({
             'maxlength': '1',
             'autocomplete': 'off',
             'aria-autocomplete': 'none'
-        });
+        })
 
-        const form = $('#otp-form');
-        const inputs = form.find('input[type=text]');
-        const submit = form.find('button[type=submit]');
+        const form = $('#otp-form')
+        const inputs = form.find('input[type=text]')
+        const submit = form.find('button[type=submit]')
 
         const handleKeyDown = function (e) {
             if (!/^[0-9]{1}$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab' && !e.metaKey) {
-                e.preventDefault();
+                e.preventDefault()
             }
 
             if (e.key === 'Delete' || e.key === 'Backspace') {
-                const index = inputs.index(e.target);
+                const index = inputs.index(e.target)
                 if (index > 0) {
-                    inputs.eq(index - 1).val('').focus();
+                    inputs.eq(index - 1).val('').focus()
                 }
             }
-        };
+        }
 
         const handleInput = function (e) {
-            const target = $(e.target);
-            const index = inputs.index(target);
+            const target = $(e.target)
+            const index = inputs.index(target)
+            
             if (target.val()) {
                 if (index < inputs.length - 1) {
-                    inputs.eq(index + 1).focus();
+                    inputs.eq(index + 1).focus()
                 } else {
-                    submit.focus();
+                    submit.focus()
                 }
             }
-        };
+        }
 
         const handleFocus = function (e) {
-            $(e.target).select();
-        };
+            $(e.target).select()
+        }
 
         const handlePaste = function (e) {
-            e.preventDefault();
-            const text = e.originalEvent.clipboardData.getData('text');
+            e.preventDefault()
+            const text = e.originalEvent.clipboardData.getData('text')
             if (!new RegExp(`^[0-9]{${inputs.length}}$`).test(text)) {
-                return;
+                return
             }
-            const digits = text.split('');
+            const digits = text.split('')
             inputs.each(function (index) {
-                $(this).val(digits[index]);
-            });
-            submit.focus();
-        };
+                $(this).val(digits[index])
+            })
+            submit.focus()
+        }
 
-        inputs.on('input', handleInput);
-        inputs.on('keydown', handleKeyDown);
-        inputs.on('focus', handleFocus);
-        inputs.on('paste', handlePaste);
+        inputs.on('input', handleInput)
+        inputs.on('keydown', handleKeyDown)
+        inputs.on('focus', handleFocus)
+        inputs.on('paste', handlePaste)
     </script>
 }

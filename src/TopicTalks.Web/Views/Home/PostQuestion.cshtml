@@ -14,7 +14,7 @@
             <div class="form-group row">
                 <label class="col-form-label">Topic</label>
                 <div class="col-sm-9 w-100">
-                    <input asp-for="Topic" class="form-control mb-2" placeholder="Enter the topics of your question, seperated by commas"/>
+                    <input asp-for="Topic" class="form-control mb-2" placeholder="Enter the topics of your question, seperated by commas" />
                     <span asp-validation-for="Topic" class="text-danger"></span>
                 </div>
             </div>
@@ -40,33 +40,28 @@
 @section Scripts
 {
     <script>
-        var imageFileId;
-        var uploading = false;
-        var submitWaiting = false;
+        let imageFileId
+        let uploading = false
+        let submitWaiting = false
 
-        $('#image').on("change", function () {
-            $('#image').css({ "pointer-events": "none" });
-            uploading = true;
+        $('#image').on('change', function () {
+            $('#image').css({ 'pointer-events': 'none' })
+            uploading = true
 
             Upload(this)
-                .then((response) => {
-                    console.table(response)
-                    imageFileId = response.cloudFileId;
-                })
-                .catch(() => {
-                    imageFileId = null;
-                })
+                .then(response => { imageFileId = response.cloudFileId })
+                .catch(() => {  imageFileId = null })
                 .finally(() => {
-                    uploading = false;
-                    $('#image').css({ "pointer-events": "auto" });
+                    uploading = false
+                    $('#image').css({ 'pointer-events': 'auto' })
 
                     if (submitWaiting) {
-                        $("#post-question").valid() && $("#post-question").trigger("submit");
+                        $('#post-question').trigger('submit') && $('#post-question').valid()
                     }
-                });
-        });
+                })
+        })
 
-        $("#post-question").validate({
+        $('#post-question').validate({
             rules: {
                 Topic: {
                     required: true,
@@ -80,56 +75,54 @@
             },
             messages: {
                 Topic: {
-                    required: "Please enter the topics of your question"
+                    required: 'Please enter the topics of your question'
                 },
                 Explanation: {
-                    required: "Please write your question"
+                    required: 'Please write your question'
                 }
             },
             submitHandler: (form) => {
-                $('.btn-loading').show();
+                $('.btn-loading').show()
 
-                if (uploading == true) {
-                    submitWaiting = true;
-                    $('#post-question').css({ "pointer-events": "none" });
-                    return;
+                if (uploading === true) {
+                    submitWaiting = true
+                    $('#post-question').css({ 'pointer-events': 'none' })
+                    return
                 }
 
-                var data = $(form).serializeArray().reduce((obj, item) => {
-                    obj[item.name] = item.value;
-                    return obj;
-                }, {});
+                let data = $(form).serializeArray().reduce((obj, item) => {
+                    obj[item.name] = item.value
+                    return obj
+                }, {})
 
                 if (imageFileId) {
-                    data.ImageFileId = imageFileId;
+                    data.ImageFileId = imageFileId
                 }
-
-                console.table(data);
 
                 $.ajax({
                     url: '@Url.Action("PostQuestion", "Question")',
                     type: 'POST',
                     data: data,
-                    success: (response) => {
-                        toastMessageNext("Question Posted!", ToastColor.Green);
-                        window.location.href = '@Url.Action("Dashboard", "Home")';
+                    success: () => {
+                        toastMessageNext('Question Posted!', ToastColor.Green)
+                        window.location.href = '@Url.Action("Dashboard", "Home")'
                     },
-                    error: (xhr) => {
-                        toastMessage('Internal server error. Please try again later.');
+                    error: () => {
+                        toastMessage('Internal server error. Please try again later.')
+
+                        $('#post-question').css({ 'pointer-events': 'auto' })
+                        $('.btn-loading').hide()
                     }
-                });
-
-                $('#post-question').css({ "pointer-events": "auto" });
-                $('.btn-loading').hide();
+                })
             }
-        });
+        })
 
-        // replace consecutive commas and spaces with one
-        $("#Topic").blur(function () {
-            var val = $(this).val().replace(/[, ]+/g, function (match) {
-                return match.charAt(0);
-            });
-            $(this).val(val);
-        });
+        $('#Topic').blur(function () {
+            let val = $(this).val().replace(/[, ]+/g, function (match) {
+                return match.charAt(0)
+            })
+            
+            $(this).val(val)
+        })
     </script>
 }

@@ -1,15 +1,15 @@
-﻿let selectedId = null;
-let inputAppeded = false;
+﻿let selectedId = null
+let inputAppended = false
 
 function appendInput(questionId, answerId, edit) {
-    if (selectedId != answerId) {
-        selectedId = answerId;
-        closeReplyInput();
-        inputAppeded = false;
+    if (selectedId !== answerId) {
+        selectedId = answerId
+        closeReplyInput()
+        inputAppended = false
     }
-    if (inputAppeded) {
-        closeReplyInput();
-        inputAppeded = false;
+    if (inputAppended) {
+        closeReplyInput()
+        inputAppended = false
     } else {
         $(`[id*='answer-${answerId}']:first`).append(`
             <div id="reply-input">
@@ -25,12 +25,12 @@ function appendInput(questionId, answerId, edit) {
                         <button type="submit" class="btn btn-primary w-75">Post</button>
                     </div>
                 </form>
-            </div>`);
+            </div>`)
 
         if (edit) {
             $.get(`/answer/${answerId}`)
-                .done((data) => { $("#reply-text").val(data.explanation); })
-                .fail(() => { toastMessage("Error fetching answer.", ToastColor.Red); });
+                .done(data => $('#reply-text').val(data.explanation))
+                .fail(() => toastMessage('Error fetching answer.', ToastColor.Red))
         }
 
         $('#reply-form').validate({
@@ -42,8 +42,8 @@ function appendInput(questionId, answerId, edit) {
             },
             messages: {
                 explanation: {
-                    required: "Please enter your explanation",
-                    minlength: "Explanation must be at least 10 characters"
+                    required: 'Please enter your explanation',
+                    minlength: 'Explanation must be at least 10 characters'
                 }
             },
             submitHandler: (form) => {
@@ -52,17 +52,15 @@ function appendInput(questionId, answerId, edit) {
                         url: '/answer',
                         type: 'PATCH',
                         data: $(form).serialize(),
-                        success: (data) => {
-                            $("#explanation-" + data.answerId).text(data.explanation);
-                            toastMessage("Edit Successful!", ToastColor.Green);
-                            closeReplyInput();
+                        success: data => {
+                            $('#explanation-' + data.answerId).text(data.explanation)
+                            toastMessage('Edit Successful!', ToastColor.Green)
+                            closeReplyInput()
                         },
-                        error: () => {
-                            toastMessage('Internal server error. Please try again later.', ToastColor.Red);
-                        }
-                    });
+                        error: () => toastMessage('Internal server error. Please try again later.', ToastColor.Red)
+                    })
 
-                    return;
+                    return
                 }
 
                 $.ajax({
@@ -70,18 +68,18 @@ function appendInput(questionId, answerId, edit) {
                     type: 'POST',
                     data: $(form).serialize(),
                     success: (response) => {
-                        appendReply(response);
-                        toastMessage("Reply Submitted!", ToastColor.Green);
-                        closeReplyInput();
+                        appendReply(response)
+                        toastMessage('Reply Submitted!', ToastColor.Green)
+                        closeReplyInput()
                     },
                     error: () => {
-                        toastMessage('Internal server error. Please try again later.', ToastColor.Red);
+                        toastMessage('Internal server error. Please try again later.', ToastColor.Red)
                     }
-                });
+                })
             }
-        });
+        })
 
-        inputAppeded = true;
+        inputAppended = true
     }
 }
 
@@ -89,13 +87,9 @@ function fetchAnswer(answerId) {
     $.ajax({
         url: '/answer/' + answerId,
         type: 'GET',
-        success: () => {
-            $("#answer-23 textarea#reply-text").val((_index, value) => value + explanation);
-        },
-        error: () => {
-            toastMessage("Error fetching answer.", ToastColor.Red);
-        }
-    });
+        success: () => $('#answer-23 textarea#reply-text').val((_index, value) => value + explanation),
+        error: () => toastMessage('Error fetching answer.', ToastColor.Red)
+    })
 }
 
 $('#answer-form').validate({
@@ -107,35 +101,34 @@ $('#answer-form').validate({
     },
     messages: {
         explanation: {
-            required: "Please enter your explanation",
-            minlength: "Explanation must be at least 10 characters"
+            required: 'Please enter your explanation',
+            minlength: 'Explanation must be at least 10 characters'
         }
     },
-    submitHandler: (form) => {
+    submitHandler: form => {
         $.ajax({
             url: '/answer',
             type: 'POST',
             data: $(form).serialize(),
             success: (response) => {
-                appendAnswer(response);
-                toastMessage("Answer Submitted!", ToastColor.Green);
-                $("#answer-form")[0].reset();
+                appendAnswer(response)
+                toastMessage('Answer Submitted!', ToastColor.Green)
+                $('#answer-form')[0].reset()
             },
             error: () => {
-                toastMessage('Internal server error. Please try again later.', ToastColor.Red);
+                toastMessage('Internal server error. Please try again later.', ToastColor.Red)
             }
-        });
+        })
     }
 })
 
 function closeReplyInput() {
-    selectedId = null;
-    $("#reply-input").remove();
+    selectedId = null
+    $('#reply-input').remove()
 }
 
 function appendAnswer(response) {
-    console.table(response)
-    var answer = `
+    let answer = `
         <div id="answer-${response.answerId} parent-${response.parentAnswerId}" class="rounded border p-3 mb-3">
             <div class="d-flex justify-content-between">
                 <div class="d-flex">
@@ -157,18 +150,18 @@ function appendAnswer(response) {
                 </div>
             </div>
             <div class="form-group row">
-                <p id="explanation-${response.answerId}">${response.explanation}</p>
+                <p id="explanation-${response.answerId}" class="mb-0 text-justify">${response.explanation}</p>
             </div>
-        </div>`;
+        </div>`
 
-    $("#answer-container").append(answer);
+    $('#answer-container').append(answer)
 
     setTippyContent()
 }
 
 function appendReply(response) {
-    let marginLeftParent = parseFloat($(`[id*='answer-${response.parentAnswerId}']`).css('margin-left'));
-    let marginLeft = marginLeftParent + 50;
+    let marginLeftParent = parseFloat($(`[id*='answer-${response.parentAnswerId}']`).css('margin-left'))
+    let marginLeft = marginLeftParent + 50
 
     let reply = `
             <div id="answer-${response.answerId} parent-${response.parentAnswerId}" class="rounded border p-3 mb-3" style="margin-left: ${marginLeft}px;">
@@ -192,11 +185,11 @@ function appendReply(response) {
                     </div>
                 </div>
                 <div class="form-group row">
-                    <p id="explanation-${response.answerId}">${response.explanation}</p>
+                    <p id="explanation-${response.answerId}" style="margin-bottom: 0;">${response.explanation}</p>
                 </div>
-            </div>`;
+            </div>`
 
-    $(`[id*='answer-${response.parentAnswerId}']`).after(reply);
+    $(`[id*='answer-${response.parentAnswerId}']`).after(reply)
 
     setTippyContent()
 }
@@ -206,13 +199,11 @@ function deleteQuestion(questionId) {
         url: `/question/${questionId}`,
         method: 'DELETE',
         success: () => {
-            toastMessageNext("Question Deleted!", ToastColor.Green);
-            window.location.href = '/';
+            toastMessageNext('Question Deleted!', ToastColor.Green)
+            window.location.href = '/'
         },
-        error: () => {
-            toastMessage('Internal server error. Please try again later.', ToastColor.Red);
-        }
-    });
+        error: () => toastMessage('Internal server error. Please try again later.', ToastColor.Red)
+    })
 }
 
 function deleteAnswer(answerId) {
@@ -220,13 +211,11 @@ function deleteAnswer(answerId) {
         url: `/answer/${answerId}`,
         method: 'DELETE',
         success: () => {
-            toastMessage("Answer Deleted!", ToastColor.Green);
+            toastMessage('Answer Deleted!', ToastColor.Green)
 
-            $(`[id*='answer-${answerId}']`).remove();
-            $(`[id*='parent-${answerId}']`).remove();
+            $(`[id*='answer-${answerId}']`).remove()
+            $(`[id*='parent-${answerId}']`).remove()
         },
-        error: () => {
-            toastMessage('Internal server error. Please try again later.', ToastColor.Red);
-        }
-    });
+        error: () => toastMessage('Internal server error. Please try again later.', ToastColor.Red)
+    })
 }

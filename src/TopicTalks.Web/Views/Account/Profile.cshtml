@@ -57,7 +57,9 @@
                     {
                         <td>
                             <a asp-controller="Account" asp-action="Verify" class="d-flex align-items-center text-warning">
-                                <i class="i-warning-yellow pe-2"><span class="path1"></span><span class="path2"></span></i>
+                                <i class="i-warning-yellow pe-2">
+                                    <span class="path1"></span><span class="path2"></span>
+                                </i>
                                 <strong>Not Verified</strong>
                             </a>
                         </td>
@@ -90,7 +92,7 @@
             previousImage = $('#preview-image').attr('src');
 
             uploadProfileImage()
-                .then((response) => {
+                .then(response => {
                     $('.header-profile-image img').attr('src', response.directLink);
                     toastMessage('Profile image updated', ToastColor.Blue);
                 })
@@ -109,7 +111,7 @@
                 if (validateImage($('#image'), mbToBytes(2))) {
                     previewImage('#image', '#preview-image')
 
-                    var formData = new FormData();
+                    let formData = new FormData()
                     formData.append('file', $('#image')[0].files[0]);
 
                     $.ajax({
@@ -118,10 +120,8 @@
                         data: formData,
                         processData: false,
                         contentType: false,
-                        success: (response) => {
-                            resolve(response);
-                        },
-                        error: (error) => {
+                        success: response => resolve(response),
+                        error: error => {
                             toastMessage('Error uploading image');
                             reject(error);
                         }

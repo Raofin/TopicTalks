@@ -1,7 +1,7 @@
 ﻿@model List<TopicTalks.Web.ViewModels.QuestionViewModel>
 
 <div class="container mt-3">
-    <h1 class="title text-center">My Questions</h1>
+    <h1 class="title text-outline text-center">My Questions</h1>
     <div id="question-container">
         @await Html.PartialAsync("~/Views/Partials/_QuestionList.cshtml", Model)
     </div>
@@ -11,7 +11,7 @@
 {
     <script>
         function searchTag(searchText) {
-            window.location.href = '@Url.Action("Dashboard", "Home")?searchQuery=' + searchText;
+            window.location.href = '@Url.Action("Dashboard", "Home")?searchQuery=' + searchText
         }
     </script>
 }

@@ -65,49 +65,52 @@
     <script>
         $.validator.setDefaults({
             onkeyup: () => (element) => {
-                if ($("#Username")[0] === element || $("#Email")[0] === element) {
-                    return false;
+                if ($('#Username')[0] === element || $('#Email')[0] === element) {
+                    return false
                 }
             }
         })
 
-        var imageFileId;
-        var uploading = false;
-        var submitWaiting = false;
+        let imageFileId
+        let uploading = false
+        let submitWaiting = false
 
-        $('#image').on("change", function () {
-            $('#image').css({ "pointer-events": "none" });
-            uploading = true;
+        $('#image').on('change', function () {
+            $('#image').css({ 'pointer-events': 'none' })
+            uploading = true
 
             Upload(this)
-                .then((response) => {
-                    console.table(response)
-                    imageFileId = response.cloudFileId;
+                .then(response => {
+                    imageFileId = response.cloudFileId
+                    tippy(this, {
+                        followCursor: true,
+                        content: 'Change Profile Picture'
+                    })
                 })
                 .catch(() => {
-                    imageFileId = null;
+                    imageFileId = null
                 })
                 .finally(() => {
-                    uploading = false;
-                    $('#profile-pic-loading').hide();
-                    $('#image').css({ "pointer-events": "auto" });
+                    uploading = false
+                    $('#profile-pic-loading').hide()
+                    $('#image').css({ 'pointer-events': 'auto' })
 
                     if (submitWaiting) {
-                        $("#registration").valid() && $("#registration").trigger("submit");
+                        $('#registration').valid() && $('#registration').trigger('submit')
                     }
-                });
-        });
+                })
+        })
 
-        $("#registration").validate({
+        $('#registration').validate({
             rules: {
                 Username: {
                     required: true,
                     minlength: 3,
                     maxlength: 20,
                     remote: {
-                        url: "@Url.Action("CheckUserExists", "Account")",
-                        type: "post",
-                        data: { username: () => $("#Username").val() },
+                        url: '@Url.Action("CheckUserExists", "Account")',
+                        type: 'post',
+                        data: { username: () => $('#Username').val() },
                         dataFilter: (response) => !JSON.parse(response).exists
                     }
                 },
@@ -115,9 +118,9 @@
                     required: true,
                     email: true,
                     remote: {
-                        url: "@Url.Action("CheckUserExists", "Account")",
-                        type: "post",
-                        data: { email: () => $("#Email").val() },
+                        url: '@Url.Action("CheckUserExists", "Account")',
+                        type: 'post',
+                        data: { email: () => $('#Email').val() },
                         dataFilter: (response) => !JSON.parse(response).exists
                     }
                 },
@@ -129,83 +132,83 @@
                 },
                 ConfirmPassword: {
                     required: true,
-                    equalTo: "#Password"
+                    equalTo: '#Password'
                 },
                 Role: {
                     required: true
                 },
-                "UserDetails.Name": {
+                'UserDetails.Name': {
                     required: {
-                        depends: () => $("#Role").val() === "Student"
+                        depends: () => $('#Role').val() === 'Student'
                     },
                     minlength: 3,
                     maxlength: 50
                 },
-                "UserDetails.InstituteName": {
+                'UserDetails.InstituteName': {
                     required: {
-                        depends: () => $("#Role").val() === "Student"
+                        depends: () => $('#Role').val() === 'Student'
                     },
                     minlength: 3,
                     maxlength: 50
                 },
-                "UserDetails.IdCardNumber": {
+                'UserDetails.IdCardNumber': {
                     required: {
-                        depends: () => $("#Role").val() === "Student"
+                        depends: () => $('#Role').val() === 'Student'
                     },
                     minlength: 6,
                     maxlength: 20
-                },
+                }
             },
             messages: {
                 Username: {
-                    required: "Please enter a username",
-                    minlength: "Your username must be at least 3 characters long",
-                    maxlength: "Your username must not exceed 20 characters",
-                    remote: "Username is already taken"
+                    required: 'Please enter a username',
+                    minlength: 'Your username must be at least 3 characters long',
+                    maxlength: 'Your username must not exceed 20 characters',
+                    remote: 'Username is already taken'
                 },
                 Email: {
-                    required: "Please enter your email address",
-                    email: "Please enter a valid email address",
-                    remote: "Email already exists"
+                    required: 'Please enter your email address',
+                    email: 'Please enter a valid email address',
+                    remote: 'Email already exists'
                 },
                 Password: {
-                    required: "Please enter a password",
-                    minlength: "Your password must be at least 4 characters long",
-                    maxlength: "Your password must not exceed 20 characters"
+                    required: 'Please enter a password',
+                    minlength: 'Your password must be at least 4 characters long',
+                    maxlength: 'Your password must not exceed 20 characters'
                 },
                 ConfirmPassword: {
-                    required: "Please confirm your password",
-                    equalTo: "Passwords do not match"
+                    required: 'Please confirm your password',
+                    equalTo: 'Passwords do not match'
                 },
                 Role: {
-                    required: "Please select a role"
+                    required: 'Please select a role'
                 },
-                "UserDetails.Name": {
-                    required: "Please enter your name"
+                'UserDetails.Name': {
+                    required: 'Please enter your name'
                 },
-                "UserDetails.InstituteName": {
-                    required: "Please enter your institute name"
+                'UserDetails.InstituteName': {
+                    required: 'Please enter your institute name'
                 },
-                "UserDetails.IdCardNumber": {
-                    required: "Please enter your ID card number"
+                'UserDetails.IdCardNumber': {
+                    required: 'Please enter your ID card number'
                 }
             },
             submitHandler: (form) => {
-                $('.btn-loading').show();
+                $('.btn-loading').show()
 
-                if (uploading == true) {
-                    submitWaiting = true;
-                    $('#register').css({ "pointer-events": "none" });
-                    return;
+                if (uploading === true) {
+                    submitWaiting = true
+                    $('#register').css({ 'pointer-events': 'none' })
+                    return
                 }
 
-                var data = $(form).serializeArray().reduce((obj, item) => {
-                    obj[item.name] = item.value;
-                    return obj;
-                }, {});
+                let data = $(form).serializeArray().reduce((obj, item) => {
+                    obj[item.name] = item.value
+                    return obj
+                }, {})
 
                 if (imageFileId) {
-                    data.ImageFileId = imageFileId;
+                    data.ImageFileId = imageFileId
                 }
 
                 $.ajax({
@@ -213,33 +216,33 @@
                     type: 'POST',
                     data: data,
                     success: () => {
-                        toastMessageNext("Registration Successful! Verification code has been sent to your email address.", ToastColor.Green);
-                        window.location.href = '@Url.Action("Verify", "Account", new { otpSent = true })';
+                        toastMessageNext('Registration Successful! Verification code has been sent to your email address.', ToastColor.Green)
+                        window.location.href = '@Url.Action("Verify", "Account", new { otpSent = true })'
                     },
-                    error: (xhr) => {
-                        if (xhr.status == 409) {
-                            toastMessage("User with the provided username or email already exists.");
+                    error: xhr => {
+                        if (xhr.status === 409) {
+                            toastMessage('User with the provided username or email already exists.')
                         } else if (xhr.status === 400) {
-                            toastMessage("Please fill out all the fields properly.");
+                            toastMessage('Please fill out all the fields properly.')
                         } else {
-                            toastMessage("Internal server error. Please try again later.");
+                            toastMessage('Internal server error. Please try again later.')
                         }
 
-                        $('#register').css({ "pointer-events": "auto" });
-                        $('.btn-loading').hide();
+                        $('#register').css({ 'pointer-events': 'auto' })
+                        $('.btn-loading').hide()
                     }
-                });
+                })
             }
-        });
+        })
 
-        $('#Role').on("change", function () {
-            var selectedRole = $(this).val();
+        $('#Role').on('change', function () {
+            let selectedRole = $(this).val()
 
-            if (selectedRole === "Student") {
-                $("#additional-fields").load('@Url.Action("LoadAdditionalFields", "Account")');
+            if (selectedRole === 'Student') {
+                $('#additional-fields').load('@Url.Action("LoadAdditionalFields", "Account")')
             } else {
-                $("#additional-fields").html("");
+                $('#additional-fields').html('')
             }
-        });
+        })
     </script>
 }
