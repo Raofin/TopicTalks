@@ -47,11 +47,11 @@ else
                 </div>
 
                 <div class="form-group row">
-                    <p>@question.Explanation</p>
+                    <p class="text-justify">@question.Explanation</p>
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <div class="d-flex gap-2 topic">
+                    <div class="d-flex align-items-end gap-2 topic">
                         @foreach (var topic in question.Topic.SplitAndTrim())
                         {
                             <p onclick="searchTag('@topic')">@topic</p>

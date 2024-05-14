@@ -1,23 +1,23 @@
 ﻿USE [master]
 GO
-/****** Object:  Database [TopicTalks]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Database [TopicTalks] ******/
 CREATE DATABASE [TopicTalks]
 GO
 USE [TopicTalks]
 GO
-/****** Object:  Schema [auth]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Schema [auth] ******/
 CREATE SCHEMA [auth]
 GO
-/****** Object:  Schema [core]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Schema [core] ******/
 CREATE SCHEMA [core]
 GO
-/****** Object:  Schema [enum]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Schema [enum] ******/
 CREATE SCHEMA [enum]
 GO
-/****** Object:  Schema [post]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Schema [post] ******/
 CREATE SCHEMA [post]
 GO
-/****** Object:  Table [auth].[Otps]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Table [auth].[Otps] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -32,7 +32,7 @@ CREATE TABLE [auth].[Otps](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[UserDetails]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Table [auth].[UserDetails] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -49,7 +49,7 @@ CREATE TABLE [auth].[UserDetails](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[UserRoles]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Table [auth].[UserRoles] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -64,7 +64,7 @@ CREATE TABLE [auth].[UserRoles](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [auth].[Users]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Table [auth].[Users] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -84,7 +84,7 @@ CREATE TABLE [auth].[Users](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [core].[CloudFiles]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Table [core].[CloudFiles] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -105,7 +105,7 @@ CREATE TABLE [core].[CloudFiles](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[LogEvents]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Table [dbo].[LogEvents] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -124,7 +124,7 @@ CREATE TABLE [dbo].[LogEvents](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MigrationsHistory]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Table [dbo].[MigrationsHistory] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -138,7 +138,7 @@ CREATE TABLE [dbo].[MigrationsHistory](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [enum].[Roles]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Table [enum].[Roles] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -152,7 +152,7 @@ CREATE TABLE [enum].[Roles](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [post].[Answers]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Table [post].[Answers] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -171,7 +171,7 @@ CREATE TABLE [post].[Answers](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [post].[Questions]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Table [post].[Questions] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -195,15 +195,39 @@ SET IDENTITY_INSERT [auth].[UserDetails] ON
 GO
 INSERT [auth].[UserDetails] ([UserDetailsId], [FullName], [InstituteName], [IdCardNumber], [UserId]) VALUES (1, N'Zaid Amin Rawfin', N'AIUB', N'20-42459-1', 1)
 GO
-INSERT [auth].[UserDetails] ([UserDetailsId], [FullName], [InstituteName], [IdCardNumber], [UserId]) VALUES (2, N'Oweo Yec Wev', N'QWDA', N'2020-55-3361', 4)
+INSERT [auth].[UserDetails] ([UserDetailsId], [FullName], [InstituteName], [IdCardNumber], [UserId]) VALUES (2, N'Oweo Yec Wev', N'QWDA', N'29-1655-31', 4)
 GO
-INSERT [auth].[UserDetails] ([UserDetailsId], [FullName], [InstituteName], [IdCardNumber], [UserId]) VALUES (3, N'Voer Eor Oec', N'CREX', N'3-17655614-43', 5)
+INSERT [auth].[UserDetails] ([UserDetailsId], [FullName], [InstituteName], [IdCardNumber], [UserId]) VALUES (3, N'Voer Eor Oec', N'CREX', N'3-16614-43', 5)
+GO
+INSERT [auth].[UserDetails] ([UserDetailsId], [FullName], [InstituteName], [IdCardNumber], [UserId]) VALUES (6, N'Zcnow Oewb Onc', N'CWEC', N'13-51534-6', 6)
+GO
+INSERT [auth].[UserDetails] ([UserDetailsId], [FullName], [InstituteName], [IdCardNumber], [UserId]) VALUES (7, N'Wqepx Aorne Xovo', N'XOVO', N'14-035-453', 7)
+GO
+INSERT [auth].[UserDetails] ([UserDetailsId], [FullName], [InstituteName], [IdCardNumber], [UserId]) VALUES (8, N'Pesve Oenpw', N'PCXOW', N'51-26532-1', 8)
+GO
+INSERT [auth].[UserDetails] ([UserDetailsId], [FullName], [InstituteName], [IdCardNumber], [UserId]) VALUES (9, N'Xjow Cbree', N'COEP', N'36-4565-15', 9)
 GO
 SET IDENTITY_INSERT [auth].[UserDetails] OFF
 GO
 INSERT [auth].[UserRoles] ([UserId], [RoleId]) VALUES (1, 1)
 GO
+INSERT [auth].[UserRoles] ([UserId], [RoleId]) VALUES (4, 1)
+GO
+INSERT [auth].[UserRoles] ([UserId], [RoleId]) VALUES (5, 1)
+GO
+INSERT [auth].[UserRoles] ([UserId], [RoleId]) VALUES (6, 1)
+GO
+INSERT [auth].[UserRoles] ([UserId], [RoleId]) VALUES (7, 1)
+GO
+INSERT [auth].[UserRoles] ([UserId], [RoleId]) VALUES (8, 1)
+GO
+INSERT [auth].[UserRoles] ([UserId], [RoleId]) VALUES (9, 1)
+GO
 INSERT [auth].[UserRoles] ([UserId], [RoleId]) VALUES (2, 2)
+GO
+INSERT [auth].[UserRoles] ([UserId], [RoleId]) VALUES (10, 2)
+GO
+INSERT [auth].[UserRoles] ([UserId], [RoleId]) VALUES (11, 2)
 GO
 INSERT [auth].[UserRoles] ([UserId], [RoleId]) VALUES (3, 3)
 GO
@@ -213,11 +237,13 @@ INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [I
 GO
 INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (2, N'Doe', N'doe@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-01-27T13:13:46.463' AS DateTime), N'1RH6EHcpS-D9cyiq5sTVfy0VRSKdOEhER')
 GO
-INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (3, N'Bob', N'bob@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-01-27T13:13:46.463' AS DateTime), N'1mjUahqIA0gE_KUR1k9F3GMlgsk1UHHTe')
+INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (3, N'Bob', N'bob@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-01-27T13:13:46.463' AS DateTime), N'1HFwyzkIXtEeRg6VlzFt2DyZPPvQQMhtC')
 GO
 INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (4, N'Oweo', N'oec@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-01-27T13:13:46.463' AS DateTime), N'163syanIdd5XjZs-u2ubCDdytYqQ0SeWx')
 GO
 INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (5, N'Eorc', N'eor@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-01-27T13:13:46.463' AS DateTime), N'1D_8MB5PVseZUS1ZyWwE09TZZoJMR_yqV')
+GO
+INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (6, N'Zcnow', N'onaw@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-05-05T07:39:16.090' AS DateTime), N'1qL7VdGmvTxO7ZJGfSjAudUfk8mjw5ZeF')
 GO
 INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (7, N'Wqepx', N'qepx@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-05-05T07:37:10.270' AS DateTime), N'1IwkMeSwz_EdmFm9d40Sw72oXV09obcPh')
 GO
@@ -225,11 +251,9 @@ INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [I
 GO
 INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (9, N'Xjow', N'wgvsa@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-05-05T07:38:14.193' AS DateTime), N'1Rr34cO4puqDz3L5KvmkDD7-kmDjfGm2l')
 GO
-INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (10, N'Ownr', N'weofn@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-05-05T07:38:35.240' AS DateTime), N'1RlCmrr7URNDYpxGcJbwlEspXxOYNIsRZ')
+INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (10, N'Ownr', N'weofn@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-05-05T07:38:35.240' AS DateTime), N'1mjUahqIA0gE_KUR1k9F3GMlgsk1UHHTe')
 GO
-INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (11, N'Uwnl', N'asfse@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-05-05T07:39:03.157' AS DateTime), N'1FO-ccpvykk5ARPYDHbrmUV_hSwSjVxDU')
-GO
-INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (12, N'Zcnow', N'onaw@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-05-05T07:39:16.090' AS DateTime), N'1qL7VdGmvTxO7ZJGfSjAudUfk8mjw5ZeF')
+INSERT [auth].[Users] ([UserId], [Username], [Email], [PasswordHash], [Salt], [IsVerified], [CreatedAt], [ImageFileId]) VALUES (11, N'Uwnl', N'asfse@topictalks.net', N'AQAAAAIAAYagAAAAEH4sN4yXGhfbr83UweaRK6lW4ql9PztpEKWTR6SbkhWTiX1P0mWxRTm8gJr8O3SENg==', N'vFsYhyBIKKEYbGH4F5rQfR2Q5bAyZ4nH2Q0Vwo3kxxM=', 0, CAST(N'2024-05-05T07:39:03.157' AS DateTime), N'1DvXKSlEvGd-MJX7k0fAY18Yb4nubLQMW')
 GO
 SET IDENTITY_INSERT [auth].[Users] OFF
 GO
@@ -315,13 +339,11 @@ INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotifie
 GO
 INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (14, 0, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui.', 1, CAST(N'2024-05-05T07:34:38.563' AS DateTime), 2, 2)
 GO
-INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (15, 0, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui.', 1, CAST(N'2024-05-05T07:34:42.847' AS DateTime), 12, 2)
+INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (15, 0, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui.', 1, CAST(N'2024-05-05T07:34:42.847' AS DateTime), 6, 2)
 GO
 INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (16, 14, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit auctor dolor. Nulla viverra, nibh quis ultrices malesuada, ligula ipsum vulputate.', 1, CAST(N'2024-05-05T07:34:49.477' AS DateTime), 7, 2)
 GO
-INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (17, 0, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit auctor dolor. Nulla viverra, nibh quis ultrices malesuada, ligula ipsum vulputate diam, aliquam egestas nibh ante vel dui. Sed in tellus interdum eros vulputate placerat sed non enim. Pellentesque eget justo porttitor urna dictum fermentum sit amet sed mauris. Praesent molestie vestibulum erat ac rhoncus. Aenean nunc risus, accumsan nec ipsum et, convallis sollicitudin dui. Proin dictum quam a semper malesuada. Etiam porta sit amet risus quis porta. Nulla facilisi. Cras at interdum ante. Ut gravida pharetra ligula vitae malesuada. Sed eget libero et arcu tempor tincidunt in ac lectus. Maecenas vitae felis enim. In in tellus consequat, condimentum eros vitae, lacinia risus. Sed vehicula sem sed risus volutpat elementum.
-
-Nunc accumsan tempus nunc ac aliquet. Integer non ullamcorper eros, in rutrum velit. Proin cursus orci sit amet lobortis iaculis. Praesent condimentum eget felis ut laoreet. Aliquam sodales dolor id mi iaculis, non fermentum leo viverra. Aenean aliquet condimentum placerat. Aenean aliquet diam arcu. Curabitur ac ligula sem. Mauris tincidunt mauris at ligula tincidunt interdum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus sagittis, eros ut iaculis varius.', 1, CAST(N'2024-05-05T07:34:54.527' AS DateTime), 3, 2)
+INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (17, 0, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit auctor dolor. Nulla viverra, nibh quis ultrices malesuada, ligula ipsum vulputate diam, aliquam egestas nibh ante vel dui. Sed in tellus interdum eros vulputate placerat sed non enim. Pellentesque eget justo porttitor urna dictum fermentum sit amet sed mauris. Praesent molestie vestibulum erat ac rhoncus. Aenean nunc risus, accumsan nec ipsum et, convallis sollicitudin dui. Proin dictum quam a semper malesuada. Etiam porta sit amet risus quis porta. Nulla facilisi. Cras at interdum ante. Ut gravida pharetra ligula vitae malesuada. Sed eget libero et arcu tempor tincidunt in ac lectus. Maecenas vitae felis enim. In in tellus consequat, condimentum eros vitae, lacinia risus. Sed vehicula sem sed risus volutpat elementum. Nunc accumsan tempus nunc ac aliquet. Integer non ullamcorper eros, in rutrum velit. Proin cursus orci sit amet lobortis iaculis. Praesent condimentum eget felis ut laoreet. Aliquam sodales dolor id mi iaculis, non fermentum leo viverra. Aenean aliquet condimentum placerat. Aenean aliquet diam arcu. Curabitur ac ligula sem. Mauris tincidunt mauris at ligula tincidunt interdum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus sagittis, eros ut iaculis varius.', 1, CAST(N'2024-05-05T07:34:54.527' AS DateTime), 3, 2)
 GO
 INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (18, 0, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit auctor.', 1, CAST(N'2024-05-05T07:34:59.380' AS DateTime), 8, 2)
 GO
@@ -341,8 +363,7 @@ INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotifie
 GO
 INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (26, 0, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit auctor dolor. Nulla viverra, nibh quis ultrices malesuada, ligula ipsum.', 1, CAST(N'2024-04-09T07:56:50.897' AS DateTime), 1, 1)
 GO
-INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (27, 0, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit auctor.
-', 1, CAST(N'2024-04-10T07:57:04.867' AS DateTime), 8, 1)
+INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (27, 0, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit auctor.', 1, CAST(N'2024-04-10T07:57:04.867' AS DateTime), 8, 1)
 GO
 INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (28, 0, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui. Ut orci quam, ornare sed lorem sed, hendrerit auctor dolor. Nulla viverra, nibh quis ultrices malesuada, ligula ipsum vulputate diam, aliquam egestas nibh ante vel dui. Sed in tellus interdum eros vulputate placerat sed non enim. Pellentesque eget justo porttitor urna dictum fermentum sit amet sed mauris. Praesent molestie vestibulum erat ac rhoncus. Aenean nunc risus, accumsan nec ipsum et, convallis sollicitudin dui. Proin dictum quam a semper malesuada. Etiam porta sit amet risus quis porta. Nulla facilisi. Cras at interdum ante. Ut gravida pharetra ligula vitae malesuada.', 1, CAST(N'2024-04-15T07:57:11.650' AS DateTime), 9, 1)
 GO
@@ -350,7 +371,7 @@ INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotifie
 GO
 INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (30, 26, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et fermentum dui.', 1, CAST(N'2024-04-22T07:57:36.650' AS DateTime), 11, 1)
 GO
-INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (31, 30, N'Lorem ipsum dolor sit amet.', 1, CAST(N'2024-04-29T07:57:45.513' AS DateTime), 12, 1)
+INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (31, 30, N'Lorem ipsum dolor sit amet.', 1, CAST(N'2024-04-29T07:57:45.513' AS DateTime), 6, 1)
 GO
 INSERT [post].[Answers] ([AnswerId], [ParentAnswerId], [Explanation], [IsNotified], [CreatedAt], [UserId], [QuestionId]) VALUES (32, 31, N'Lorem ipsum dolor.', 1, CAST(N'2024-05-01T07:57:52.010' AS DateTime), 7, 1)
 GO
@@ -384,7 +405,7 @@ INSERT [post].[Questions] ([QuestionId], [Topic], [Explanation], [IsNotified], [
 GO
 SET IDENTITY_INSERT [post].[Questions] OFF
 GO
-/****** Object:  Index [IX_UserDetails_UserId]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Index [IX_UserDetails_UserId] ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_UserDetails_UserId] ON [auth].[UserDetails]
 (
 	[UserId] ASC
@@ -392,7 +413,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_UserDetails_UserId] ON [auth].[UserDetails]
 WHERE ([UserId] IS NOT NULL)
 WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [IX_UserRoles_RoleId]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Index [IX_UserRoles_RoleId] ******/
 CREATE NONCLUSTERED INDEX [IX_UserRoles_RoleId] ON [auth].[UserRoles]
 (
 	[RoleId] ASC
@@ -400,7 +421,7 @@ CREATE NONCLUSTERED INDEX [IX_UserRoles_RoleId] ON [auth].[UserRoles]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [IX_User_Email]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Index [IX_User_Email] ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_User_Email] ON [auth].[Users]
 (
 	[Email] ASC
@@ -408,7 +429,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_User_Email] ON [auth].[Users]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [IX_User_Username]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Index [IX_User_Username] ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_User_Username] ON [auth].[Users]
 (
 	[Username] ASC
@@ -416,25 +437,25 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_User_Username] ON [auth].[Users]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [IX_Users_ImageFileId]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Index [IX_Users_ImageFileId] ******/
 CREATE NONCLUSTERED INDEX [IX_Users_ImageFileId] ON [auth].[Users]
 (
 	[ImageFileId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [IX_CloudFiles_UserId]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Index [IX_CloudFiles_UserId] ******/
 CREATE NONCLUSTERED INDEX [IX_CloudFiles_UserId] ON [core].[CloudFiles]
 (
 	[UserId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [IX_Answers_QuestionId]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Index [IX_Answers_QuestionId] ******/
 CREATE NONCLUSTERED INDEX [IX_Answers_QuestionId] ON [post].[Answers]
 (
 	[QuestionId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [IX_Answers_UserId]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Index [IX_Answers_UserId] ******/
 CREATE NONCLUSTERED INDEX [IX_Answers_UserId] ON [post].[Answers]
 (
 	[UserId] ASC
@@ -442,13 +463,13 @@ CREATE NONCLUSTERED INDEX [IX_Answers_UserId] ON [post].[Answers]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [IX_Questions_ImageFileId]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Index [IX_Questions_ImageFileId] ******/
 CREATE NONCLUSTERED INDEX [IX_Questions_ImageFileId] ON [post].[Questions]
 (
 	[ImageFileId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [IX_Questions_UserId]    Script Date: 05-May-2024 7:58:11 PM ******/
+/****** Object:  Index [IX_Questions_UserId] ******/
 CREATE NONCLUSTERED INDEX [IX_Questions_UserId] ON [post].[Questions]
 (
 	[UserId] ASC
@@ -531,6 +552,4 @@ GO
 USE [master]
 GO
 ALTER DATABASE [TopicTalks] SET  READ_WRITE 
-GO
-USE [TopicTalks]
 GO

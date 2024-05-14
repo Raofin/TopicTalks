@@ -35,7 +35,9 @@
                 @if (Context.UserRole().Contains(RoleType.Teacher))
                 {
                     <li>
-                        <a asp-controller="Home" asp-action="UserResponses" class="nav-link">My Responded Questions</a>
+                        <a asp-controller="Home" asp-action="UserResponses" class="nav-link">
+                            <i class="fi i-post"></i> My Responded Questions
+                        </a>
                     </li>
                 }
 
@@ -44,6 +46,11 @@
                     <li>
                         <a asp-controller="Account" asp-action="GetExcel" class="nav-link">
                             <i class='fi i-table'></i>Export User Data
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Account" asp-action="GetUserListPdf" class="nav-link">
+                            <i class='fi i-printer'></i>Print User Data
                         </a>
                     </li>
                 }

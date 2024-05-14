@@ -18,7 +18,7 @@ public class HomeController(IHttpService httpService, ILogger logger) : Controll
     [HttpGet("")]
     public async Task<IActionResult> Dashboard(string? searchQuery)
     {
-        for (var i = 0; i < 3; i++)
+        for (var i = 0; i < 8; i++)
         {
             try
             {

@@ -162,4 +162,15 @@ public class AccountController(IAuthService authService, IHttpService httpServic
 
         return new StatusCodeResult((int)response.StatusCode);
     }
+    
+    [AuthorizeModerator]
+    [HttpGet("pdf/users")]
+    public async Task<IActionResult> GetUserListPdf()
+    {
+        var response = await _httpService.Client.GetAsync("api/report/pdf/users");
+
+        return response.IsSuccessStatusCode
+            ? File(await response.Content.ReadAsByteArrayAsync(), "application/pdf")
+            : new StatusCodeResult((int)response.StatusCode);
+    }
 }

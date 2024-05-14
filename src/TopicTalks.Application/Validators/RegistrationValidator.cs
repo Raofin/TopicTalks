@@ -13,7 +13,7 @@ public class RegistrationValidator : AbstractValidator<RegistrationRequest>
 
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required.")
-            .Matches(@"/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/")
+            .Matches(@"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$")
             .WithMessage("Invalid email address.");
 
         RuleFor(x => x.Password)

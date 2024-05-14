@@ -18,8 +18,8 @@ internal static class Dependencies
     {
         services.AddSingleton<IHashPassword, HashPassword>();
         services.AddSingleton<IJwtGenerator, JwtGenerator>();
-        services.AddSingleton<IExcelGenerator, ExcelGenerator>();
 
+        services.AddScoped<IExcelGenerator, ExcelGenerator>();
         services.AddScoped<IPdfGenerator, PdfGenerator>();
         services.AddScoped<IGoogleCloud, GoogleCloud>();
         services.AddScoped<IEmailSender, EmailSender>();
