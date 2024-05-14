@@ -125,7 +125,7 @@ Update-Database -Migration Init -Context AppDbContext -Project TopicTalks.Infras
 #### 4. Configure Email Settings via User Secrets 📬
 To use Gmail's smtp server, you will need to use an [app password](https://myaccount.google.com/apppasswords). Note that this requires having [2-step verification](https://myaccount.google.com/signinoptions/two-step-verification/enroll-welcome) enabled in your account.
 
-Use the following Commands to store the crediantials in user secrets 👇
+Use the following Commands to store the credentials in user secrets 👇
 
 ```powershell
 dotnet user-secrets --project src/TopicTalks.Api set EmailSettings:Email you@gmail.com
@@ -152,8 +152,8 @@ dotnet user-secrets --project src/TopicTalks.Api set EmailSettings:Password your
   ```
 
 <p align= "center">
-  <img src="assets/17.jpg" width="49%">
   <img src="assets/18.jpg" width="49%">
+  <img src="assets/19.jpg" width="49%">
 </p>
 
 #### 7. Access the Projects 🌐
@@ -186,18 +186,19 @@ dotnet user-secrets --project src/TopicTalks.Api set EmailSettings:Password your
 
 ## 📦 Nuget Packages 
 
-| Package Name     | Used to 👇                                                                                                                    |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| [Swashbuckle](https://www.nuget.org/packages/Swashbuckle.AspNetCore/) | Generate API documentation from Web API controllers                      |
-| [ErrorOr](https://www.nuget.org/packages/ErrorOr) | Handle errors and return results efficiently                                                 |
-| [Serilog](https://www.nuget.org/packages/Serilog) |  Log events in a very structured way                                                         |
-| [FluentValidation](https://www.nuget.org/packages/FluentValidation.AspNetCore) | Apply server-side data validation rules                         |
-| [FluentEmail](https://www.nuget.org/packages/FluentEmail.Smtp) |  Send emails using SMTP servers                                                 |
-| [Google Apis](https://www.nuget.org/packages/Google.Apis.Drive.v3) | 	Interact with cloud storage                                                |
-| [DinkToPdf](https://www.nuget.org/packages/DinkToPdf) | Generate beautiful PDFs from HTML                                                        |
-| [ClosedXML](https://www.nuget.org/packages/ClosedXML) | Generate Excel (.xlsx) files                                                             |
-| [WebOptimizer](https://www.nuget.org/packages/LigerShark.WebOptimizer.Core) | Bundle and minify CSS & JavaScript files for faster loading        |
-| [WebMarkupMin](https://www.nuget.org/packages/WebMarkupMin.AspNetCore8) | Minify MVC HTML content to reduce file size for improved performance   |
+| Package Name                                                                   | Used to 👇                                                           |
+|--------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| [Swashbuckle](https://www.nuget.org/packages/Swashbuckle.AspNetCore/)          | Generate API documentation from Web API controllers                  |
+| [ErrorOr](https://www.nuget.org/packages/ErrorOr)                              | Handle errors and return results efficiently                         |
+| [Serilog](https://www.nuget.org/packages/Serilog)                              | Log events in a very structured way                                  |
+| [FluentValidation](https://www.nuget.org/packages/FluentValidation.AspNetCore) | Apply server-side data validation rules                              |
+| [FluentEmail](https://www.nuget.org/packages/FluentEmail.Smtp)                 | Send emails using SMTP servers                                       |
+| [Google Apis](https://www.nuget.org/packages/Google.Apis.Drive.v3)             | Interact with cloud storage                                          |
+| [RazorTemplating](https://www.nuget.org/packages/Razor.Templating.Core)        | Render `.cshtml` files into `string`                                 |
+| [DinkToPdf](https://www.nuget.org/packages/DinkToPdf)                          | Generate beautiful PDFs from HTML                                    |
+| [ClosedXML](https://www.nuget.org/packages/ClosedXML)                          | Generate Excel (`.xlsx`) files                                       |
+| [WebOptimizer](https://www.nuget.org/packages/LigerShark.WebOptimizer.Core)    | Bundle and minify CSS & JavaScript files for faster loading          |
+| [WebMarkupMin](https://www.nuget.org/packages/WebMarkupMin.AspNetCore8)        | Minify MVC HTML content to reduce file size for improved performance |
 
 ## 📊 ER Diagram
 
@@ -225,6 +226,7 @@ View at 👉 [be.net/TopicTalks](https://www.be.net/gallery/195808869/TopicTalks
     <img src="assets/14.jpg">
     <img src="assets/15.jpg">
     <img src="assets/16.jpg">
+    <img src="assets/17.jpg">
 <p/>
 
 ## 🪪 License
