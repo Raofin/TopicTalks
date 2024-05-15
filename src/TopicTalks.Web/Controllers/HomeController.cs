@@ -77,6 +77,7 @@ public class HomeController(IHttpService httpService, ILogger logger) : Controll
             : RedirectToAction("Error");
     }
 
+    [AllowAnonymous]
     [HttpGet("question/LoadQuestionList")]
     public async Task<IActionResult> LoadQuestionList(List<QuestionViewModel> questions, string? searchQuery)
     {

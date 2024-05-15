@@ -17,8 +17,8 @@ var app = builder.Build();
     app.UseInfrastructure(app.Environment);
     app.MapControllers().RequireAuthorization();
     app.MapHealthChecks("health");
-    
-    if (true /*env.IsDevelopment()*/)
+
+    if (true /* app.Environment.IsDevelopment() */)
     {
         app.UseSwagger();
         app.UseSwaggerUI();
