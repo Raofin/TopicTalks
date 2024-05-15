@@ -167,7 +167,16 @@ public class AccountController(IAuthService authService, IHttpService httpServic
     [HttpGet("pdf/users")]
     public async Task<IActionResult> GetUserListPdf()
     {
-        var response = await _httpService.Client.GetAsync("api/report/pdf/users");
+        var userTimeZone = HttpContext.UserTimeZone();
+
+        var client = _httpService.Client;
+
+        if (userTimeZone is not null)
+        {
+            client.DefaultRequestHeaders.Add("TimeZone", userTimeZone);
+        }
+
+        var response = await client.GetAsync("api/report/pdf/users");
 
         return response.IsSuccessStatusCode
             ? File(await response.Content.ReadAsByteArrayAsync(), "application/pdf")
